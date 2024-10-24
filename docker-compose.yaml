@@ -1,0 +1,75 @@
+networks:
+  sw-ing:
+
+
+services:
+  db:
+    container_name: test
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    networks:
+      - sw-ing
+
+  # Redis + Redis Commander
+  redis:
+    image: library/redis:6-alpine
+    container_name: SW-ING-Redis
+    ports:
+      - 6379:6379
+    networks:
+      - sw-ing
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: SW-ING-RedisCommander
+    environment:
+      - REDIS_HOSTS=local-0:redis:6379:0,local-1:redis:6379:1
+      - HTTP_USER=root
+      - HTTP_PASSWORD=qwerty
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    networks:
+      - sw-ing
+
+  app:
+    image: 'rocksolid-spring'
+    build:
+      context: .
+      dockerfile: config/app/Dockerfile
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/test
+      - SPRING_DATASOURCE_USERNAME=test
+      - SPRING_DATASOURCE_PASSWORD=test
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+    ports:
+      - 8000:80
+
+  # Frontend web - NodeJS
+  frontend:
+    build:
+      context: .
+      dockerfile: config/nodejs/Dockerfile
+    image: frontend
+    container_name: Frontend
+    volumes:
+      - ./frontend:/usr/src/frontend
+      - /usr/src/frontend/node_modules
+    networks:
+      - sw-ing
+    ports:
+      - 3002:3000
+      - 3001:3001
