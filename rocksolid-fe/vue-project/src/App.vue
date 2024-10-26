@@ -1,5 +1,5 @@
 <template>
-  <header style="padding-bottom: 55px">
+  <header style="padding-bottom: 66px">
     <Navigation/>
   </header>
   <RouterView />

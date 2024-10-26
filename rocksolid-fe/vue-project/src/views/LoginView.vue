@@ -23,12 +23,15 @@
         </div>
         <button @click="submitLogin()" type="submit" class="login-button">Login</button>
       </form>
+      <router-link class="register" to="/register">Registrovať</router-link>
 
       <div v-if="error" class="error-message">
         {{ error }}
       </div>
     </div>
+
   </body>
+
 </template>
 
 <script>
@@ -55,13 +58,24 @@ export default {
 </script>
 
 <style scoped>
+
+.register{
+  text-align: center;
+  margin-top: 10px;
+  color: black;
+}
+
+.register:hover{
+  color: green;
+}
+
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-color: ghostwhite;
+  background-color: white;
 }
 
 .login-container {
