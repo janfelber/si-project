@@ -4,13 +4,13 @@ networks:
 
 services:
   db:
-    container_name: test
+    container_name: Database
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: test
+      POSTGRES_USER: database
+      POSTGRES_PASSWORD: database
+      POSTGRES_DB: database
     ports:
       - "5432:5432"
     networks:
@@ -44,19 +44,21 @@ services:
     build:
       context: .
       dockerfile: config/app/Dockerfile
-    container_name: app
+    container_name: Backend
     depends_on:
       - db
     environment:
-      - POSTGRES_USER=test
-      - POSTGRES_PASSWORD=test
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/test
-      - SPRING_DATASOURCE_USERNAME=test
-      - SPRING_DATASOURCE_PASSWORD=test
+      - POSTGRES_USER=database
+      - POSTGRES_PASSWORD=database
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/database
+      - SPRING_DATASOURCE_USERNAME=database
+      - SPRING_DATASOURCE_PASSWORD=database
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
     ports:
-      - 8000:80
+      - 8000:8080
+    networks:
+      - sw-ing
 
   # Frontend web - NodeJS
   frontend:
@@ -66,7 +68,7 @@ services:
     image: frontend
     container_name: Frontend
     volumes:
-      - ./frontend:/usr/src/frontend
+      - ./rocksolid-fe/vue-project:/usr/src/frontend
       - /usr/src/frontend/node_modules
     networks:
       - sw-ing
