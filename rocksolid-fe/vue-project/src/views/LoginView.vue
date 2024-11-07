@@ -1,36 +1,43 @@
 <template>
-  <body>
-    <div class="login-container">
-      <h2>Login</h2>
-      <form @submit.prevent="submitLogin">
-        <div class="input-group">
-          <label for="username">Username:</label>
-          <input
-              type="text"
-              v-model="username"
-              placeholder="Enter username"
-              required
-          />
-        </div>
-        <div class="input-group">
-          <label for="password">Password:</label>
-          <input
-              type="password"
-              v-model="password"
-              placeholder="Enter password"
-              required
-          />
-        </div>
-        <button @click="submitLogin()" type="submit" class="login-button">Login</button>
-      </form>
-      <router-link class="register" to="/register">Registrovať</router-link>
+  <div class="container">
+    <div class="row">
+      <div class="column">
+        <div class="login-container">
+          <h2>Login</h2>
+          <form @submit.prevent="submitLogin">
+            <div class="input-group">
+              <label for="username">Username:</label>
+              <input
+                  type="text"
+                  v-model="username"
+                  placeholder="Enter username"
+                  required
+              />
+            </div>
+            <div class="input-group">
+              <label for="password">Password:</label>
+              <input
+                  type="password"
+                  v-model="password"
+                  placeholder="Enter password"
+                  required
+              />
+            </div>
+            <button @click="submitLogin()" type="submit" class="login-button">Login</button>
+          </form>
+          <router-link class="register" to="/register">Registrovať</router-link>
 
-      <div v-if="error" class="error-message">
-        {{ error }}
+          <div v-if="error" class="error-message">
+            {{ error }}
+          </div>
+        </div>
+      </div>
+
+      <div class="column" style="background-color: green">
+        <img src="../assets/ukflogo.png">
       </div>
     </div>
-
-  </body>
+  </div>
 
 </template>
 
@@ -59,6 +66,29 @@ export default {
 
 <style scoped>
 
+
+.container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}
+
+.column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 50%;
+}
+
+
 .register{
   text-align: center;
   margin-top: 10px;
@@ -69,14 +99,7 @@ export default {
   color: green;
 }
 
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  background-color: white;
-}
+
 
 .login-container {
   padding: 40px;
