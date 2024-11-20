@@ -4,7 +4,7 @@
       <div class="column">
         <div v-if="!hide_form" class="login-container">
           <h2>Registrácia</h2>
-          <form @submit.prevent="register">
+          <form @submit.prevent="registerUser">
             <div class="input-group">
               <label>Meno:</label>
               <input
@@ -41,19 +41,7 @@
                   required
               />
             </div>
-            <div class="input-group">
-              <label>Potvrdenie hesla:</label>
-              <input
-                  type="password"
-                  v-model="retype_password"
-                  placeholder="Potvrdenie"
-                  required
-              />
-              <div v-if="checkPasswords" class="error-message">
-                Zadané heslá sa nezhodujú
-              </div>
-            </div>
-            <button type="submit" :disabled="retype_password!==password" class="login-button">Registrovať</button>
+            <button type="submit" class="login-button">Registrovať</button>
           </form>
 
           <div v-if="error" class="error-message">
@@ -75,6 +63,8 @@
 </template>
 
 <script>
+import authentication from "@/services/auth/authentication.ts";
+
 export default {
   name: "RegisterView",
   data() {
@@ -82,39 +72,49 @@ export default {
       name: '',
       surname: '',
       username: '',
-      password: null,
+      password: '',
       email: '',
-      retype_password: '',
+      message: '',
       error: null,
-      hide_form: false,
+      hide_form: false
     };
   },
   methods: {
-    register() {
-      //todo check database for existing username and email
-      this.hide_form = true;
-      console.log("registracia test")
-      this.error = "test";
-    },
-  },
-  computed: {
-    checkPasswords(){
-      if (this.password != this.retype_password && this.password != "" && this.retype_password != "") return true;
-      return false;
+    // Funkcia pre registráciu užívateľa
+    registerUser() {
+      const registerRequest = {
+        fistName: this.name,
+        lastName: this.surname,
+        email: this.email,
+        password: this.password
+      };
+
+      authentication.register(registerRequest)
+          .then(() => {
+            // Success: Show success message and redirect after 3 seconds
+            this.message = 'Účet bol úspešne vytvorený. Budete presmerovaní na prihlasovaciu stránku za 3 sekundy.';
+            this.hide_form = true;
+            setTimeout(() => {
+              this.$router.push('/login');  // Redirect to login page after 3 seconds
+            }, 3000);
+          })
+          .catch(() => {
+            // Error: Show error message
+            this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
+          });
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-
-.register-success{
+/* Štýly pre stránku */
+.register-success {
   display: table-cell;
   justify-content: center;
   text-align: center;
   align-items: center;
 }
-
 
 .container {
   height: 100vh;
@@ -136,19 +136,6 @@ export default {
   align-items: center;
   flex: 0 0 50%;
 }
-
-
-.register{
-  text-align: center;
-  margin-top: 10px;
-  color: black;
-}
-
-.register:hover{
-  color: green;
-}
-
-
 
 .login-container {
   padding: 40px;
@@ -212,7 +199,7 @@ export default {
   background-color: lawngreen;
 }
 
-.login-button:disabled{
+.login-button:disabled {
   background-color: #222222;
   cursor: default;
 }
