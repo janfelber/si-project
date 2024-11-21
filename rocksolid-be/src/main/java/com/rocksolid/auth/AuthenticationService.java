@@ -124,19 +124,4 @@ public class AuthenticationService {
             }
         }
     }
-
-    public AuthenticationResponse verifyCode(
-            final VerificationRequest verificationRequest
-    ) {
-        final User user = repository
-                .findByEmail(verificationRequest.getEmail())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("No user found with login: %s", verificationRequest.getEmail()))
-                );
-        final var jwtToken = jwtService.generateToken(user);
-
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .build();
-    }
 }
