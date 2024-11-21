@@ -6,11 +6,11 @@
           <h2>Login</h2>
           <form @submit.prevent="submitLogin">
             <div class="input-group">
-              <label for="username">Username:</label>
+              <label for="username">Email:</label>
               <input
                   type="text"
-                  v-model="username"
-                  placeholder="Enter username"
+                  v-model="email"
+                  placeholder="Enter email"
                   required
               />
             </div>
@@ -42,25 +42,37 @@
 </template>
 
 <script>
+import authentication from "@/services/auth/authentication.ts";
+
 export default {
   name: "LoginView",
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       error: null,
     };
   },
   methods: {
     submitLogin() {
-      if (this.username === "admin" && this.password === "admin") {
-        this.error = null;
-        console.log("spravne cred")
-        this.$router.push("/main");
-      }
-      else this.error = "Zadaná kombinácia mena a hesla sa nezhoduje";
+      const loginRequest = {
+        email: this.email,
+        password: this.password,
+      };
+
+      authentication.login(loginRequest)
+          .then(() => {
+            //this.hide_form = true;
+            setTimeout(() => {
+              this.$router.push('/main');  // Redirect to main page after 3 seconds
+            }, 3000);
+          })
+          .catch(() => {
+            // Error: Show error message
+            this.error = 'Prihlasenie nebolo uspesne.';
+          });
+    }
     },
-  },
 };
 </script>
 

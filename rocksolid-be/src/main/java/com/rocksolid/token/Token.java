@@ -1,6 +1,7 @@
-package com.rocksolid.module;
+package com.rocksolid.token;
 
 
+import com.rocksolid.module.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,15 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "token", schema = "rock_solid")
-public class token {
+@Table(name = "\"token\"", schema = "rock_solid")
+public class Token {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String token;
 
-    private String tokenType;
+    @Enumerated(EnumType.STRING)
+    private TokenType tokenType;
 
     private boolean expired;
 
@@ -29,4 +32,5 @@ public class token {
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private User user;
+
 }
