@@ -3,29 +3,49 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
 import MainView from "@/views/MainView.vue";
 import RegisterView from "@/views/RegisterView.vue";
+import DefaultView from "@/views/DefaultView.vue";
+import AuthLayout from "@/views/AuthLayout.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      component: DefaultView,
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: HomeView,
+        },
+        {
+          path: 'main',
+          name: 'main',
+          component: MainView,
+        },
+      ],
     },
     {
       path: '/login',
-      name: 'LoginView',
-      component: LoginView
-    },
-    {
-      path: '/main',
-      name: 'MainView',
-      component: MainView
+      component: AuthLayout,
+      children: [
+        {
+          path: '',
+          name: 'login',
+          component: LoginView,
+        },
+      ],
     },
     {
       path: '/register',
-      name: 'RegisterView',
-      component: RegisterView
+      component: AuthLayout,
+      children: [
+        {
+          path: '',
+          name: 'register',
+          component: RegisterView,
+        },
+      ],
     },
   ]
 })
