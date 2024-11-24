@@ -16,6 +16,7 @@ class AuthenticationService {
   login(loginRequest : LoginRequest){
     return axios.post<AuthentificationResponse>(`${baseUrl}/login`, loginRequest);
   }
+
 }
 
 export default new AuthenticationService();
