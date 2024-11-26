@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import authentication from "@/services/auth/authentication.ts";
+import authentication from "@/services/auth/authentication.js";
 
 export default {
   name: "RegisterView",
