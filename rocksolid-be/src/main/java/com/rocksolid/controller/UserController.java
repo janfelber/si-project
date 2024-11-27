@@ -1,5 +1,6 @@
 package com.rocksolid.controller;
 
+import com.rocksolid.dto.UserResponseDto;
 import com.rocksolid.module.User;
 import com.rocksolid.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
+    public List<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
 }
