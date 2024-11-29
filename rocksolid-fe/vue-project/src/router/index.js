@@ -6,6 +6,7 @@ import RegisterView from "@/views/RegisterView.vue";
 import DefaultView from "@/views/DefaultView.vue";
 import AuthLayout from "@/views/AuthLayout.vue";
 import AdminView from "@/views/AdminView.vue";
+import UserDetailView from "@/views/UserDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +54,12 @@ const router = createRouter({
       name: 'AdminView',
       component: AdminView
     },
+    {
+      path: '/detail/:userID',
+      name: 'UserDetailView',
+      component: UserDetailView,
+      props: true,
+    }
   ]
 })
 

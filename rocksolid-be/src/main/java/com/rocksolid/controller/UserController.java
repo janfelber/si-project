@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -26,4 +27,7 @@ public class UserController {
     public List<UserResponseDto> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    @GetMapping("/get/{id}")
+    public Optional<UserResponseDto> getUser(@PathVariable Long id) { return userService.getUserById(id); }
 }
