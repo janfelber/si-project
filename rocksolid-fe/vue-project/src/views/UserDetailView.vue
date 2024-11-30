@@ -43,7 +43,7 @@ export default {
     async getUserData() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/v1/user/get/"+this.userID,
+        const response = await axios.get("http://localhost:8080/api/v1/user/"+this.userID,
             {
               headers: {
                 Authorization: `Bearer ${token}`
