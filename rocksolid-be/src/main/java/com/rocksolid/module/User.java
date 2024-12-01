@@ -1,6 +1,7 @@
 package com.rocksolid.module;
 
 
+import com.rocksolid.security.enums.Role;
 import com.rocksolid.token.Token;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,9 +35,12 @@ public class User implements UserDetails {
 
     private int article_id;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getUserAuthorities();
     }
 
     @OneToMany(mappedBy = "user")
