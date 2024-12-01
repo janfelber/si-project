@@ -67,17 +67,6 @@ const router = createRouter({
         }
       ],
     },
-    // {
-    //   path: '/admin',
-    //   name: 'AdminView',
-    //   component: AdminView
-    // },
-    // {
-    //   path: '/detail/:userID',
-    //   name: 'UserDetailView',
-    //   component: UserDetailView,
-    //   props: true,
-    // }
   ]
 })
 
