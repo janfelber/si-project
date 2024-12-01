@@ -3,11 +3,11 @@ package com.rocksolid.auth;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rocksolid.config.JwtService;
 import com.rocksolid.repository.UserRepository;
+import com.rocksolid.security.enums.Role;
 import com.rocksolid.token.Token;
 import com.rocksolid.repository.TokenRepository;
 import com.rocksolid.token.TokenType;
 import com.rocksolid.module.User;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +37,7 @@ public class AuthenticationService {
         final var user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.STUDENT)
                 .build();
 
         final var savedUser = repository.save(user);
