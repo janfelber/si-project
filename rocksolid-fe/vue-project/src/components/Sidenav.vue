@@ -3,10 +3,16 @@ import { navBarData } from '@/data/navbarData.js';
 
 export default {
   name: "SideNav",
-  data() {
-    return {
-      navBarData,
-    };
+  props: {
+    layout: {
+      type: String,
+      required: true,
+    },
+  },
+  computed: {
+    filteredNavBarData() {
+      return navBarData.filter(item => item.layout === this.layout);
+    },
   },
 };
 </script>
@@ -22,19 +28,18 @@ export default {
       <div class="SideMenuTitle">
         <span class="SideMenuTitle-text">Menu</span>
       </div>
-      <li v-for="data in navBarData" :key="data.label">
+      <li v-for="data in filteredNavBarData" :key="data.label">
         <router-link
             :to="data.routerLink"
             class="sidenav-nav-link"
             active-class="active"
             exact
         >
-          <span class="sidenav-link-icon">
-            <i :class="data.icon"></i>
-          </span>
+    <span class="sidenav-link-icon">
+      <v-icon size="small">{{ data.icon }}</v-icon> <!-- Používanie Vuetify ikon -->
+    </span>
           <span class="sidenav-link-text">{{ data.label }}</span>
         </router-link>
-
       </li>
     </ul>
   </div>
@@ -148,7 +153,8 @@ export default {
 
 .sidenav-link-icon i {
   position: relative;
-  top: -1px
+  top: -1px;
+  left: 1px;
 }
 
 .sidenav-link-text {
