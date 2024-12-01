@@ -1,7 +1,14 @@
 export const navBarData = [
     {
         routerLink: '/',
-        icon: 'fa fa-home',
-        label: 'Home'
+        icon: 'mdi-home-outline',
+        label: 'Home',
+        layout: 'default'
     },
+    {
+        routerLink: '/admin/users',
+        icon: 'mdi-account-multiple-outline',
+        label: 'Users',
+        layout: 'admin'
+    }
 ];

@@ -3,7 +3,7 @@
     <header class="header">
     </header>
     <div class="content">
-      <side-nav layout="default"/>
+      <side-nav layout="admin"/>
       <main class="main">
         <router-view/>
       </main>
@@ -12,19 +12,16 @@
 </template>
 
 <script>
-import SideNav from "@/components/Sidenav.vue";
 import {RouterView} from "vue-router";
+import SideNav from "@/components/Sidenav.vue";
 
 export default {
-  name: "DefaultLayout",
-  components: {RouterView, SideNav},
-};
+  name: "AdminLayout" ,
+  components: {SideNav, RouterView}
+}
+
 </script>
 
 <style scoped>
-.main {
-  margin-left: 250px;
-  padding: 20px;
-}
 
 </style>

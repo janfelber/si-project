@@ -5,7 +5,8 @@ import MainView from "@/views/MainView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import DefaultView from "@/views/DefaultView.vue";
 import AuthLayout from "@/views/AuthLayout.vue";
-import AdminView from "@/views/AdminView.vue";
+import AdminLayout from "@/views/AdminLayout.vue";
+import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 
 const router = createRouter({
@@ -51,15 +52,21 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'AdminView',
-      component: AdminView
+      component: AdminLayout,
+      children: [
+        {
+          path: 'users',
+          name: 'users',
+          component: AdminUsersView,
+        },
+        {
+          path: 'users/:userID',
+          name: 'UserDetailView',
+          component: UserDetailView,
+          props: true,
+        }
+      ],
     },
-    {
-      path: '/detail/:userID',
-      name: 'UserDetailView',
-      component: UserDetailView,
-      props: true,
-    }
   ]
 })
 
