@@ -5,6 +5,7 @@ import MainView from "@/views/MainView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import DefaultView from "@/views/DefaultView.vue";
 import AuthLayout from "@/views/AuthLayout.vue";
+import StudentView from '@/views/StudentView.vue';
 import AdminLayout from "@/views/AdminLayout.vue";
 import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
@@ -26,6 +27,11 @@ const router = createRouter({
           name: 'main',
           component: MainView,
         },
+        {
+          path: '/student',
+          name: 'student',
+          component: StudentView
+        }
       ],
     },
     {
