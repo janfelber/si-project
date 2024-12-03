@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
                         user.getId(),
                         user.getEmail(),
                         user.getFirst_name(),
-                        user.getLast_name()
+                        user.getLast_name(),
+                        user.getRole().name()
                 )).collect(Collectors.toList());
     }
 
@@ -40,7 +41,8 @@ public class UserServiceImpl implements UserService {
                         user.getId(),
                         user.getFirst_name(),
                         user.getEmail(),
-                        user.getLast_name()
+                        user.getLast_name(),
+                        user.getRole().name()
                 ));
     }
 
@@ -51,6 +53,11 @@ public class UserServiceImpl implements UserService {
             existingUser.setFirst_name(userData.getFirst_name());
             existingUser.setLast_name(userData.getLast_name());
             existingUser.setEmail(userData.getEmail());
+
+            if (userData.getRole() != null) {
+                existingUser.setRole(userData.getRole());
+            }
+
             return userRepository.save(existingUser);
         }
         return null;

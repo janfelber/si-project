@@ -13,12 +13,12 @@
           <v-text-field v-model="email"></v-text-field>
         </div>
         <div>
-          <v-switch label="Recenzent" color="primary"></v-switch>
-          <label>Rola:</label>
-          <v-combobox
+          <v-switch
               label="Recenzent"
-              :items="['Recenzent', 'Študent', 'Admin']"
-          ></v-combobox>
+              color="primary"
+              v-model="isReviewer">
+          </v-switch>
+          <label>Rola:</label>
         </div>
       </v-card-text>
 
@@ -40,7 +40,8 @@ export default {
       user_data: [],
       first_name: "",
       last_name: "",
-      email: ""
+      email: "",
+      isReviewer: false,
     }
   },
   methods: {
@@ -57,6 +58,7 @@ export default {
         this.first_name = this.user_data.first_name;
         this.last_name = this.user_data.last_name;
         this.email = this.user_data.email;
+        this.isReviewer = this.user_data.role === "REVIEWER";
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
@@ -64,11 +66,13 @@ export default {
     async updateUser(){
       try {
         const token = localStorage.getItem("token");
+        const updatedRole = this.isReviewer ? "REVIEWER" : "STUDENT";
         const response = await axios.patch("http://localhost:8080/api/v1/user/"+this.userID,
             {
               first_name: this.first_name,
               last_name: this.last_name,
-              email: this.email
+              email: this.email,
+              role: updatedRole,
             },
             {
               headers: {
