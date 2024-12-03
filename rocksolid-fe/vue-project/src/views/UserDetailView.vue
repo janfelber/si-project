@@ -6,11 +6,11 @@
       <v-card-text>
         <div class="text-fields">
           <label>Meno:</label>
-          <v-text-field :value="user_data.first_name"></v-text-field>
+          <v-text-field v-model="first_name"></v-text-field>
           <label>Priezvisko:</label>
-          <v-text-field :value="user_data.last_name"></v-text-field>
+          <v-text-field v-model="last_name"></v-text-field>
           <label>Email:</label>
-          <v-text-field :value="user_data.email"></v-text-field>
+          <v-text-field v-model="email"></v-text-field>
         </div>
         <div>
           <v-switch label="Recenzent" color="primary"></v-switch>
@@ -18,11 +18,12 @@
           <v-combobox
               label="Recenzent"
               :items="['Recenzent', 'Študent', 'Admin']"
-          ></v-combobox>        </div>
+          ></v-combobox>
+        </div>
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="primary">Uložiť</v-btn>
+        <v-btn color="primary" @click="updateUser()">Uložiť</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -37,6 +38,9 @@ export default {
   data(){
     return {
       user_data: [],
+      first_name: "",
+      last_name: "",
+      email: ""
     }
   },
   methods: {
@@ -50,8 +54,31 @@ export default {
               }
             });
         this.user_data = response.data;
+        this.first_name = this.user_data.first_name;
+        this.last_name = this.user_data.last_name;
+        this.email = this.user_data.email;
       } catch (error) {
         console.error("Failed to fetch user:", error);
+      }
+    },
+    async updateUser(){
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.patch("http://localhost:8080/api/v1/user/"+this.userID,
+            {
+              first_name: this.first_name,
+              last_name: this.last_name,
+              email: this.email
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+        console.log(response)
+        await this.getUserData();
+      } catch (error) {
+        console.error("Failed to update user:", error);
       }
     }
   },

@@ -34,7 +34,6 @@
       </div>
 
       <div class="column" style="background-color: green">
-        <img src="../assets/ukflogo.png">
       </div>
     </div>
   </div>
