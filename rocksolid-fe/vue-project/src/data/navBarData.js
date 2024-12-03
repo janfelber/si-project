@@ -6,6 +6,12 @@ export const navBarData = [
         layout: 'default'
     },
     {
+        routerLink: '/student',
+        icon: 'mdi-upload',
+        label: 'Upload',
+        layout: 'default'
+    },
+    {
         routerLink: '/admin/users',
         icon: 'mdi-account-multiple-outline',
         label: 'Users',
