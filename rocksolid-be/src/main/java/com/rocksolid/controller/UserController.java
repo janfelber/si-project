@@ -35,14 +35,7 @@ public class UserController {
     public Optional<UserResponseDto> getUser(@PathVariable Long id) { return userService.getUserById(id); }
 
     @PatchMapping("/{id}")
-    public UserResponseDto updateUser(@PathVariable Long id, @RequestBody User userData) {
-        User updatedUser = userService.updateUser(id, userData);
-        UserResponseDto response = new UserResponseDto(
-            updatedUser.getId(),
-            updatedUser.getFirst_name(),
-            updatedUser.getEmail(),
-            updatedUser.getLast_name()
-        );
-        return response;
+    public User updateUser(@PathVariable Long id, @RequestBody User userData) {
+       return userService.updateUser(id, userData);
     }
 }
