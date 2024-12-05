@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
                         user.getEmail(),
                         user.getFirst_name(),
                         user.getLast_name(),
-                        user.getRole().name()
+                        user.getRole().name(),
+                        user.getUniversity()
                 )).collect(Collectors.toList());
     }
 
@@ -42,7 +43,8 @@ public class UserServiceImpl implements UserService {
                         user.getFirst_name(),
                         user.getEmail(),
                         user.getLast_name(),
-                        user.getRole().name()
+                        user.getRole().name(),
+                        user.getUniversity()
                 ));
     }
 
