@@ -91,8 +91,10 @@ export default {
   methods: {
     registerUser() {
       console.log(this.university);
+      console.log(this.name);
+      console.log(this.surname);
       const registerRequest = {
-        fistName: this.name,
+        firstName: this.name,
         lastName: this.surname,
         email: this.email,
         password: this.password,

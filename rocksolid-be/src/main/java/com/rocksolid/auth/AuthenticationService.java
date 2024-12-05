@@ -38,6 +38,8 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.STUDENT)
+                .last_name(request.getLastName())
+                .first_name(request.getFirstName())
                 .university(request.getUniversity())
                 .build();
 
