@@ -24,6 +24,14 @@
               />
             </div>
             <div class="input-group">
+              <label>Univerzita:</label>
+              <v-select
+                  :items="items"
+                  v-model="university"
+                  outlined
+              ></v-select>
+            </div>
+            <div class="input-group">
               <label>E-mail:</label>
               <input
                   type="email"
@@ -74,17 +82,21 @@ export default {
       password: '',
       email: '',
       message: '',
+      university: '',
+      items: ["UKF", "UCM", "UMB"],
       error: null,
       hide_form: false
     };
   },
   methods: {
     registerUser() {
+      console.log(this.university);
       const registerRequest = {
         fistName: this.name,
         lastName: this.surname,
         email: this.email,
-        password: this.password
+        password: this.password,
+        university: this.university
       };
 
       authentication.register(registerRequest)

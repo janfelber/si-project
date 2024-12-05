@@ -33,6 +33,8 @@ public class User implements UserDetails {
 
     private int article_id;
 
+    private String university;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
