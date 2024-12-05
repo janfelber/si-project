@@ -55,7 +55,6 @@
       </div>
 
       <div class="column" style="background-color: green">
-        <img src="../assets/ukflogo.png">
       </div>
     </div>
   </div>
@@ -63,7 +62,7 @@
 </template>
 
 <script>
-import authentication from "@/services/auth/authentication.ts";
+import authentication from "@/services/auth/authentication.js";
 
 export default {
   name: "RegisterView",
@@ -80,7 +79,6 @@ export default {
     };
   },
   methods: {
-    // Funkcia pre registráciu užívateľa
     registerUser() {
       const registerRequest = {
         fistName: this.name,
@@ -91,15 +89,13 @@ export default {
 
       authentication.register(registerRequest)
           .then(() => {
-            // Success: Show success message and redirect after 3 seconds
             this.message = 'Účet bol úspešne vytvorený. Budete presmerovaní na prihlasovaciu stránku za 3 sekundy.';
             this.hide_form = true;
             setTimeout(() => {
-              this.$router.push('/login');  // Redirect to login page after 3 seconds
+              this.$router.push('/login');
             }, 3000);
           })
           .catch(() => {
-            // Error: Show error message
             this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
           });
     }
@@ -108,7 +104,6 @@ export default {
 </script>
 
 <style scoped>
-/* Štýly pre stránku */
 .register-success {
   display: table-cell;
   justify-content: center;

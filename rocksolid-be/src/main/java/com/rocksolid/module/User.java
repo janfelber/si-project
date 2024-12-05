@@ -1,12 +1,10 @@
 package com.rocksolid.module;
 
 
+import com.rocksolid.security.enums.Role;
 import com.rocksolid.token.Token;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,6 +22,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String email;
 
     private String first_name;
@@ -34,9 +33,12 @@ public class User implements UserDetails {
 
     private int article_id;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getUserAuthorities();
     }
 
     @OneToMany(mappedBy = "user")
@@ -71,4 +73,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
 }

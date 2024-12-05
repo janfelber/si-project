@@ -23,7 +23,7 @@
                   required
               />
             </div>
-            <button @click="submitLogin()" type="submit" class="login-button">Login</button>
+            <button type="submit" class="login-button">Login</button>
           </form>
           <router-link class="register" to="/register">Registrovať</router-link>
 
@@ -34,7 +34,6 @@
       </div>
 
       <div class="column" style="background-color: green">
-        <img src="../assets/ukflogo.png">
       </div>
     </div>
   </div>
@@ -42,8 +41,7 @@
 </template>
 
 <script>
-import authentication from "@/services/auth/authentication.ts";
-
+import axios from 'axios';
 export default {
   name: "LoginView",
   data() {
@@ -54,25 +52,20 @@ export default {
     };
   },
   methods: {
-    submitLogin() {
-      const loginRequest = {
-        email: this.email,
-        password: this.password,
-      };
-
-      authentication.login(loginRequest)
-          .then(() => {
-            //this.hide_form = true;
-            setTimeout(() => {
-              this.$router.push('/main');  // Redirect to main page after 3 seconds
-            }, 3000);
-          })
-          .catch(() => {
-            // Error: Show error message
-            this.error = 'Prihlasenie nebolo uspesne.';
-          });
+    async submitLogin() {
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/auth/login', {
+          email: this.email,
+          password: this.password,
+        });
+        console.log(response);
+        localStorage.setItem('token', response.data.access_token);
+        this.$router.push('main');
+      } catch (err) {
+        this.error = "Login failed. Please check your credentials.";
+      }
     }
-    },
+  }
 };
 </script>
 

@@ -1,19 +1,14 @@
 <template>
-  <header style="padding-bottom: 66px">
-    <Navigation/>
-  </header>
-  <RouterView />
+  <router-view />
 </template>
 
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import Navigation from "@/components/Navigation.vue";
+import { RouterView } from 'vue-router'
 </script>
 
 
 
 
 <style scoped>
-
 
 </style>
