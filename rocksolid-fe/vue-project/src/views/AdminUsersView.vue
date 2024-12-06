@@ -1,6 +1,13 @@
 <template>
   <h1>Admin Rozhranie</h1>
     <v-card>
+    <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Hľadať"
+        single-line
+        hide-details
+    ></v-text-field>
     <table>
       <thead>
       <tr>
@@ -15,7 +22,7 @@
       </thead>
       <tbody>
       <tr
-          v-for="user in users"
+          v-for="user in filterUsers"
           :key="user.id"
           class="table-rows"
       >
@@ -42,7 +49,8 @@ export default {
     return {
       id_user: null,
       headers: ["ID","Meno", "Priezvisko", "E-mail", ""],
-      users: []
+      users: [],
+      search: ''
     }
   },
   methods:{
@@ -76,6 +84,25 @@ export default {
   },
   mounted() {
     this.getUsers()
+  },
+  computed: {
+    filterUsers() {
+      return this.users.filter((user) => {
+        if (user.first_name && user.first_name.toLowerCase().includes(this.search.toLowerCase())) {
+          return true;
+        }
+        if (user.last_name && user.last_name.toLowerCase().includes(this.search.toLowerCase())) {
+          return true;
+        }
+        if (user.email && user.email.toLowerCase().includes(this.search.toLowerCase())) {
+          return true;
+        }
+        if (String(user.id).includes(this.search)) {
+          return true;
+        }
+        return false;
+      });
+    }
   }
 
 
