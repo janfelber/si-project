@@ -18,5 +18,5 @@ public class article {
     private int id;
 
 
-    private String name;
+    private String article_name;
 }
