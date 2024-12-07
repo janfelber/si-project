@@ -34,7 +34,13 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(final RegisterRequest request) {
-        final var user = User.builder()
+        //check if user with email already exists
+        //method isPresent() returns true if user with email exists in database
+        if (repository.findByEmail(request.getEmail()).isPresent()) {
+            throw new EmailAlreadyExistsException("Tento e-mail už existuje.");
+        }
+        else {
+            final var user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.STUDENT)
@@ -43,14 +49,15 @@ public class AuthenticationService {
                 .university(request.getUniversity())
                 .build();
 
-        final var savedUser = repository.save(user);
-        final var jwtToken = jwtService.generateToken(user);
-        final var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
+            final var savedUser = repository.save(user);
+            final var jwtToken = jwtService.generateToken(user);
+            final var refreshToken = jwtService.generateRefreshToken(user);
+            saveUserToken(savedUser, jwtToken);
+            return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
                 .build();
+        }
     }
 
     public AuthenticationResponse authenticate(final AuthenticationRequest request) {
