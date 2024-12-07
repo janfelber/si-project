@@ -23,7 +23,10 @@ export default {
 </script>
 
 <style scoped>
-.main{
-  margin-left: 10%;
+.main {
+  flex-grow: 1;
+  background: #f8f9fa;
+  height: 100%;
+  padding-left: 11.5rem;
 }
 </style>
