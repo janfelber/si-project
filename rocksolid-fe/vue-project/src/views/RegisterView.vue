@@ -109,8 +109,14 @@ export default {
               this.$router.push('/login');
             }, 3000);
           })
-          .catch(() => {
-            this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
+          .catch((err) => {
+            if (err.response) {
+              if (err.response.status === 409) {
+                this.error = 'Tento e-mail už je zaregistrovaný.';
+              }
+            } else {
+              this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
+            }
           });
     }
   }
