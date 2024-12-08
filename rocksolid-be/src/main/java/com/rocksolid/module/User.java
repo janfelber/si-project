@@ -31,8 +31,6 @@ public class User implements UserDetails {
 
     private String password;
 
-    private int article_id;
-
     private String university;
 
     @Enumerated(EnumType.STRING)
@@ -45,6 +43,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<article> articles;
 
     @Override
     public String getPassword() {
