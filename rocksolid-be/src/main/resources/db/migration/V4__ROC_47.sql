@@ -1,3 +1,6 @@
-ALTER TABLE ONLY rock_solid.article
-  ADD COLUMN user_id BIGINT
-  REFERENCES rock_solid."user"(id);
+ALTER TABLE rock_solid.conference
+  ADD COLUMN "name" VARCHAR;
+
+ALTER TABLE rock_solid.conference
+    ADD COLUMN "status" BOOLEAN;
+

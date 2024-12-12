@@ -16,5 +16,11 @@ export const navBarData = [
         icon: 'mdi-account-multiple-outline',
         label: 'Users',
         layout: 'admin'
+    },
+    {
+        routerLink: '/admin/conference',
+        icon: 'mdi-account-multiple-outline',
+        label: 'Conferences',
+        layout: 'admin'
     }
 ];

@@ -1,4 +1,8 @@
 package com.rocksolid.repository;
 
-public interface ConferenceRepository {
+import com.rocksolid.module.conference;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ConferenceRepository extends JpaRepository<conference,Long> {
+
 }
