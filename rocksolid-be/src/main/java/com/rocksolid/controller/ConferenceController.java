@@ -1,15 +1,15 @@
 package com.rocksolid.controller;
 
 
+import com.rocksolid.dto.ConferenceRequestDto;
 import com.rocksolid.dto.ConferenceResponseDto;
 import com.rocksolid.dto.UserResponseDto;
+import com.rocksolid.module.conference;
 import com.rocksolid.service.ConferenceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +27,11 @@ public class ConferenceController {
     @PreAuthorize("hasAuthority('admin:read')")
     public List<ConferenceResponseDto> getAllConferences() {
         return conferenceService.getAllConferences();
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public ResponseEntity<Void> createConference(@RequestBody ConferenceRequestDto request){
+        return conferenceService.createConference(request);
     }
 }
