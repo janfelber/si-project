@@ -66,6 +66,128 @@
           />
           <span class="mdi mdi-magnify search-icon"></span>
         </div>
+
+        <!-- dialog na vytvorenie konference-->
+        <div class="dialog-window">
+          <v-dialog
+              v-model="dialog"
+              max-width="600"
+          >
+            <template v-slot:activator="{ props: activatorProps }">
+              <v-btn
+                  class="text-none font-weight-regular"
+                  prepend-icon="mdi-account-group"
+                  text="Create Conference"
+                  variant="tonal"
+                  v-bind="activatorProps"
+              ></v-btn>
+            </template>
+
+            <v-card
+                prepend-icon="mdi-account-group"
+                title="Create Conference"
+            >
+              <v-card-text>
+                <v-row dense>
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Conference Name"
+                        v-model="name"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Date From"
+                        type="date"
+                        v-model="dateFrom"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Date To"
+                        type="date"
+                        v-model="dateTo"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Form ID"
+                        type="number"
+                        v-model="formID"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Article ID"
+                        type="number"
+                        v-model="articleID"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col
+                      cols="12"
+                      md="6"
+                      sm="6"
+                  >
+                    <v-text-field
+                        label="Year"
+                        type="number"
+                        :min="2000"
+                        :max="2100"
+                        v-model="year"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn
+                    text="Close"
+                    variant="plain"
+                    @click="dialog = false"
+                ></v-btn>
+
+                <v-btn
+                    color="primary"
+                    text="Save"
+                    variant="tonal"
+                    @click="dialog = false; createConference()"
+                ></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
+
+
+
       </div>
       <table class="conferences-table">
         <thead>
@@ -106,7 +228,15 @@ export default {
       rowsPerPage: 10,
       currentPageInput: 1,
       pageSizes: [10, 20, 50],
-      search: ''
+      search: '',
+      dialog: false,
+      //nova konferencia
+      name: "",
+      dateFrom: "",
+      dateTo: "",
+      formID: 0,
+      year: 0,
+      articleID: 0
     }
   },
   methods:{
@@ -115,6 +245,10 @@ export default {
         this.currentPage = page;
         this.currentPageInput = page;
       }
+    },
+    formatDate(date) {
+      const formatter = new Intl.DateTimeFormat('en-GB');
+      return formatter.format(new Date(date)).replace(/\//g, '.');
     },
     async getConferences(){
       try {
@@ -130,7 +264,41 @@ export default {
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+    async createConference() {
+      if(!(this.articleID && this.dateFrom && this.dateTo && this.formID && this.year && this.name)){
+        alert("Please, fill all the fields");
+        this.dialog = true;
+      }
+        else {
+          try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post("http://localhost:8080/api/v1/conference/create",
+                {
+                  article_id: this.articleID,
+                  date_from: this.formatDate(this.dateFrom),
+                  date_to: this.formatDate(this.dateTo),
+                  form_id: this.formID,
+                  year: this.year,
+                  name: this.name
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
+                });
+            this.articleID = 0;
+            this.dateFrom = "";
+            this.dateTo = "";
+            this.formID = 0;
+            this.year = 0;
+            this.name = "";
+            await this.getConferences();
+          } catch (error) {
+            console.error("Failed to create conference:", error);
+          }
+        }
+    },
   },
   mounted() {
     this.getConferences();
@@ -170,6 +338,10 @@ export default {
 
 <style scoped>
 
+.dialog-window{
+  display: flex;
+  margin-left: auto;
+}
 
 .conferences-table .cell {
   border-left: 1px solid #d8d8f0;
@@ -208,6 +380,7 @@ export default {
 }
 
 .table-search {
+  display: flex;
   padding: .5em 1.5em;
   border-bottom: 1px solid rgb(216, 216, 240);
 }
