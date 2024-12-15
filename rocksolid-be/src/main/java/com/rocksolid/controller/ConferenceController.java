@@ -30,8 +30,14 @@ public class ConferenceController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<Void> createConference(@RequestBody ConferenceRequestDto request){
         return conferenceService.createConference(request);
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
+    public conference updateConference(@PathVariable Long id, @RequestBody conference request){
+        return conferenceService.updateConference(id, request);
     }
 }

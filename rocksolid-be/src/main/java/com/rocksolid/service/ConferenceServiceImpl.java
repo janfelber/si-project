@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,4 +51,20 @@ public class ConferenceServiceImpl  implements ConferenceService {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+    public conference updateConference(Long id, conference conference){
+        Optional<conference> conf = conferenceRepository.findById(id);
+        if(conf.isPresent()){
+            conference existingConference = conf.get();
+            existingConference.setForm_id(conference.getForm_id());
+            existingConference.setYear(conference.getYear());
+            existingConference.setName(conference.getName());
+            existingConference.setStatus(conference.getStatus());
+            existingConference.setDateuntil(conference.getDateuntil());
+            existingConference.setDatefrom(conference.getDatefrom());
+            existingConference.setArticle_id(conference.getArticle_id());
+            return conferenceRepository.save(existingConference);
+        }
+        return null;
+    }
 }
