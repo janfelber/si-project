@@ -1,4 +1,18 @@
 <template>
+  <header>
+    <nav class="header-nav">
+      <div class="active-router">
+        <span class="router-label">Users</span>
+      </div>
+      <div class="user-item">
+      <span> {{ this.user_data.first_name }} </span>
+      </div>
+    </nav>
+    <div class="vertical-divider"></div>
+    <v-icon @click="deleteUser(this.userID)">
+      mdi-trash-can-outline
+    </v-icon>
+  </header>
   <v-container>
     <v-card>
       <v-card-title class="card-title">{{ this.user_data.first_name }}</v-card-title>
@@ -31,6 +45,7 @@
 
 <script>
 import axios from "axios";
+import user from "@/services/Users/user.ts";
 
 export default {
   name: "UserDetailView",
@@ -45,6 +60,17 @@ export default {
     }
   },
   methods: {
+    deleteUser(id) {
+      user.deleteUser(id)
+          .then(() => {
+            console.log("User deleted");
+            window.location.href = '/admin/users';
+          })
+          .catch((error) => {
+            this.error = 'Používateľa sa nepodarilo odstrániť';
+            console.log(error)
+          });
+    },
     async getUserData() {
       try {
         const token = localStorage.getItem("token");
@@ -106,8 +132,40 @@ export default {
   font-weight: bold;
 }
 
+.user-item ::before {
+  color: inherit;
+  content: "›";
+  float: left;
+  padding-right: .375rem;
+
+}
+
+.user-item {
+padding-left: .375rem;
+}
+
 label {
   margin-bottom: 4px;
+}
+
+.header-nav {
+  margin-left: 1.75rem;
+  display: flex;
+}
+
+.vertical-divider {
+  width: 1px;
+  height: 35px;
+  background-color: #d8d8f0;
+  margin: 0 1rem;
+}
+
+header {
+  background-color: white;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  border-bottom: 1px solid #d8d8f0;
 }
 
 </style>

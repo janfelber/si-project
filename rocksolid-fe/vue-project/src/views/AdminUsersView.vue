@@ -87,13 +87,8 @@
               {{ user.email }}
             </RouterLink>
           </td>
-          <td class="cell" style="width: 5.452637%;">{{ user.first_name }}</td>
-          <td class="cell" style="width: 5.452637%;">{{ user.last_name }}</td>
-          <td>
-            <button class="buttons" @click="deleteUser(user.id)"><img src="../assets/delete-button.png" alt=""></button>
-            <RouterLink :to="{ name: 'UserDetailView', params: { userID: user.id } }" class="router"><img
-                src="../assets/info-button.png"></RouterLink>
-          </td>
+          <td class="cell" style="width: 15.924607%;" >{{ user.first_name }}</td>
+          <td class="cell" style="width: 15.924607%;" >{{ user.last_name }}</td>
         </tr>
         </tbody>
       </table>
@@ -103,7 +98,6 @@
 
 
 <script>
-import user from "@/services/Users/user.ts";
 import axios from "axios";
 
 export default {
@@ -111,7 +105,7 @@ export default {
   data(){
     return {
       id_user: null,
-      headers: ["E-mail", "Meno", "Priezvisko", ""],
+      headers: ["E-mail", "Meno", "Priezvisko"],
       users: [],
       currentPage: 1,
       rowsPerPage: 10,
@@ -121,19 +115,6 @@ export default {
     }
   },
   methods:{
-    deleteUser(id) {
-      user.deleteUser(id)
-          .then(() => {
-            setTimeout(() => {
-              console.log("Vymazane")
-              this.getUsers();
-            }, 1);
-          })
-          .catch((error) => {
-            this.error = 'Používateľa sa nepodarilo odstrániť';
-            console.log(error)
-          });
-    },
     async getUsers() {
       try {
         const token = localStorage.getItem("token");
