@@ -25,7 +25,6 @@ export default {
 <style scoped>
 .main {
   flex-grow: 1;
-  background: #f8f9fa;
   height: 100%;
   padding-left: 11.5rem;
 }
