@@ -80,12 +80,13 @@
                   text="Create Conference"
                   variant="tonal"
                   v-bind="activatorProps"
+                  @click="clearVariables(); this.edit = false;"
               ></v-btn>
             </template>
 
             <v-card
                 prepend-icon="mdi-account-group"
-                title="Create Conference"
+                :title="edit ? 'Edit Conference' : 'Create Conference'"
             >
               <v-card-text>
                 <v-row dense>
@@ -161,6 +162,12 @@
                         v-model="year"
                     ></v-text-field>
                   </v-col>
+                  <v-switch
+                      v-if="edit"
+                      label="Active"
+                      color="primary"
+                      v-model="status">
+                  </v-switch>
                 </v-row>
               </v-card-text>
 
@@ -172,14 +179,22 @@
                 <v-btn
                     text="Close"
                     variant="plain"
-                    @click="dialog = false"
+                    @click="dialog = false; clearVariables()"
                 ></v-btn>
 
                 <v-btn
+                    v-if="!edit"
                     color="primary"
                     text="Save"
                     variant="tonal"
                     @click="dialog = false; createConference()"
+                ></v-btn>
+                <v-btn
+                    v-if="edit"
+                    color="primary"
+                    text="Edit"
+                    variant="tonal"
+                    @click="dialog = false; editConference()"
                 ></v-btn>
               </v-card-actions>
             </v-card>
@@ -205,9 +220,10 @@
         <tr v-for="conference in paginatedconferences" :key="conference.id" class="table-rows">
           <td class="cell" style="width: 5.452637%;">{{ conference.id }}</td>
           <td class="cell" style="width: 5.452637%;">{{ conference.name }}</td>
-          <td class="cell" style="width: 5.452637%;">{{ conference.date_from }}</td>
-          <td class="cell" style="width: 5.452637%;">{{ conference.date_to}}</td>
+          <td class="cell" style="width: 5.452637%;">{{this.formatDate(conference.date_from) }}</td>
+          <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.date_to) }}</td>
           <td class="cell" style="width: 5.452637%;">{{ conference.status}}</td>
+          <td class="cell" style="width: 5.452637%;"><v-btn @click="updateDialog(conference.id, conference.name, conference.date_from, conference.date_to, conference.status, conference.article_id, conference.form_id, conference.year)">Edit</v-btn></td>
         </tr>
         </tbody>
       </table>
@@ -222,7 +238,7 @@ export default {
   name: "ConferenceView",
   data(){
     return {
-      headers: ["ID", "Názov", "Od", "Do", "Status"],
+      headers: ["ID", "Názov", "Od", "Do", "Status", ""],
       conferences: [],
       currentPage: 1,
       rowsPerPage: 10,
@@ -230,13 +246,16 @@ export default {
       pageSizes: [10, 20, 50],
       search: '',
       dialog: false,
+      edit: false,
       //nova konferencia
       name: "",
       dateFrom: "",
       dateTo: "",
       formID: 0,
       year: 0,
-      articleID: 0
+      articleID: 0,
+      conference_id: 0,
+      status: false,
     }
   },
   methods:{
@@ -247,8 +266,13 @@ export default {
       }
     },
     formatDate(date) {
-      const formatter = new Intl.DateTimeFormat('en-GB');
-      return formatter.format(new Date(date)).replace(/\//g, '.');
+      try {
+        const formatter = new Intl.DateTimeFormat('en-GB');
+        return formatter.format(new Date(date)).replace(/\//g, '.');
+      }
+      catch (error) {
+        console.log("Invalid date format for date : " + date + " " + error);
+      }
     },
     async getConferences(){
       try {
@@ -276,8 +300,8 @@ export default {
             const response = await axios.post("http://localhost:8080/api/v1/conference/create",
                 {
                   article_id: this.articleID,
-                  date_from: this.formatDate(this.dateFrom),
-                  date_to: this.formatDate(this.dateTo),
+                  date_from: this.dateFrom,
+                  date_to: this.dateTo,
                   form_id: this.formID,
                   year: this.year,
                   name: this.name
@@ -287,18 +311,64 @@ export default {
                     Authorization: `Bearer ${token}`
                   }
                 });
-            this.articleID = 0;
-            this.dateFrom = "";
-            this.dateTo = "";
-            this.formID = 0;
-            this.year = 0;
-            this.name = "";
+            this.clearVariables();
             await this.getConferences();
           } catch (error) {
             console.error("Failed to create conference:", error);
           }
         }
     },
+    updateDialog(id, name, date_from, date_to, status, article_id, form_id, year){
+      this.dialog = true;
+      this.edit = true;
+      this.articleID = article_id;
+      this.dateFrom = date_from;
+      this.dateTo = date_to;
+      this.formID = form_id;
+      this.year = year;
+      this.name = name;
+      this.conference_id = id;
+      this.status = status;
+    },
+    clearVariables(){
+      this.articleID = 0;
+      this.dateFrom = "";
+      this.dateTo = "";
+      this.formID = 0;
+      this.year = 0;
+      this.name = "";
+      this.edit = false;
+    },
+    async editConference(){
+      if(!(this.articleID && this.dateFrom && this.dateTo && this.formID && this.year && this.name)){
+        alert("Please, fill all the fields");
+        this.dialog = true;
+      }
+      else {
+        try {
+          const token = localStorage.getItem("token");
+          const response = await axios.patch(`http://localhost:8080/api/v1/conference/${this.conference_id}`,
+              {
+                article_id: this.articleID,
+                datefrom: this.dateFrom,
+                dateuntil: this.dateTo,
+                form_id: this.formID,
+                year: this.year,
+                name: this.name,
+                status: this.status
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              });
+          this.clearVariables();
+          await this.getConferences();
+        } catch (error) {
+          console.error("Failed to update conference:", error);
+        }
+      }
+    }
   },
   mounted() {
     this.getConferences();
