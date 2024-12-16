@@ -5,7 +5,7 @@
         v-if="alert_show"
         class="alerts"
         :color="alert_color"
-        variant="outlined"
+        variant="elevated"
         :icon="alert_icon"
         :text="alert_text"
     ></v-alert>
@@ -481,6 +481,7 @@ export default {
   height: fit-content;
   width: fit-content;
   font-size: large;
+  z-index: 9999;
 }
 
 .dialog-window{
