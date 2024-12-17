@@ -1,5 +1,16 @@
 <template>
   <h1>Admin Rozhranie</h1>
+  <transition name="fade">
+    <v-alert
+        v-if="alert_show"
+        class="alerts"
+        :color="alert_color"
+        variant="elevated"
+        :icon="alert_icon"
+        :text="alert_text"
+    ></v-alert>
+  </transition>
+
   <div class="card-class" style="background-color: white">
     <div class="conferences-table" style="border: 1px solid #d8d8f0; border-radius: .5rem">
       <v-card-title class="table-head">
@@ -256,6 +267,10 @@ export default {
       articleID: 0,
       conference_id: 0,
       status: false,
+      alert_show: false,
+      alert_text: "",
+      alert_icon: "",
+      alert_color: ""
     }
   },
   methods:{
@@ -313,10 +328,50 @@ export default {
                 });
             this.clearVariables();
             await this.getConferences();
+            await this.showAlert("success", "conference");
           } catch (error) {
+            await this.showAlert("error", "conference");
             console.error("Failed to create conference:", error);
           }
         }
+    },
+    async showAlert(status, object){
+      if(status === "success"){
+        if(object === "conference"){
+          this.alert_show = true;
+          this.alert_text = "Conference created";
+          this.alert_icon = "$success";
+          this.alert_color = "success";
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          this.alert_show = false;
+        }
+        else if (object === "edit"){
+          this.alert_show = true;
+          this.alert_text = "Conference edited";
+          this.alert_icon = "$success";
+          this.alert_color = "success";
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          this.alert_show = false;
+        }
+      }
+      else if (status === "error"){
+        if(object === "conference"){
+          this.alert_show = true;
+          this.alert_text = "Conference could not be created";
+          this.alert_icon = "$error";
+          this.alert_color = "error";
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          this.alert_show = false;
+        }
+        else if (object === "edit"){
+          this.alert_show = true;
+          this.alert_text = "Conference could not be edited";
+          this.alert_icon = "$error";
+          this.alert_color = "error";
+          await new Promise(resolve => setTimeout(resolve, 4000));
+          this.alert_show = false;
+        }
+      }
     },
     updateDialog(id, name, date_from, date_to, status, article_id, form_id, year){
       this.dialog = true;
@@ -363,8 +418,10 @@ export default {
                 }
               });
           this.clearVariables();
+          await this.showAlert("success", "edit");
           await this.getConferences();
         } catch (error) {
+          await this.showAlert("error", "edit");
           console.error("Failed to update conference:", error);
         }
       }
@@ -407,6 +464,25 @@ export default {
 
 
 <style scoped>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.alerts{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: fit-content;
+  width: fit-content;
+  font-size: large;
+  z-index: 9999;
+}
 
 .dialog-window{
   display: flex;
