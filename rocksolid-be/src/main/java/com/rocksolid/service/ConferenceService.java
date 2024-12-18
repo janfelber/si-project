@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface ConferenceService {
     List<ConferenceResponseDto> getAllConferences();
+    List<conference> getActiveConferences();
     ResponseEntity<Void> createConference (ConferenceRequestDto request);
     conference updateConference(Long id, conference conference);
 }

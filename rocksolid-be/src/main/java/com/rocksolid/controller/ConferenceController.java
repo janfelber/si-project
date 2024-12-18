@@ -40,4 +40,9 @@ public class ConferenceController {
     public conference updateConference(@PathVariable Long id, @RequestBody conference request){
         return conferenceService.updateConference(id, request);
     }
+
+    @GetMapping("/active")
+    public List<conference> getActiveConferences() {
+        return conferenceService.getActiveConferences();
+    }
 }

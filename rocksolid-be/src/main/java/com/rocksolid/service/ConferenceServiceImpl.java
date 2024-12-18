@@ -51,6 +51,10 @@ public class ConferenceServiceImpl  implements ConferenceService {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    public List<conference> getActiveConferences() {
+        return conferenceRepository.findByStatusTrue();  // Získanie aktívnych konferencií
+    }
+
 
     public conference updateConference(Long id, conference conference){
         Optional<conference> conf = conferenceRepository.findById(id);
