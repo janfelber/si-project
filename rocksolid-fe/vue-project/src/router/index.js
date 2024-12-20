@@ -11,6 +11,7 @@ import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
+import ConferenceDetail from "@/views/ConferenceDetail.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,9 +36,15 @@ const router = createRouter({
           component: StudentView
         },
         {
-          path: '/activeConferences',
+          path: '/active-conferences',
           name: 'activeConferences',
           component: ActiveConferences,
+        },
+        {
+          path: '/conference/:id',
+          name: 'conferenceDetail',
+          component: ConferenceDetail,
+          props: true
         },
       ],
     },
