@@ -24,6 +24,14 @@
               />
             </div>
             <div class="input-group">
+              <label>Univerzita:</label>
+              <v-select
+                  :items="items"
+                  v-model="university"
+                  outlined
+              ></v-select>
+            </div>
+            <div class="input-group">
               <label>E-mail:</label>
               <input
                   type="email"
@@ -74,17 +82,23 @@ export default {
       password: '',
       email: '',
       message: '',
+      university: '',
+      items: ["UKF", "UCM", "UMB"],
       error: null,
       hide_form: false
     };
   },
   methods: {
     registerUser() {
+      console.log(this.university);
+      console.log(this.name);
+      console.log(this.surname);
       const registerRequest = {
-        fistName: this.name,
+        firstName: this.name,
         lastName: this.surname,
         email: this.email,
-        password: this.password
+        password: this.password,
+        university: this.university
       };
 
       authentication.register(registerRequest)
@@ -95,8 +109,14 @@ export default {
               this.$router.push('/login');
             }, 3000);
           })
-          .catch(() => {
-            this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
+          .catch((err) => {
+            if (err.response) {
+              if (err.response.status === 409) {
+                this.error = 'Tento e-mail už je zaregistrovaný.';
+              }
+            } else {
+              this.error = 'Registrácia zlyhala. Skúste to prosím znova.';
+            }
           });
     }
   }

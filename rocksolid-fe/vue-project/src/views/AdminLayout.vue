@@ -23,5 +23,9 @@ export default {
 </script>
 
 <style scoped>
-
+.main {
+  flex-grow: 1;
+  height: 100%;
+  padding-left: 11.5rem;
+}
 </style>

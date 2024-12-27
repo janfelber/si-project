@@ -15,18 +15,25 @@ import lombok.NoArgsConstructor;
 public class conference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private int year;
 
     //todo - add foreign key
-    private int article_id;
+    private Long article_id;
 
     //todo - add foreign key
-    private int form_id;
+    private Long form_id;
 
     private String datefrom;
 
     private String dateuntil;
 
+    private String name;
+
+    private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
 }

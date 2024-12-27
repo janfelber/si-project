@@ -9,6 +9,8 @@ import StudentView from '@/views/StudentView.vue';
 import AdminLayout from "@/views/AdminLayout.vue";
 import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
+import ConferenceView from "@/views/ConferenceView.vue";
+import ActiveConferences from "@/views/ActiveConferences.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +33,12 @@ const router = createRouter({
           path: '/student',
           name: 'student',
           component: StudentView
-        }
+        },
+        {
+          path: '/activeConferences',
+          name: 'activeConferences',
+          component: ActiveConferences,
+        },
       ],
     },
     {
@@ -69,6 +76,12 @@ const router = createRouter({
           path: 'users/:userID',
           name: 'UserDetailView',
           component: UserDetailView,
+          props: true,
+        },
+        {
+          path: 'conference',
+          name: 'ConferenceView',
+          component: ConferenceView,
           props: true,
         }
       ],

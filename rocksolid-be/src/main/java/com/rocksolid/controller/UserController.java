@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -27,7 +28,10 @@ public class UserController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
     public List<UserResponseDto> getAllUsers() {
-        return userService.getAllUsers();
+        return userService.getAllUsers()
+                .stream()
+                .filter(e -> !e.getRole().equals("ADMIN"))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")

@@ -12,9 +12,21 @@ export const navBarData = [
         layout: 'default'
     },
     {
+        routerLink: '/activeConferences',
+        icon: 'mdi-presentation',
+        label: 'Actice Conferences',
+        layout: 'default'
+    },
+    {
         routerLink: '/admin/users',
         icon: 'mdi-account-multiple-outline',
         label: 'Users',
         layout: 'admin'
-    }
+    },
+    {
+        routerLink: '/admin/conference',
+        icon: 'mdi-account-multiple-outline',
+        label: 'Conferences',
+        layout: 'admin'
+    },
 ];
