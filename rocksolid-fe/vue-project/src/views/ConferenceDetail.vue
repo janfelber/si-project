@@ -2,7 +2,7 @@
   <div>
     <h1>Detail konferencie</h1>
     <h1>{{this.conference_data.name}}</h1>
-    <h1>{{this.conference_data.active}}</h1>
+    <h1>{{this.conference_data.status}}</h1>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ export default {
         });
         this.conference_data = response.data;
         this.name = this.conference_data.name;
-        this.active = this.conference_data.active
+        this.active = this.conference_data.status
       } catch (error) {
         console.error("Failed to fetch conference details:", error);
       }
