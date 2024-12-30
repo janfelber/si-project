@@ -3,6 +3,7 @@ package com.rocksolid.controller;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.rocksolid.module.article;
 import com.rocksolid.service.FileService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,27 +27,30 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://localhost:3000")
 public class FileController {
 
-  private FileService fileService;
-
-  @Autowired
-  public FileController(final FileService fileService) {
-    this.fileService = fileService;
-  }
+  private final FileService fileService;
 
   @PostMapping("/upload")
-  public ResponseEntity<String> saveFileToDB(@RequestParam("file") MultipartFile file) throws IOException {
-    String result = fileService.saveFile(file);
-    if (result != null) {
-      return ResponseEntity.status(HttpStatus.OK).body(result);  // 200 OK
+  public ResponseEntity<article> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("userId") Long userId) {
+    try {
+      article savedFile = fileService.saveFile(file, userId);
+      return ResponseEntity.ok(savedFile);
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("File upload failed");
   }
 
-  @GetMapping("/getFileByName/{fileName}")
-  public ResponseEntity<byte[]> getFile(@PathVariable String fileName) {
-    byte[] file = fileService.getFile(fileName);
-
-    return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("docx/doc")).body(file);
+  @GetMapping("/{id}")
+  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
+    try {
+      byte[] fileContent = fileService.loadFile(id);
+      return ResponseEntity.ok()
+          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file\"")
+          .body(fileContent);
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
   }
+
+
 
 }
