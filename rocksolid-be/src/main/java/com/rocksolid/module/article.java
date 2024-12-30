@@ -28,6 +28,10 @@ public class article {
     //TODO - add column to storing file
     // private String article_file;
 
+    @Lob
+    @Column(name = "file",columnDefinition = "BYTEA",length = 1000000)
+    private byte[] file;
+
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private User user;
