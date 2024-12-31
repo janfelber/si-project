@@ -1,3 +1,4 @@
+import { getRoleFromToken } from '@/helper/getRoleFromToken.js';
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
@@ -24,21 +25,25 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView,
+          meta: { requiresStudent: true },
         },
         {
           path: 'main',
           name: 'main',
           component: MainView,
+          meta: { requiresStudent: true },
         },
         {
           path: '/student',
           name: 'student',
-          component: StudentView
+          component: StudentView,
+          meta: { requiresStudent: true },
         },
         {
           path: '/activeConferences',
           name: 'activeConferences',
           component: ActiveConferences,
+          meta: { requiresStudent: true },
         },
         {
           path: '/user',
@@ -77,22 +82,39 @@ const router = createRouter({
           path: 'users',
           name: 'users',
           component: AdminUsersView,
+          meta: { requiresAdmin: true },
         },
         {
           path: 'users/:userID',
           name: 'UserDetailView',
           component: UserDetailView,
           props: true,
+          meta: { requiresAdmin: true },
         },
         {
           path: 'conference',
           name: 'ConferenceView',
           component: ConferenceView,
           props: true,
+          meta: { requiresAdmin: true },
         }
       ],
     }
   ]
-})
+});
+
+router.beforeEach((to, from, next) => {
+  const userRole = getRoleFromToken();
+
+  if (to.meta.requiresAdmin && userRole !== 'ADMIN') {
+    return next('/');
+  }
+
+  if (to.meta.requiresStudent && userRole !== 'STUDENT') {
+    return next('/admin/users');
+  }
+
+  next();
+});
 
 export default router
