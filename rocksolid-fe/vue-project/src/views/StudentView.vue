@@ -1,6 +1,4 @@
-
 <template>
-
       <v-app>
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
@@ -18,7 +16,6 @@
                   label="Priezvisko"
                   required
               ></v-text-field>
-
 
                 <v-text-field
                     v-model="fileName"
@@ -48,7 +45,6 @@
                   dense
               ></v-text-field>
 
-
                 <v-file-input
                     prepend-icon="mdi-upload"
                     v-model="file"
@@ -57,10 +53,8 @@
                     outlined
                     dense
                 ></v-file-input>
-
             </v-col>
             <v-col>
-
               <v-container>
                 <v-radio-group v-model="selectedOption" row>
                   <v-radio label="Sekcia1" value="Sekcia1"></v-radio>
@@ -109,35 +103,26 @@ export default {
   },
   methods: {
     async uploadFile() {
-      if (!this.firstname || !this.lastname || !this.file || !this.fileName) {
-        alert('Prosím, vyplňte všetky údaje a vyberte súbor.');
+      if (!this.firstname || !this.lastname || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
+        alert('Prosím, vyplňte všetky údaje');
         return;
       }
-      // if (this.file && this.fileName) {
-      //   alert(`Súbor: ${this.fileName} bol úspešne nahratý!`);
-      //   this.firstname = '';
-      //   this.lastname = '';
-      //   this.file = null;
-      //   this.fileName = '';
-      //   this.selectedOption = '';
-      // } else {
-      //   alert('Prosím, vyberte súbor a zadajte názov práce.');
-      // }
+
+      if(!this.file) {
+        alert('Prosím, vyberte súbor.');
+        return;
+      }
 
       try{
         const formData = new FormData();
-        formData.append('file', this.file); // Pridať súbor
-        // formData.append('userId', '7'); // Pridať meno
-        formData.append('fileName', this.fileName); // Pridať názov práce
-        formData.append('coAuthors', this.coAuthors); // Pridať spoluautorov
-        formData.append('articleDescription', this.articleDescription); // Pridať popis
-        formData.append('keyWords', this.keyWords); // Pridať kľúčové slová
-
-
-        for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value);
-        }
-
+        formData.append('file', this.file);
+        formData.append('fileName', this.fileName);
+        formData.append('coAuthors', this.coAuthors);
+        formData.append('articleDescription', this.articleDescription);
+        formData.append('keyWords', this.keyWords);
+        formData.append('section', this.selectedOption);
+        formData.append('firstName', this.firstname);
+        formData.append('lastName', this.lastname);
 
         const token = localStorage.getItem("token")
         console.log(localStorage.getItem("token"));
@@ -149,18 +134,18 @@ export default {
               }
             });
 
+        if (response.status === 200) {
+          alert('Súbor bol úspešne nahratý!');
+          this.firstname = '';
+          this.lastname = '';
+          this.file = null;
+          this.fileName = '';
+          this.selectedOption = '';
+          this.coAuthors = '';
+          this.articleDescription = '';
+          this.keyWords = '';
 
-
-        // if (response.status === 200) {
-        //   alert('Súbor bol úspešne nahratý!');
-        //   // Vyprázdniť formu po úspešnom nahraní
-        //   this.firstname = '';
-        //   this.lastname = '';
-        //   this.file = null;
-        //   this.fileName = '';
-        //   this.selectedOption = '';
-
-        // }
+        }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
         alert('Došlo k chybe pri nahrávaní súboru.');

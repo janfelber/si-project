@@ -31,13 +31,16 @@ public class FileController {
 
   @PostMapping("/upload")
   public ResponseEntity<article> uploadFile(
-      @RequestParam("file") MultipartFile file,
+      @RequestParam("firstName") String firstName,
+      @RequestParam("lastName") String lastName,
       @RequestParam("fileName") String fileName,
       @RequestParam("coAuthors") String coAuthors,
       @RequestParam("articleDescription") String articleDescription,
-      @RequestParam("keyWords") String keyWords) {
+      @RequestParam("keyWords") String keyWords,
+      @RequestParam("section") String section,
+      @RequestParam("file") MultipartFile file) {
     try {
-      article savedFile = fileService.saveFile(file, fileName, coAuthors, articleDescription, keyWords);
+      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,section,file);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
