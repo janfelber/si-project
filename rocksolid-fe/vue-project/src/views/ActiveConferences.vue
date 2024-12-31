@@ -1,6 +1,6 @@
 <template>
 
-  <table class="conferences-table">
+  <table class="conferences-table" v-if="activeConferences.length > 0">
     <thead>
     <tr>
       <th
@@ -18,10 +18,13 @@
     <td class="cell" style="width: 5.452637%;">{{ conference.name }}</td>
     <td class="cell" style="width: 5.452637%;">{{this.formatDate(conference.datefrom) }}</td>
     <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.dateuntil) }}</td>
-    <td class="cell" style="width: 5.452637%;"><v-btn @click="viewConference(conference.id)">Náhľad</v-btn></td>
+    <td class="cell" style="width: 5.452637%;">
+      <v-btn @click="viewConference(conference.id)">Náhľad</v-btn>
+    </td>
   </tr>
   </tbody>
   </table>
+  <p v-else class="empty-message">Žiadne aktívne konferencie neboli nájdené.</p>
 </template>
 <script>
 import axios from 'axios';
@@ -34,6 +37,10 @@ export default {
     }
   },
   methods : {
+    viewConference(id){
+      // presmerovanie na stránku detailu konferencie
+      this.$router.push({ name: 'conferenceDetail', params: { id: id }});
+    },
     formatDate(date) {
       try {
         const formatter = new Intl.DateTimeFormat('en-GB');
@@ -42,10 +49,7 @@ export default {
         console.log("Invalid date format for date : " + date + " " + error);
       }
     },
-    viewConference(conferenceID) {
-      // presmerovanie na stránku detailu konferencie
-      this.$router.push({ name: 'ConferenceDetail', params: { id: conferenceID } });
-    },
+
     async getConferences() {
       try {
         const token = localStorage.getItem("token");
