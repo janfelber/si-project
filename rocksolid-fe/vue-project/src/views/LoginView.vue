@@ -60,7 +60,7 @@ export default {
         });
         console.log(response);
         localStorage.setItem('token', response.data.access_token);
-        this.$router.push('main');
+        this.$router.push(response.data.redirect_url);
       } catch (err) {
         this.error = "Login failed. Please check your credentials.";
       }
