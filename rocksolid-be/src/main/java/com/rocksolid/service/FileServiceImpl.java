@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,23 +32,28 @@ public class FileServiceImpl implements FileService{
   }
 
   @Override
-  public article saveFile(MultipartFile file, Long userID) throws IOException {
+  public article saveFile(MultipartFile file,
+      String fileName,
+      String coAuthors,
+      String articleDescription,
+      String keyWords) throws IOException {
 
+    Long userID = getCurrentUserId();
     User user = userRepository.findById(userID)
         .orElseThrow(() -> new RuntimeException("User not found"));
     // Uloženie súboru do filesystemu
-    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-    Path filePath = Paths.get(fileStoragePath, fileName);
+    String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    Path filePath = Paths.get(fileStoragePath, storedFileName);
     Files.createDirectories(filePath.getParent());
     Files.write(filePath, file.getBytes());
 
-    // Uloženie cesty do databázy
+    // Uloženie cesty do databázy 
     article fileEntity = new article();
     fileEntity.setArticle_name(fileName);
     fileEntity.setFile_path(filePath.toString());
-    fileEntity.setCo_authors("test");
-    fileEntity.setArticle_description("test_des");
-    fileEntity.setKey_words("keywords");
+    fileEntity.setCo_authors(coAuthors);
+    fileEntity.setArticle_description(articleDescription);
+    fileEntity.setKey_words(keyWords);
     fileEntity.setUser(user);
     return fileRepository.save(fileEntity);
   }
@@ -59,6 +67,20 @@ public class FileServiceImpl implements FileService{
 
     // Načítanie obsahu súboru
     return Files.readAllBytes(filePath);
+  }
+
+  public Long getCurrentUserId() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new IllegalStateException("No authenticated user found");
+    }
+
+    Object principal = authentication.getPrincipal();
+    if (principal instanceof UserDetails) {
+      return ((User) principal).getId();
+    } else {
+      throw new IllegalStateException("Authentication principal is not an instance of UserDetails");
+    }
   }
 
 }

@@ -27,6 +27,28 @@
                     dense
                 ></v-text-field>
 
+              <v-text-field
+                  v-model="coAuthors"
+                  label="coAthors"
+                  outlined
+                  dense
+              ></v-text-field>
+
+              <v-text-field
+                  v-model="articleDescription"
+                  label="articleDescription"
+                  outlined
+                  dense
+              ></v-text-field>
+
+              <v-text-field
+                  v-model="keyWords"
+                  label="keyWords"
+                  outlined
+                  dense
+              ></v-text-field>
+
+
                 <v-file-input
                     prepend-icon="mdi-upload"
                     v-model="file"
@@ -54,7 +76,7 @@
             </v-col>
 
             <v-col cols="12">
-              <v-btn @click="uploadFile" block>
+              <v-btn @click="uploadFile()" block>
                 Nahrať prácu
               </v-btn>
             </v-col>
@@ -68,6 +90,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
 
   name : 'StudentView',
@@ -75,26 +99,75 @@ export default {
     return {
       firstname: '',
       lastname: '',
+      coAuthors: '',
+      articleDescription: '',
+      keyWords: '',
       file: null,
       fileName: '',
       selectedOption: '',
     };
   },
   methods: {
-    uploadFile() {
-      if (this.file && this.fileName) {
-        alert(`Súbor: ${this.fileName} bol úspešne nahratý!`);
-        this.firstname = '';
-        this.lastname = '';
-        this.file = null;
-        this.fileName = '';
-        this.selectedOption = '';
-      } else {
-        alert('Prosím, vyberte súbor a zadajte názov práce.');
+    async uploadFile() {
+      if (!this.firstname || !this.lastname || !this.file || !this.fileName) {
+        alert('Prosím, vyplňte všetky údaje a vyberte súbor.');
+        return;
+      }
+      // if (this.file && this.fileName) {
+      //   alert(`Súbor: ${this.fileName} bol úspešne nahratý!`);
+      //   this.firstname = '';
+      //   this.lastname = '';
+      //   this.file = null;
+      //   this.fileName = '';
+      //   this.selectedOption = '';
+      // } else {
+      //   alert('Prosím, vyberte súbor a zadajte názov práce.');
+      // }
+
+      try{
+        const formData = new FormData();
+        formData.append('file', this.file); // Pridať súbor
+        // formData.append('userId', '7'); // Pridať meno
+        formData.append('fileName', this.fileName); // Pridať názov práce
+        formData.append('coAuthors', this.coAuthors); // Pridať spoluautorov
+        formData.append('articleDescription', this.articleDescription); // Pridať popis
+        formData.append('keyWords', this.keyWords); // Pridať kľúčové slová
+
+
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}:`, value);
+        }
+
+
+        const token = localStorage.getItem("token")
+        console.log(localStorage.getItem("token"));
+        const response = await axios.post("http://localhost:8080/api/v1/file/upload",formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+
+
+
+        // if (response.status === 200) {
+        //   alert('Súbor bol úspešne nahratý!');
+        //   // Vyprázdniť formu po úspešnom nahraní
+        //   this.firstname = '';
+        //   this.lastname = '';
+        //   this.file = null;
+        //   this.fileName = '';
+        //   this.selectedOption = '';
+
+        // }
+      }catch (error) {
+        console.error("Chyba pri nahrávaní súboru", error);
+        alert('Došlo k chybe pri nahrávaní súboru.');
+
       }
     },
-  },
-
+  }
 }
 </script>
 

@@ -30,9 +30,14 @@ public class FileController {
   private final FileService fileService;
 
   @PostMapping("/upload")
-  public ResponseEntity<article> uploadFile(@RequestParam("file") MultipartFile file,@RequestParam("userId") Long userId) {
+  public ResponseEntity<article> uploadFile(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("fileName") String fileName,
+      @RequestParam("coAuthors") String coAuthors,
+      @RequestParam("articleDescription") String articleDescription,
+      @RequestParam("keyWords") String keyWords) {
     try {
-      article savedFile = fileService.saveFile(file, userId);
+      article savedFile = fileService.saveFile(file, fileName, coAuthors, articleDescription, keyWords);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
