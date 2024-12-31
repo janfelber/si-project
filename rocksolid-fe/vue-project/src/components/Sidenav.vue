@@ -35,17 +35,37 @@ export default {
             active-class="active"
             exact
         >
-    <span class="sidenav-link-icon">
-      <v-icon size="small">{{ data.icon }}</v-icon> <!-- Používanie Vuetify ikon -->
-    </span>
+          <span class="sidenav-link-icon">
+            <v-icon size="small">{{ data.icon }}</v-icon> <!-- Používanie Vuetify ikon -->
+          </span>
           <span class="sidenav-link-text">{{ data.label }}</span>
         </router-link>
+      </li>
+      <li>
+        <div class="edit-profile">
+          <router-link
+              to="/user"
+              class="sidenav-nav-link"
+              active-class="active"
+              exact
+          >
+            <span class="sidenav-link-icon">
+              <v-icon>mdi-account</v-icon>
+            </span>
+          </router-link>
+        </div>
       </li>
     </ul>
   </div>
 </template>
 
 <style scoped>
+
+.edit-profile {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
 
 .sidenav {
   background: #FFFFFF;

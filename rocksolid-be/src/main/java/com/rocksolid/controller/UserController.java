@@ -1,5 +1,6 @@
 package com.rocksolid.controller;
 
+import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.UserResponseDto;
 import com.rocksolid.module.User;
 import com.rocksolid.service.UserService;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final CurrentUserService currentUserService;
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('admin:delete')")
@@ -41,5 +43,10 @@ public class UserController {
     @PatchMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userData) {
        return userService.updateUser(id, userData);
+    }
+
+    @GetMapping("/current-user")
+    public Long getCurrentUserId() {
+        return currentUserService.getCurrentUserId();
     }
 }
