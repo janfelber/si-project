@@ -77,6 +77,7 @@ const router = createRouter({
     {
       path: '/admin',
       component: AdminLayout,
+      meta: { requiresAdmin: true },
       children: [
         {
           path: 'users',
