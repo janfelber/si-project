@@ -74,10 +74,23 @@ public class AuthenticationService {
         revokeAllUsersTokens(user);
         saveUserToken(user, jwtToken);
 
+        final String redirectUrl = determineRedirectUrl(user);
+
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
+                .redirectUrl(redirectUrl)
                 .build();
+    }
+
+    private String determineRedirectUrl(final User user) {
+        if (user.getRole() == Role.ADMIN) {
+            return "/admin/users";
+        } else if (user.getRole() == Role.STUDENT || user.getRole() == Role.REVIEWER) {
+            return "/main";
+        } else {
+            return "/main";
+        }
     }
 
 
