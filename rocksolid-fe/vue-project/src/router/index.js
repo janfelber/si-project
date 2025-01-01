@@ -14,6 +14,7 @@ import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
 import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
+import GradingView from "@/views/GradingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -95,6 +96,17 @@ const router = createRouter({
           path: '',
           name: 'register',
           component: RegisterView,
+        },
+      ],
+    },
+    {
+      path: '/grade',
+      component: GradingView,
+      children: [
+        {
+          path: '',
+          name: 'grade',
+          component: GradingView,
         },
       ],
     },
