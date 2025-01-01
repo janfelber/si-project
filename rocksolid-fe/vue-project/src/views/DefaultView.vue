@@ -98,10 +98,7 @@ export default {
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
-  methods: {
-    router() {
-      return router
-    }
+    },
   },
   computed: {
     routeName() {
