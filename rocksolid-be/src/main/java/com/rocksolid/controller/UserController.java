@@ -49,4 +49,10 @@ public class UserController {
     public Long getCurrentUserId() {
         return currentUserService.getCurrentUserId();
     }
+
+    @GetMapping("/me")
+    public UserResponseDto getCurrentUser() {
+        return userService.getUserById(currentUserService.getCurrentUserId()).orElseThrow();
+    }
+
 }
