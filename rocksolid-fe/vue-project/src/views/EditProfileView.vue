@@ -1,15 +1,4 @@
 <template>
-  <header>
-    <nav class="header-nav">
-      <div class="active-router">
-        <span class="router-label">Users</span>
-      </div>
-      <div class="user-item">
-        <span> {{ this.user_data.first_name }} </span>
-      </div>
-    </nav>
-    <div class="vertical-divider"></div>
-  </header>
   <div class="v-col-7">
     <div class="card">
       <v-card-title class="card-title"> Basic info</v-card-title>
@@ -142,21 +131,6 @@ name: "EditProfileView",
   box-sizing: border-box;
 }
 
-.form-group .form-text {
-  margin-left: 10rem;
-  font-size: 14px;
-  color: #9aa0a3;
-}
-
-.form-text {
-  align-items: flex-start;
-  color: #9aa0a3;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  font-size: 14px;
-}
-
 
 .form-input {
   flex: 1;
@@ -207,33 +181,9 @@ hr {
 
 }
 
-.user-item {
-  padding-left: .375rem;
-}
-
 label {
   width: 10rem;
   align-self: center;
-}
-
-.header-nav {
-  margin-left: 1.75rem;
-  display: flex;
-}
-
-.vertical-divider {
-  width: 1px;
-  height: 35px;
-  background-color: #d8d8f0;
-  margin: 0 1rem;
-}
-
-header {
-  background-color: white;
-  display: flex;
-  height: 60px;
-  align-items: center;
-  border-bottom: 1px solid #d8d8f0;
 }
 
 </style>
