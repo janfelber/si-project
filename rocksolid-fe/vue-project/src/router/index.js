@@ -12,6 +12,7 @@ import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
+import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 
 const router = createRouter({
@@ -40,7 +41,7 @@ const router = createRouter({
           meta: { requiresStudent: true },
         },
         {
-          path: '/activeConferences',
+          path: '/active-conferences',
           name: 'activeConferences',
           component: ActiveConferences,
           meta: { requiresStudent: true },
@@ -49,6 +50,12 @@ const router = createRouter({
           path: '/user',
           name: 'EditProfileView',
           component: EditProfileView,
+        },
+        {
+          path: '/conference/:id',
+          name: 'conferenceDetail',
+          component: ConferenceDetail,
+          props: true
         },
       ],
     },

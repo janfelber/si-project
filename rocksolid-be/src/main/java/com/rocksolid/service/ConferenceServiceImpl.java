@@ -55,6 +55,20 @@ public class ConferenceServiceImpl  implements ConferenceService {
         return conferenceRepository.findByStatusTrue();  // Získanie aktívnych konferencií
     }
 
+    @Override
+    public Optional<ConferenceResponseDto> getConferenceById(final Long id) {
+        return conferenceRepository.findById(id)
+            .map(conference -> new ConferenceResponseDto(
+            conference.getId(),
+            conference.getArticle_id(),
+            conference.getDatefrom(),
+            conference.getDateuntil(),
+            conference.getForm_id(),
+            conference.getYear(),
+            conference.getName(),
+            conference.getStatus()
+        ));
+    }
 
     public conference updateConference(Long id, conference conference){
         Optional<conference> conf = conferenceRepository.findById(id);
