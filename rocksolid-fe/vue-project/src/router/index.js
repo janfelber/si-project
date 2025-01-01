@@ -14,6 +14,7 @@ import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
 import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
+import GradingView from "@/views/GradingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,13 +27,19 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView,
-          meta: { requiresStudent: true },
+          meta: {
+            requiresStudent: true,
+            title: 'Home'
+          },
         },
         {
           path: 'main',
           name: 'main',
           component: MainView,
-          meta: { requiresStudent: true },
+          meta: {
+            requiresStudent: true,
+            title: 'Main'
+          },
         },
         {
           path: '/student',
@@ -44,18 +51,29 @@ const router = createRouter({
           path: '/active-conferences',
           name: 'activeConferences',
           component: ActiveConferences,
-          meta: { requiresStudent: true },
+          meta: {
+            requiresStudent: true,
+            title: 'Active Conferences'
+          },
         },
         {
           path: '/user',
           name: 'EditProfileView',
           component: EditProfileView,
+          meta: {
+            requiresStudent: true,
+            title: 'Edit Profile'
+          }
         },
         {
           path: '/conference/:id',
           name: 'conferenceDetail',
           component: ConferenceDetail,
-          props: true
+          props: true,
+          meta: {
+            requiresStudent: true,
+            // TODO title should be the conference name
+          }
         },
       ],
     },
@@ -78,6 +96,17 @@ const router = createRouter({
           path: '',
           name: 'register',
           component: RegisterView,
+        },
+      ],
+    },
+    {
+      path: '/grade',
+      component: GradingView,
+      children: [
+        {
+          path: '',
+          name: 'grade',
+          component: GradingView,
         },
       ],
     },
