@@ -39,12 +39,15 @@
             </div>
             <hr class="devider">
             <div class="wrapper">
-              <a href="" class="logout">
+              <router-link
+                  to="/login"
+                  class="logout"
+                  @click.native="logout"
+              >
                 <span style="font-size: 12px">Odhlásiť sa</span>
                 <v-icon size="small">mdi-exit-to-app</v-icon>
-              </a>
+              </router-link>
             </div>
-
           </div>
         </div>
       </div>
@@ -97,6 +100,20 @@ export default {
         console.log('User:', userResponse.data.university);
       } catch (error) {
         console.error("Failed to fetch user:", error);
+      }
+    },
+    async logout() {
+      try {
+        await axios.post('http://localhost:8080/api/v1/auth/logout', null, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          }
+        });
+
+        localStorage.removeItem('token');
+        console.log("User logged out");
+      } catch (error) {
+        console.error("Failed to logout:", error);
       }
     },
   },
