@@ -97,7 +97,6 @@ export default {
         this.fullName = userResponse.data.first_name + ' ' + userResponse.data.last_name;
         this.email = userResponse.data.email;
         this.universityName = userResponse.data.university;
-        console.log('User:', userResponse.data.university);
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
@@ -111,7 +110,6 @@ export default {
         });
 
         localStorage.removeItem('token');
-        console.log("User logged out");
       } catch (error) {
         console.error("Failed to logout:", error);
       }
