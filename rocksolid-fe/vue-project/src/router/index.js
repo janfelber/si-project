@@ -143,6 +143,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const userRole = getRoleFromToken();
 
+  if (to.path === '/login' || to.path === '/register') {
+    return next();
+  }
+
   if (to.meta.requiresAdmin && userRole !== 'ADMIN') {
     return next('/');
   }
