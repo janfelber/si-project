@@ -1,10 +1,15 @@
 package com.rocksolid.controller;
 
 
+import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ConferenceRequestDto;
 import com.rocksolid.dto.ConferenceResponseDto;
+import com.rocksolid.module.User;
 import com.rocksolid.module.conference;
+import com.rocksolid.repository.UserConferenceRepository;
 import com.rocksolid.service.ConferenceService;
+import com.rocksolid.service.UserConferenceService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +25,9 @@ import java.util.Optional;
 public class ConferenceController {
 
     private final ConferenceService conferenceService;
+    private final UserConferenceService userConferenceService;
+    private final CurrentUserService currentUserService;
+    private final UserConferenceRepository userConferenceRepository;
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('admin:read')")
@@ -49,4 +57,12 @@ public class ConferenceController {
     public List<conference> getActiveConferences() {
         return conferenceService.getActiveConferences();
     }
+
+    @PostMapping("/addUserToConference")
+    public ResponseEntity<String> addUserToConference(@RequestParam Long conferenceId) {
+        userConferenceService.addUserToConference(currentUserService.getCurrentUserId(), conferenceId);
+        return ResponseEntity.ok("User added to conference successfully");
+    }
+
+
 }
