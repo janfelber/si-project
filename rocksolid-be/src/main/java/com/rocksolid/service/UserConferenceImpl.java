@@ -8,20 +8,16 @@ import com.rocksolid.module.conference;
 import com.rocksolid.repository.ConferenceRepository;
 import com.rocksolid.repository.UserConferenceRepository;
 import com.rocksolid.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserConferenceImpl implements UserConferenceService {
 
 
   private final UserRepository userRepository;
   private final UserConferenceRepository userConferenceRepository;
   private final ConferenceRepository conferenceRepository;
-
-  public UserConferenceImpl(UserRepository userRepository, UserConferenceRepository userConferenceRepository, ConferenceRepository conferenceRepository) {
-    this.userRepository = userRepository;
-    this.userConferenceRepository = userConferenceRepository;
-    this.conferenceRepository = conferenceRepository;
-  }
 
   public void addUserToConference(Long userId, Long conferenceId) {
     User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
