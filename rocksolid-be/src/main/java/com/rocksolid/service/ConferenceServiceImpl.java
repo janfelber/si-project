@@ -28,10 +28,8 @@ public class ConferenceServiceImpl  implements ConferenceService {
                 .stream()
                 .map(conference -> new ConferenceResponseDto(
                         conference.getId(),
-                        conference.getArticle_id(),
                         conference.getDatefrom(),
                         conference.getDateuntil(),
-                        conference.getForm_id(),
                         conference.getYear(),
                         conference.getName(),
                         conference.getStatus()
@@ -40,10 +38,8 @@ public class ConferenceServiceImpl  implements ConferenceService {
 
     public ResponseEntity<Void> createConference (ConferenceRequestDto request){
         conference conference = new conference();
-        conference.setArticle_id(request.getArticle_id());
         conference.setDatefrom(request.getDate_from());
         conference.setDateuntil(request.getDate_to());
-        conference.setForm_id(request.getForm_id());
         conference.setYear(request.getYear());
         conference.setName(request.getName());
         conference.setStatus(true);
@@ -60,10 +56,8 @@ public class ConferenceServiceImpl  implements ConferenceService {
         return conferenceRepository.findById(id)
             .map(conference -> new ConferenceResponseDto(
             conference.getId(),
-            conference.getArticle_id(),
             conference.getDatefrom(),
             conference.getDateuntil(),
-            conference.getForm_id(),
             conference.getYear(),
             conference.getName(),
             conference.getStatus()
@@ -74,13 +68,11 @@ public class ConferenceServiceImpl  implements ConferenceService {
         Optional<conference> conf = conferenceRepository.findById(id);
         if(conf.isPresent()){
             conference existingConference = conf.get();
-            existingConference.setForm_id(conference.getForm_id());
             existingConference.setYear(conference.getYear());
             existingConference.setName(conference.getName());
             existingConference.setStatus(conference.getStatus());
             existingConference.setDateuntil(conference.getDateuntil());
             existingConference.setDatefrom(conference.getDatefrom());
-            existingConference.setArticle_id(conference.getArticle_id());
             return conferenceRepository.save(existingConference);
         }
         return null;

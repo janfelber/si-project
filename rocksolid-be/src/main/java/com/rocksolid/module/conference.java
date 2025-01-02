@@ -19,12 +19,6 @@ public class conference {
 
     private int year;
 
-    //todo - add foreign key
-    private Long article_id;
-
-    //todo - add foreign key
-    private Long form_id;
-
     private String datefrom;
 
     private String dateuntil;
