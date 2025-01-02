@@ -15,7 +15,11 @@ import lombok.NoArgsConstructor;
 public class article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
+
+    private String first_name;
+
+    private String last_name;
 
     private String article_name;
 
@@ -25,8 +29,12 @@ public class article {
 
     private String key_words;
 
+    private String section;
+
     //TODO - add column to storing file
     // private String article_file;
+
+    private String file_path;
 
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")

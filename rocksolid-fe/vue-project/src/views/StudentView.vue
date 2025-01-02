@@ -1,6 +1,4 @@
-
 <template>
-
       <v-app>
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
@@ -19,13 +17,33 @@
                   required
               ></v-text-field>
 
-
                 <v-text-field
                     v-model="fileName"
                     label="Názov práce"
                     outlined
                     dense
                 ></v-text-field>
+
+              <v-text-field
+                  v-model="coAuthors"
+                  label="coAthors"
+                  outlined
+                  dense
+              ></v-text-field>
+
+              <v-text-field
+                  v-model="articleDescription"
+                  label="articleDescription"
+                  outlined
+                  dense
+              ></v-text-field>
+
+              <v-text-field
+                  v-model="keyWords"
+                  label="keyWords"
+                  outlined
+                  dense
+              ></v-text-field>
 
                 <v-file-input
                     prepend-icon="mdi-upload"
@@ -35,10 +53,8 @@
                     outlined
                     dense
                 ></v-file-input>
-
             </v-col>
             <v-col>
-
               <v-container>
                 <v-radio-group v-model="selectedOption" row>
                   <v-radio label="Sekcia1" value="Sekcia1"></v-radio>
@@ -54,7 +70,7 @@
             </v-col>
 
             <v-col cols="12">
-              <v-btn @click="uploadFile" block>
+              <v-btn @click="uploadFile()" block>
                 Nahrať prácu
               </v-btn>
             </v-col>
@@ -68,6 +84,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
 
   name : 'StudentView',
@@ -75,26 +93,66 @@ export default {
     return {
       firstname: '',
       lastname: '',
+      coAuthors: '',
+      articleDescription: '',
+      keyWords: '',
       file: null,
       fileName: '',
       selectedOption: '',
     };
   },
   methods: {
-    uploadFile() {
-      if (this.file && this.fileName) {
-        alert(`Súbor: ${this.fileName} bol úspešne nahratý!`);
-        this.firstname = '';
-        this.lastname = '';
-        this.file = null;
-        this.fileName = '';
-        this.selectedOption = '';
-      } else {
-        alert('Prosím, vyberte súbor a zadajte názov práce.');
+    async uploadFile() {
+      if (!this.firstname || !this.lastname || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
+        alert('Prosím, vyplňte všetky údaje');
+        return;
+      }
+
+      if(!this.file) {
+        alert('Prosím, vyberte súbor.');
+        return;
+      }
+
+      try{
+        const formData = new FormData();
+        formData.append('file', this.file);
+        formData.append('fileName', this.fileName);
+        formData.append('coAuthors', this.coAuthors);
+        formData.append('articleDescription', this.articleDescription);
+        formData.append('keyWords', this.keyWords);
+        formData.append('section', this.selectedOption);
+        formData.append('firstName', this.firstname);
+        formData.append('lastName', this.lastname);
+
+        const token = localStorage.getItem("token")
+        console.log(localStorage.getItem("token"));
+        const response = await axios.post("http://localhost:8080/api/v1/file/upload",formData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+
+        if (response.status === 200) {
+          alert('Súbor bol úspešne nahratý!');
+          this.firstname = '';
+          this.lastname = '';
+          this.file = null;
+          this.fileName = '';
+          this.selectedOption = '';
+          this.coAuthors = '';
+          this.articleDescription = '';
+          this.keyWords = '';
+
+        }
+      }catch (error) {
+        console.error("Chyba pri nahrávaní súboru", error);
+        alert('Došlo k chybe pri nahrávaní súboru.');
+
       }
     },
-  },
-
+  }
 }
 </script>
 
