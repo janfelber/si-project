@@ -28,7 +28,7 @@ public class ConferenceController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('student:read') and hasAuthority('reviewer:read')")
     public Optional<ConferenceResponseDto> getConference(@PathVariable final Long id) {
         return conferenceService.getConferenceById(id);
     }
