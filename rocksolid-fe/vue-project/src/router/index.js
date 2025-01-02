@@ -1,5 +1,6 @@
 import { getRoleFromToken } from '@/helper/getRoleFromToken.js';
 import { createRouter, createWebHistory } from 'vue-router'
+import { jwtDecode } from "jwt-decode";
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
 import MainView from "@/views/MainView.vue";
