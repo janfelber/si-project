@@ -3,15 +3,16 @@ import { navBarData } from '@/data/navbarData.js';
 
 export default {
   name: "SideNav",
-  props: {
-    layout: {
-      type: String,
-      required: true,
-    },
+  methods: {
+    getRoleFromLocalStorage() {
+      return localStorage.getItem('role');
+    }
   },
   computed: {
     filteredNavBarData() {
-      return navBarData.filter(item => item.layout === this.layout);
+      const userRole = this.getRoleFromLocalStorage();
+
+      return navBarData.filter(item => item.role.includes(userRole));
     },
   },
 };

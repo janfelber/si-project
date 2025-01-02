@@ -7,6 +7,7 @@ export function getRoleFromToken() {
   try {
     let decoded = jwtDecode(token);
     const role = decoded.role ? decoded.role.trim() : 'none';
+    localStorage.setItem('role', role);
     return role || 'none';
   } catch (e) {
     console.error('Invalid token:', e);
