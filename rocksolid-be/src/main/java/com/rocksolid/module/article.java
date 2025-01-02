@@ -31,4 +31,8 @@ public class article {
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "\"conference_id\"")
+    private conference conference;
 }
