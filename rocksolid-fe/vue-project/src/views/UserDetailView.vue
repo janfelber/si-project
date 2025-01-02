@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header style="padding-left: 11.5rem">
     <nav class="header-nav">
       <div class="active-router">
         <span class="router-label">Users</span>
@@ -12,8 +12,39 @@
     <v-icon @click="deleteUser(this.userID)">
       mdi-trash-can-outline
     </v-icon>
+    <div class="vertical-divider"></div>
+    <div class="spacer"></div>
+    <div class="vertical-divider"></div>
+    <div class="user-container">
+      <div class="user-menu">
+        <button class="user-menu-button" @click="toggleDropdown">
+          <div class="user-avatar"></div>
+          <div class="user-info">
+            <div class="user-details">
+              <span class="name">{{ fullName }}</span>
+              <span class="email">{{ admin_email }}</span>
+            </div>
+          </div>
+        </button>
+        <div class="dropdown-content" v-if="isDropdownOpen">
+          <div class="wrapper">
+            <router-link to="/user" class="user-detail" active-class="active" exact>
+              <span style="font-size: 12px">Profil</span>
+              <v-icon size="small">mdi-account</v-icon>
+            </router-link>
+          </div>
+          <hr class="devider">
+          <div class="wrapper">
+            <router-link to="/login" class="logout" @click.native="logout">
+              <span style="font-size: 12px">Odhlásiť sa</span>
+              <v-icon size="small">mdi-exit-to-app</v-icon>
+            </router-link>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
-  <div class="v-col-7">
+  <div class="v-col-7" style="padding-left: 12.5rem">
     <div class="card">
       <v-card-title class="card-title"> Basic info</v-card-title>
       <div class="card-body">
@@ -74,6 +105,9 @@ export default {
       last_name: "",
       email: "",
       isReviewer: false,
+      isDropdownOpen: false,
+      fullName: "",
+      admin_email: ""
     }
   },
   methods: {
@@ -87,6 +121,9 @@ export default {
             this.error = 'Používateľa sa nepodarilo odstrániť';
             console.log(error)
           });
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
     },
     async getUserData() {
       try {
@@ -102,6 +139,19 @@ export default {
         this.last_name = this.user_data.last_name;
         this.email = this.user_data.email;
         this.isReviewer = this.user_data.role === "REVIEWER";
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    },
+    async fetchCurrentUser() {
+      try {
+        const userResponse = await axios.get('http://localhost:8080/api/v1/user/me', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        this.fullName = `${userResponse.data.first_name} ${userResponse.data.last_name}`;
+        this.admin_email = userResponse.data.email;
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
@@ -131,6 +181,7 @@ export default {
   },
   mounted() {
     this.getUserData();
+    this.fetchCurrentUser();
   }
 }
 </script>
@@ -164,6 +215,9 @@ export default {
   font-size: 14px;
 }
 
+.spacer {
+  flex-grow: 1;
+}
 
 .form-input {
   flex: 1;
@@ -241,6 +295,109 @@ header {
   height: 60px;
   align-items: center;
   border-bottom: 1px solid #d8d8f0;
+}
+
+.university-logo {
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  padding-left: 5rem;
+  margin-left: auto;
+}
+
+.user-menu-button {
+  align-items: center;
+  border-radius: .25rem;
+  display: flex;
+  padding: .25rem;
+  width: 16rem;
+  border-color: transparent;
+  background-color: white;
+  box-sizing: border-box;
+
+  &:hover {
+    background-color: rgba(228, 226, 226, 0.918);
+  }
+}
+
+.dropdown-content {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  padding: .25rem 0;
+  gap: .25rem;
+  border-radius: .25rem;
+  width: 16rem;
+}
+
+.wrapper {
+  padding: 0 .25rem;
+}
+
+.user-detail{
+  border-radius: .25rem;
+  align-items: center;
+  color: #333638;
+  display: flex;
+  justify-content: space-between;
+  padding: .25rem;
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba(228, 226, 226, 0.918);
+  }
+}
+
+.logout {
+  border-radius: .25rem;
+  align-items: center;
+  color: #333638;
+  display: flex;
+  justify-content: space-between;
+  padding: .25rem;
+  text-decoration: none;
+
+  &:hover {
+    color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+  }
+}
+
+.user-menu {
+  margin-right: 2rem;
+  position: relative;
+}
+
+.devider {
+  margin: 0.25rem 0;
+  border-top: 1px solid #d8d8f0;
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 12rem;
+  text-align: start;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.email {
+  font-size: 10px;
+}
+
+.name {
+  font-size: 12px;
+  font-weight: bold;
 }
 
 </style>

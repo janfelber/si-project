@@ -1,32 +1,32 @@
 export const navBarData = [
     {
-        routerLink: '/',
+        routerLink: '/web/home',
         icon: 'mdi-home-outline',
         label: 'Home',
-        layout: 'default'
+        role: ["STUDENT", "REVIEWER"]
     },
     {
-        routerLink: '/student',
+        routerLink: '/web/student',
         icon: 'mdi-upload',
         label: 'Upload',
-        layout: 'default'
+        role: ["STUDENT", "REVIEWER"]
     },
     {
-        routerLink: '/active-conferences',
+        routerLink: '/web/active-conferences',
         icon: 'mdi-presentation',
         label: 'Active Conferences',
-        layout: 'default'
+        role: ["STUDENT", "REVIEWER"]
     },
     {
         routerLink: '/admin/users',
         icon: 'mdi-account-multiple-outline',
         label: 'Users',
-        layout: 'admin'
+        role: ["ADMIN"]
     },
     {
         routerLink: '/admin/conference',
         icon: 'mdi-account-multiple-outline',
         label: 'Conferences',
-        layout: 'admin'
+        role: ["ADMIN"]
     },
 ];
