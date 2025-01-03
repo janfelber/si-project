@@ -10,6 +10,28 @@
     </nav>
     <div class="vertical-divider"></div>
     <div class="spacer"></div>
+    <div class="notification" @click="toggleNotification">
+      <v-icon>mdi-bell</v-icon>
+      <span v-if="unreadCount > 0" class="notification-count">{{ unreadCount }}</span>
+      <div class="notification-content" v-if="isNotificationOpen">
+        <div v-if="notifications.length === 0" class="no-notifications">
+          <span>Ziadne notifikacie</span>
+        </div>
+        <div
+            v-for="(notification, index) in notifications"
+            :key="notification.id"
+            class="notification-item"
+            :class="{ 'unread': !notification.read }"
+            @click="markAsRead(notification.id)"
+        >
+          <div class="notification-text">
+            <span v-if="!notification.read" class="blue-dot" title="Mark as read"></span>
+            <p>{{ notification.message }}</p>
+          </div>
+          <span class="created-at">{{ formatTimestamp(notification.createdAt) }}</span>
+        </div>
+      </div>
+    </div>
     <div class="vertical-divider"></div>
     <div class="user-container">
       <div class="user-menu">
@@ -50,9 +72,11 @@ import axios from 'axios';
 
 const route = useRoute();
 const isDropdownOpen = ref(false);
+const isNotificationOpen = ref(false);
 const fullName = ref('');
 const email = ref('');
 const universityLogo = ref('');
+const notifications = ref([]);
 
 const routeName = computed(() => route.meta.title || '');
 const fetchUser = async () => {
@@ -70,6 +94,36 @@ const fetchUser = async () => {
   }
 };
 
+const fetchNotifications = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/v1/notification/get/unread', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    notifications.value = response.data;
+  } catch (error) {
+    console.error('Chyba pri získavaní notifikácií:', error);
+  }
+};
+
+const markAsRead = async (notificationId) => {
+  try {
+    await axios.put(`http://localhost:8080/api/v1/notification/mark/read/${notificationId}`, null, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    fetchNotifications();
+  } catch (error) {
+    console.error('Failed to mark notification as read:', error);
+  }
+};
+
+const unreadCount = computed(() => {
+  return notifications.value.filter(notification => !notification.read).length;
+});
+
 
 const getUniversityLogo = (universityName) => {
   switch (universityName) {
@@ -86,12 +140,21 @@ const getUniversityLogo = (universityName) => {
 
 onMounted(() => {
   fetchUser();
+  fetchNotifications();
 });
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
+const toggleNotification = () => {
+  isNotificationOpen.value = !isNotificationOpen.value;
+};
+
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return `${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+};
 
 const logout = async () => {
   try {
@@ -176,6 +239,114 @@ header {
   &:hover {
     background-color: rgba(228, 226, 226, 0.918);
   }
+}
+
+.notification {
+  position: relative;
+}
+
+p {
+  margin: 0;
+}
+
+.notification-content {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  padding: 0.5rem;
+  gap: 0.25rem;
+  border-radius: 0.25rem;
+  width: 20rem;
+  margin-top: 0.5rem;
+}
+
+.blue-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: blue;
+  margin-right: 0.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.blue-dot:hover {
+  width: 14px;
+  height: 14px;
+  border: 2px solid blue;
+}
+
+.blue-dot:hover::after {
+  content: "Mark as read";
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: black;
+  color: white;
+  padding: 2px 6px;
+  font-size: 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  opacity: 1;
+  visibility: visible;
+  z-index: 10;
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #d8d8f0;
+}
+
+.notification-text {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-grow: 1;
+  align-items: center;
+  font-size: 13px;
+}
+
+.created-at {
+  font-size: 10px;
+  color: gray;
+  margin-left: 1rem;
+  white-space: nowrap;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.unread {
+  font-weight: bold;
+}
+
+.notification-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-notifications {
+  text-align: center;
+  color: gray;
+  font-size: 12px;
 }
 
 .dropdown-content {
