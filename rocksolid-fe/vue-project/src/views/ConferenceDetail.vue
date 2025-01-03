@@ -3,6 +3,14 @@
     <h1>Detail konferencie</h1>
     <h1>{{this.conference_data.name}}</h1>
     <h1>{{this.conference_data.status}}</h1>
+
+    <v-btn
+        class="text-none font-weight-regular"
+        prepend-icon="mdi-account-group"
+        text="Pirhlasenie"
+        variant="tonal"
+        @click="addUserToConference()"
+    ></v-btn>
   </div>
 </template>
 
@@ -26,7 +34,7 @@ export default {
       try {
         const token = localStorage.getItem("token")
         const response = await axios.get("http://localhost:8080/api/v1/conference/" + this.id, {
-           headers: {
+          headers: {
             Authorization: `Bearer ${token}`
           }
         });
@@ -36,10 +44,22 @@ export default {
       } catch (error) {
         console.error("Failed to fetch conference details:", error);
       }
-    }
+    },
+    async addUserToConference() {
+      try {
+        const token = localStorage.getItem("token")
+        const conferenceId = this.id
+        const response = await axios.post(`http://localhost:8080/api/v1/conference/addUserToConference?conferenceId=${conferenceId}`,null, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } catch (error) {
+        console.error("Failed to fetch conference details:", error);
+      }
+    },
   },
   mounted() {
-    console.log(this.id)
     this.getConferenceDetails();
   },
 };

@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_conference", schema = "rock_solid")
-
 public class UserConference {
 
   @Id
