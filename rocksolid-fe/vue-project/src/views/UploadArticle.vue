@@ -1,5 +1,5 @@
-<template>
-      <v-app>
+<template >
+      <v-app v-if="userInConference === true">
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
         <v-container>
@@ -102,9 +102,33 @@ export default {
       fileName: '',
       selectedOption: '',
       conferenceId: this.id,
+      userInConference: null,
     };
   },
   methods: {
+    async checkIfUserInConference() {
+      try {
+        const token = localStorage.getItem("token");
+        const conferenceId = this.id;
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/conference/isUserInConference?conferenceId=${conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        if (response.data === "User is in the conference") {
+          this.userInConference = true;
+        } else {
+          this.userInConference = false;
+          this.$router.push({ name: 'activeConferences', params: { id: this.id }});
+        }
+      } catch (error) {
+        console.error("Error checking user in conference:", error);
+      }
+    },
     async uploadFile() {
       if (!this.firstname || !this.lastname || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
         alert('Prosím, vyplňte všetky údaje');
@@ -158,8 +182,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.conferenceId);
-    console.log(this.id);
+    this.checkIfUserInConference();
   }
 }
 </script>
