@@ -38,9 +38,10 @@ public class FileController {
       @RequestParam("articleDescription") String articleDescription,
       @RequestParam("keyWords") String keyWords,
       @RequestParam("section") String section,
-      @RequestParam("file") MultipartFile file) {
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("conferenceId") Long conferenceId) {
     try {
-      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,section,file);
+      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,section,file, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

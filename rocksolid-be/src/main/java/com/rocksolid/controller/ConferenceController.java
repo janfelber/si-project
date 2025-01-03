@@ -64,5 +64,14 @@ public class ConferenceController {
         return ResponseEntity.ok("User added to conference successfully");
     }
 
+    @GetMapping("/isUserInConference")
+    public ResponseEntity<String> isUserInConference(@RequestParam Long conferenceId) {
+        boolean isInConference = userConferenceService.isUserInConference(currentUserService.getCurrentUserId(), conferenceId);
+        if (isInConference) {
+            return ResponseEntity.ok("User is in the conference");
+        } else {
+            return ResponseEntity.ok("User is not in the conference");
+        }
+    }
 
 }

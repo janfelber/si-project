@@ -6,7 +6,7 @@ import LoginView from "@/views/LoginView.vue";
 import MainView from "@/views/MainView.vue";
 import RegisterView from "@/views/RegisterView.vue";
 import AuthLayout from "@/views/AuthLayout.vue";
-import StudentView from '@/views/StudentView.vue';
+import UploadFile from '@/views/UploadArticle.vue';
 import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import ConferenceView from "@/views/ConferenceView.vue";
@@ -57,9 +57,10 @@ const router = createRouter({
       meta: { requiresStudent: true },
     },
     {
-      path: '/web/student',
-      name: 'student',
-      component: StudentView,
+      path: '/web/upload/:id',
+      name: 'upload',
+      component: UploadFile,
+      props: true,
       meta: { requiresStudent: true },
     },
     {

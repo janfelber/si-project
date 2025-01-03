@@ -1,5 +1,5 @@
-<template>
-      <v-app>
+<template >
+      <v-app v-if="userInConference === true">
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
         <v-container>
@@ -85,10 +85,12 @@
 
 <script>
 import axios from 'axios';
+import { th } from 'vuetify/locale';
 
 export default {
 
-  name : 'StudentView',
+  name : 'UploadArticle',
+  props: ['id'],
   data() {
     return {
       firstname: '',
@@ -99,9 +101,34 @@ export default {
       file: null,
       fileName: '',
       selectedOption: '',
+      conferenceId: this.id,
+      userInConference: null,
     };
   },
   methods: {
+    async checkIfUserInConference() {
+      try {
+        const token = localStorage.getItem("token");
+        const conferenceId = this.id;
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/conference/isUserInConference?conferenceId=${conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        if (response.data === "User is in the conference") {
+          this.userInConference = true;
+        } else {
+          this.userInConference = false;
+          this.$router.push({ name: 'activeConferences', params: { id: this.id }});
+        }
+      } catch (error) {
+        console.error("Error checking user in conference:", error);
+      }
+    },
     async uploadFile() {
       if (!this.firstname || !this.lastname || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
         alert('Prosím, vyplňte všetky údaje');
@@ -123,6 +150,7 @@ export default {
         formData.append('section', this.selectedOption);
         formData.append('firstName', this.firstname);
         formData.append('lastName', this.lastname);
+        formData.append('conferenceId', this.conferenceId);
 
         const token = localStorage.getItem("token")
         console.log(localStorage.getItem("token"));
@@ -152,6 +180,9 @@ export default {
 
       }
     },
+  },
+  mounted() {
+    this.checkIfUserInConference();
   }
 }
 </script>
