@@ -6,12 +6,6 @@ export const navBarData = [
         role: ["STUDENT", "REVIEWER"]
     },
     {
-        routerLink: '/web/student',
-        icon: 'mdi-upload',
-        label: 'Upload',
-        role: ["STUDENT", "REVIEWER"]
-    },
-    {
         routerLink: '/web/active-conferences',
         icon: 'mdi-presentation',
         label: 'Active Conferences',
