@@ -35,5 +35,13 @@ public class UserConferenceImpl implements UserConferenceService {
 
   }
 
+  public boolean isUserInConference(Long userId, Long conferenceId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    conference conference = conferenceRepository.findById(conferenceId)
+        .orElseThrow(() -> new RuntimeException("Conference not found"));
+
+    return userConferenceRepository.existsByUserAndConference(user, conference);
+  }
 
 }

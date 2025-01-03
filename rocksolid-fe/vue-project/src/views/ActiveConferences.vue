@@ -38,7 +38,6 @@ export default {
   },
   methods : {
     viewConference(id){
-      // presmerovanie na stránku detailu konferencie
       this.$router.push({ name: 'conferenceDetail', params: { id: id }});
     },
     formatDate(date) {

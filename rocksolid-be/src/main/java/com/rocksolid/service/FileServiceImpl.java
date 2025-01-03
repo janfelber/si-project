@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rocksolid.module.article;
 import com.rocksolid.module.User;
+import com.rocksolid.module.conference;
+import com.rocksolid.repository.ConferenceRepository;
 import com.rocksolid.repository.FileRepository;
 import com.rocksolid.repository.UserRepository;
 
@@ -25,10 +27,12 @@ public class FileServiceImpl implements FileService{
 
   private final FileRepository fileRepository;
   private final UserRepository userRepository;
+  private final ConferenceRepository conferenceRepository;
 
-  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository) {
+  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository, final ConferenceRepository conferenceRepository) {
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
+    this.conferenceRepository = conferenceRepository;
   }
 
   @Override
@@ -40,11 +44,16 @@ public class FileServiceImpl implements FileService{
       String articleDescription,
       String keyWords,
       String section,
-      MultipartFile file) throws IOException {
+      MultipartFile file,
+      Long conferenceId) throws IOException {
 
     Long userID = getCurrentUserId();
     User user = userRepository.findById(userID)
         .orElseThrow(() -> new RuntimeException("User not found"));
+
+    conference conference = conferenceRepository.findById(conferenceId)
+        .orElseThrow(() -> new RuntimeException("Conference not found"));
+
 
     String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
     Path filePath = Paths.get(fileStoragePath, storedFileName);
@@ -61,6 +70,7 @@ public class FileServiceImpl implements FileService{
     fileEntity.setKey_words(keyWords);
     fileEntity.setSection(section);
     fileEntity.setFile_path(filePath.toString());
+    fileEntity.setConference(conference);
     return fileRepository.save(fileEntity);
   }
 

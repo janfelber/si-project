@@ -85,10 +85,12 @@
 
 <script>
 import axios from 'axios';
+import { th } from 'vuetify/locale';
 
 export default {
 
-  name : 'StudentView',
+  name : 'UploadArticle',
+  props: ['id'],
   data() {
     return {
       firstname: '',
@@ -99,6 +101,7 @@ export default {
       file: null,
       fileName: '',
       selectedOption: '',
+      conferenceId: this.id,
     };
   },
   methods: {
@@ -123,6 +126,7 @@ export default {
         formData.append('section', this.selectedOption);
         formData.append('firstName', this.firstname);
         formData.append('lastName', this.lastname);
+        formData.append('conferenceId', this.conferenceId);
 
         const token = localStorage.getItem("token")
         console.log(localStorage.getItem("token"));
@@ -152,6 +156,10 @@ export default {
 
       }
     },
+  },
+  mounted() {
+    console.log(this.conferenceId);
+    console.log(this.id);
   }
 }
 </script>
