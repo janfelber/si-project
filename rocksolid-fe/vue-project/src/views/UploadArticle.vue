@@ -85,11 +85,16 @@
 
 <script>
 import axios from 'axios';
-import { th } from 'vuetify/locale';
+import { th, tr } from 'vuetify/locale';
 
 export default {
 
   name : 'UploadArticle',
+  computed: {
+    tr() {
+      return tr
+    }
+  },
   props: ['id'],
   data() {
     return {
@@ -103,9 +108,61 @@ export default {
       selectedOption: '',
       conferenceId: this.id,
       userInConference: null,
+      articleInReview: null,
     };
   },
   methods: {
+    async getUser() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/user/me`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        this.userId = response.data.id;
+        console.log(this.userId);
+      } catch (error) {
+        console.error("Error checking user in conference:", error);
+      }
+    },
+    async checkIfArticleIsInReview() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/status/${this.conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        const status = response.data;
+
+        if (status === "ACCEPTED") {
+          this.articleInReview = true; // Prijatý článok
+          this.articleStatusMessage = "Your article has been accepted.";
+          console.log(this.articleInReview);
+        } else if (status === "REJECTED") {
+          this.articleInReview = false; // Zamietnutý článok
+          this.articleStatusMessage = "Your article has been rejected.";
+        } else if (status === "In Review") {
+          this.articleInReview = true; // Článok je v recenzii
+          this.articleStatusMessage = "Your article is in review.";
+        } else {
+          this.articleInReview = false;
+          this.articleStatusMessage = "Article status is unknown.";
+        }
+
+      } catch (error) {
+        console.error("Error checking article status:", error);
+      }
+    },
     async checkIfUserInConference() {
       try {
         const token = localStorage.getItem("token");
@@ -172,7 +229,6 @@ export default {
           this.coAuthors = '';
           this.articleDescription = '';
           this.keyWords = '';
-
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
@@ -182,7 +238,10 @@ export default {
     },
   },
   mounted() {
+    this.getUser();
+    this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
+    console.log(this.userId);
   }
 }
 </script>
