@@ -31,8 +31,7 @@ public class article {
 
     private String section;
 
-    //TODO - add column to storing file
-    // private String article_file;
+    private String status;
 
     private String file_path;
 
