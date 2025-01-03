@@ -108,7 +108,7 @@ const router = createRouter({
         const userRole = getRoleFromToken();
         if (userRole === 'ADMIN') {
           return '/admin/users';
-        } else if (userRole === 'STUDENT') {
+        } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
           return '/web/home';
         } else {
           return '/login';
@@ -121,7 +121,7 @@ const router = createRouter({
         const userRole = getRoleFromToken();
         if (userRole === 'ADMIN') {
           return '/admin/users';
-        } else if (userRole === 'STUDENT') {
+        } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
           return '/web/home';
         } else {
           return '/login';
@@ -151,7 +151,7 @@ router.beforeEach((to, from, next) => {
     return next('/');
   }
 
-  if (to.meta.requiresStudent && userRole !== 'STUDENT') {
+  if (to.meta.requiresStudent && userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
     return next('/admin/users');
   }
 

@@ -87,9 +87,9 @@ public class AuthenticationService {
         if (user.getRole() == Role.ADMIN) {
             return "/admin/users";
         } else if (user.getRole() == Role.STUDENT || user.getRole() == Role.REVIEWER) {
-            return "/main";
+            return "/web/home";
         } else {
-            return "/main";
+            return "/login";
         }
     }
 
