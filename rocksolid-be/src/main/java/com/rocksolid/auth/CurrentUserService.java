@@ -10,14 +10,28 @@ import org.springframework.stereotype.Component;
 public class CurrentUserService {
 
     public Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalStateException("No authenticated user found");
         }
 
-        Object principal = authentication.getPrincipal();
+        final Object principal = authentication.getPrincipal();
         if (principal instanceof UserDetails) {
             return ((User) principal).getId();
+        } else {
+            throw new IllegalStateException("Authentication principal is not an instance of UserDetails");
+        }
+    }
+
+    public String getUserRole() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        final Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((User) principal).getRole().name();
         } else {
             throw new IllegalStateException("Authentication principal is not an instance of UserDetails");
         }

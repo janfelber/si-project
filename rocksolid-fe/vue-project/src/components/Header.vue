@@ -164,7 +164,6 @@ const logout = async () => {
       },
     });
     localStorage.removeItem('token');
-    localStorage.removeItem('role');
   } catch (error) {
     console.error("Failed to logout:", error);
   }
