@@ -1,5 +1,13 @@
 <template >
       <v-app v-if="userInConference === true">
+
+        <div v-if="articleInReview === true">
+          <h1>
+            You aleready have an article in review
+          </h1>
+        </div>
+
+        <div v-if="articleInReview === false">
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
         <v-container>
@@ -80,6 +88,7 @@
 
         </v-container>
       </v-form>
+        </div>
   </v-app>
 </template>
 
@@ -90,11 +99,6 @@ import { th, tr } from 'vuetify/locale';
 export default {
 
   name : 'UploadArticle',
-  computed: {
-    tr() {
-      return tr
-    }
-  },
   props: ['id'],
   data() {
     return {
@@ -127,7 +131,7 @@ export default {
         this.userId = response.data.id;
         console.log(this.userId);
       } catch (error) {
-        console.error("Error checking user in conference:", error);
+        console.error("Error checking user :", error);
       }
     },
     async checkIfArticleIsInReview() {
@@ -144,16 +148,13 @@ export default {
         );
         const status = response.data;
 
-        if (status === "ACCEPTED") {
-          this.articleInReview = true; // Prijatý článok
-          this.articleStatusMessage = "Your article has been accepted.";
+        if (status === "SENT") {
+          this.articleInReview = true;
           console.log(this.articleInReview);
         } else if (status === "REJECTED") {
-          this.articleInReview = false; // Zamietnutý článok
-          this.articleStatusMessage = "Your article has been rejected.";
-        } else if (status === "In Review") {
-          this.articleInReview = true; // Článok je v recenzii
-          this.articleStatusMessage = "Your article is in review.";
+          this.articleInReview = false;
+        } else if (status === "ACCEPTED") {
+          this.articleInReview = true;
         } else {
           this.articleInReview = false;
           this.articleStatusMessage = "Article status is unknown.";
@@ -229,6 +230,7 @@ export default {
           this.coAuthors = '';
           this.articleDescription = '';
           this.keyWords = '';
+          this.articleInReview = true;
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
@@ -241,7 +243,6 @@ export default {
     this.getUser();
     this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
-    console.log(this.userId);
   }
 }
 </script>

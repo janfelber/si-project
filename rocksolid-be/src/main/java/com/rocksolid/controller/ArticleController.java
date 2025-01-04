@@ -33,12 +33,12 @@ public class ArticleController {
       final String status = article.get().getStatus();
 
       switch (status) {
+        case "SENT":
+          return "SENT";
+        case "REJECTED":
+          return "REJECTED";
         case "ACCEPTED":
           return "ACCEPTED";
-        case "REJECTED":
-          return "Article rejected";
-        case "PENDING":
-          return "Article pending";
         default:
           return "Article status unknown";
       }
