@@ -1,10 +1,8 @@
 package com.rocksolid.module;
 
-import java.util.Set;
+import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,18 +20,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "review", schema = "rock_solid")
-public class Review {
+@Table(name = "columns", schema = "rock_solid")
+public class Columns {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "\"article_id\"")
-  private article article_id;
+  @JoinColumn(name = "category_id", nullable = false)
+  private Categories category;
 
-  @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<ColumnCategory> reviewColumnCategories;
+
+  @OneToMany(mappedBy = "column")
+  private List<ColumnChoices> choices;
 
 }
