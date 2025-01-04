@@ -73,5 +73,16 @@ public class ConferenceController {
             return ResponseEntity.ok("User is not in the conference");
         }
     }
+    @GetMapping("/activeUsers/{id}")
+    //@PreAuthorize("hasAuthority('admin:read')")
+    public List<UserResponseDto> getUsersForConference(@PathVariable Long id) {
+        return userConferenceService.getUsersForConference(id);
+    }
+
+    @DeleteMapping("/{userID}/{confID}")
+    public ResponseEntity<String> deleteUserFromConference(@PathVariable Long userID, @PathVariable Long confID) {
+        userConferenceService.deleteUserFromConference(userID, confID);
+        return ResponseEntity.ok("User deleted from conference successfully");
+    }
 
 }

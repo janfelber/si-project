@@ -7,9 +7,9 @@ import com.rocksolid.module.User;
 import com.rocksolid.module.UserConference;
 import com.rocksolid.module.conference;
 
+
 @Repository
 public interface UserConferenceRepository extends JpaRepository<UserConference, Long> {
-
   boolean existsByUserAndConference(User user, conference conference);
-
+  UserConference findByUserAndConference(User user, conference conference);
 }
