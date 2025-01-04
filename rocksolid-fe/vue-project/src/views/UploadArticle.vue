@@ -1,5 +1,13 @@
 <template >
       <v-app v-if="userInConference === true">
+
+        <div v-if="articleInReview === true">
+          <h1>
+            You aleready have an article in review
+          </h1>
+        </div>
+
+        <div v-if="articleInReview === false">
         <h1>Nahravas pracu</h1>
       <v-form v-model="valid">
         <v-container>
@@ -80,12 +88,13 @@
 
         </v-container>
       </v-form>
+        </div>
   </v-app>
 </template>
 
 <script>
 import axios from 'axios';
-import { th } from 'vuetify/locale';
+import { th, tr } from 'vuetify/locale';
 
 export default {
 
@@ -103,9 +112,58 @@ export default {
       selectedOption: '',
       conferenceId: this.id,
       userInConference: null,
+      articleInReview: null,
     };
   },
   methods: {
+    async getUser() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/user/me`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        this.userId = response.data.id;
+        console.log(this.userId);
+      } catch (error) {
+        console.error("Error checking user :", error);
+      }
+    },
+    async checkIfArticleIsInReview() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/status/${this.conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        const status = response.data;
+
+        if (status === "SENT") {
+          this.articleInReview = true;
+          console.log(this.articleInReview);
+        } else if (status === "REJECTED") {
+          this.articleInReview = false;
+        } else if (status === "ACCEPTED") {
+          this.articleInReview = true;
+        } else {
+          this.articleInReview = false;
+          this.articleStatusMessage = "Article status is unknown.";
+        }
+
+      } catch (error) {
+        console.error("Error checking article status:", error);
+      }
+    },
     async checkIfUserInConference() {
       try {
         const token = localStorage.getItem("token");
@@ -172,7 +230,7 @@ export default {
           this.coAuthors = '';
           this.articleDescription = '';
           this.keyWords = '';
-
+          this.articleInReview = true;
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
@@ -182,6 +240,8 @@ export default {
     },
   },
   mounted() {
+    this.getUser();
+    this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
   }
 }
