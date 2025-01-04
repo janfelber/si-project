@@ -74,12 +74,13 @@ public class ConferenceController {
         }
     }
     @GetMapping("/activeUsers/{id}")
-    //@PreAuthorize("hasAuthority('admin:read')")
+    @PreAuthorize("hasAuthority('admin:read')")
     public List<UserResponseDto> getUsersForConference(@PathVariable Long id) {
         return userConferenceService.getUsersForConference(id);
     }
 
     @DeleteMapping("/{userID}/{confID}")
+    @PreAuthorize("hasAuthority('admin:delete')")
     public ResponseEntity<String> deleteUserFromConference(@PathVariable Long userID, @PathVariable Long confID) {
         userConferenceService.deleteUserFromConference(userID, confID);
         return ResponseEntity.ok("User deleted from conference successfully");
