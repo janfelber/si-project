@@ -1,19 +1,41 @@
 <script>
 import { navBarData } from '@/data/navbarData.js';
+import axios from 'axios';
 
 export default {
   name: "SideNav",
+  data() {
+    return {
+      role: null,
+    };
+  },
   methods: {
-    getRoleFromLocalStorage() {
-      return localStorage.getItem('role');
-    }
+    async verifyUser() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/v1/user/me/role", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.role = response.data;
+      } catch (error) {
+        console.error("Failed to verify user role:", error);
+        this.role = null;
+      }
+    },
   },
   computed: {
     filteredNavBarData() {
-      const userRole = this.getRoleFromLocalStorage();
-
-      return navBarData.filter(item => item.role.includes(userRole));
+      if (this.role) {
+        return navBarData.filter(item => item.role.includes(this.role));
+      }
+      return [];
     },
+  },
+  mounted() {
+    this.verifyUser();
   },
 };
 </script>

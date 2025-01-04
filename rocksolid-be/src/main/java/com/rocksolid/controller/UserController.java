@@ -55,4 +55,9 @@ public class UserController {
         return userService.getUserById(currentUserService.getCurrentUserId()).orElseThrow();
     }
 
+    @GetMapping("/me/role")
+    public String verifyCurrentUser() {
+        return currentUserService.getUserRole();
+    }
+
 }

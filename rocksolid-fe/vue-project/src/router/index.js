@@ -1,11 +1,9 @@
-import { getRoleFromToken } from '@/helper/getRoleFromToken.js';
+import { getUserRole } from '@/helper/getUserRole.js';
+import NotFoundView from '@/views/NotFoundView.vue';
 import { createRouter, createWebHistory } from 'vue-router'
-import { jwtDecode } from "jwt-decode";
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
-import MainView from "@/views/MainView.vue";
 import RegisterView from "@/views/RegisterView.vue";
-import AuthLayout from "@/views/AuthLayout.vue";
 import UploadFile from '@/views/UploadArticle.vue';
 import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
@@ -103,44 +101,35 @@ const router = createRouter({
       },
     },
     {
-      path: '/',
-      redirect: (to) => {
-        const userRole = getRoleFromToken();
-        if (userRole === 'ADMIN') {
-          return '/admin/users';
-        } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
-          return '/web/home';
-        } else {
-          return '/login';
-        }
-      },
-    },
-    {
       path: '/:catchAll(.*)',
-      redirect: (to) => {
-        const userRole = getRoleFromToken();
-        if (userRole === 'ADMIN') {
-          return '/admin/users';
-        } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
-          return '/web/home';
-        } else {
-          return '/login';
-        }
-      },
+      redirect: '/web/404',
     },
     {
       path: '/',
       redirect: '/login',
     },
+    {
+      path: '/web/404',
+      name: '404',
+      component: NotFoundView,
+      meta: {
+        title: '404'
+      }
+    },
   ]
 });
 
-router.beforeEach((to, from, next) => {
-  const userRole = getRoleFromToken();
-  console.log(userRole);
+router.beforeEach(async (to, from, next) => {
+  const userRole = await getUserRole();
 
-  if (!userRole) {
-    return next('/login');
+  if (to.path === '/') {
+    if (userRole === 'ADMIN') {
+      return next('/admin/users');
+    } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
+      return next('/web/home');
+    } else {
+      return next('/login');
+    }
   }
 
   if (to.path === '/login' || to.path === '/register') {
@@ -148,7 +137,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (to.meta.requiresAdmin && userRole !== 'ADMIN') {
-    return next('/');
+    return next('/web/home');
   }
 
   if (to.meta.requiresStudent && userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
@@ -158,4 +147,4 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-export default router
+export default router;
