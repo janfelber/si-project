@@ -12,6 +12,7 @@ import ActiveConferences from "@/views/ActiveConferences.vue";
 import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import GradingView from "@/views/GradingView.vue";
+import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +61,13 @@ const router = createRouter({
       component: UploadFile,
       props: true,
       meta: { requiresStudent: true },
+    },
+    {
+      path: '/admin/conferenceDetail/:id',
+      name: 'ConferenceDetail',
+      component: AdminConferenceDetailView,
+      meta: { requiresAdmin: true },
+      props:true
     },
     {
       path: '/grade',

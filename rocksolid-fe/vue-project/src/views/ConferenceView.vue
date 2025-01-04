@@ -229,7 +229,11 @@
         </thead>
         <tbody>
         <tr v-for="conference in paginatedconferences" :key="conference.id" class="table-rows">
-          <td class="cell" style="width: 5.452637%;">{{ conference.id }}</td>
+          <td class="cell" style="width: 5.452637%;">
+            <router-link :to="{ name: 'ConferenceDetail', params: { id: conference.id } }">
+              {{ conference.id }}
+            </router-link>
+          </td>
           <td class="cell" style="width: 5.452637%;">{{ conference.name }}</td>
           <td class="cell" style="width: 5.452637%;">{{this.formatDate(conference.date_from) }}</td>
           <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.date_to) }}</td>
