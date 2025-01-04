@@ -71,6 +71,7 @@ public class FileServiceImpl implements FileService{
     fileEntity.setSection(section);
     fileEntity.setFile_path(filePath.toString());
     fileEntity.setConference(conference);
+    fileEntity.setStatus("SENT");
     return fileRepository.save(fileEntity);
   }
 
