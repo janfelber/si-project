@@ -129,7 +129,6 @@ export default {
             }
         );
         this.userId = response.data.id;
-        console.log(this.userId);
       } catch (error) {
         console.error("Error checking user :", error);
       }
@@ -150,7 +149,6 @@ export default {
 
         if (status === "SENT") {
           this.articleInReview = true;
-          console.log(this.articleInReview);
         } else if (status === "REJECTED") {
           this.articleInReview = false;
         } else if (status === "ACCEPTED") {
@@ -211,7 +209,6 @@ export default {
         formData.append('conferenceId', this.conferenceId);
 
         const token = localStorage.getItem("token")
-        console.log(localStorage.getItem("token"));
         const response = await axios.post("http://localhost:8080/api/v1/file/upload",formData,
             {
               headers: {
