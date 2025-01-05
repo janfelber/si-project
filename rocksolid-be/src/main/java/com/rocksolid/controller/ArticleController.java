@@ -2,6 +2,7 @@ package com.rocksolid.controller;
 
 import java.util.Optional;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rocksolid.auth.CurrentUserService;
+import com.rocksolid.dto.ArticleAdminResponseDto;
 import com.rocksolid.module.article;
 import com.rocksolid.service.ArticleService;
 
@@ -46,6 +48,13 @@ public class ArticleController {
     } else {
       return "Article not found";
     }
+  }
+
+
+  @GetMapping("/all")
+  @PreAuthorize("hasAuthority('admin:read')")
+  public Iterable<ArticleAdminResponseDto> getAllArticles() {
+    return articleService.getAllArticlesInSystem();
   }
 
 }
