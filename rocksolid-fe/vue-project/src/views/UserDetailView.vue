@@ -111,16 +111,22 @@ export default {
     }
   },
   methods: {
-    deleteUser(id) {
-      user.deleteUser(id)
-          .then(() => {
-            console.log("User deleted");
-            window.location.href = '/admin/users';
-          })
-          .catch((error) => {
-            this.error = 'Používateľa sa nepodarilo odstrániť';
-            console.log(error)
-          });
+    async deleteUser(id) {
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.delete("http://localhost:8080/api/v1/user/" + this.userID,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+        console.log("User deleted");
+        window.location.href = '/admin/users';
+      } catch (error) {
+        this.error = 'Používateľa sa nepodarilo odstrániť';
+        console.log(error)
+      }
     },
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
