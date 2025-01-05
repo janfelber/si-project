@@ -1,7 +1,9 @@
 import { getUserRole } from '@/helper/getUserRole.js';
+import NoPermissions from '@/views/NoPermissions.vue';
 import AdminArticleDetailView from '@/views/AdminArticleDetailView.vue';
 import AdminArticlesView from '@/views/AdminArticlesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
+import ReviewsArticle from '@/views/ReviewsArticle.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
@@ -111,6 +113,23 @@ const router = createRouter({
       },
     },
     {
+      path: '/web/review-conferences',
+      name: 'reviewConferences',
+      component: ReviewsArticle,
+      meta: {
+        requiresReviewer: true,
+        title: 'Review Conferences'
+      },
+    },
+    {
+      path: '/web/no-permission',
+      name: 'noReviewerPermission',
+      component: NoPermissions,
+      meta: {
+        title: 'No Permission'
+      }
+    },
+    {
       path: '/web/user',
       name: 'EditProfileView',
       component: EditProfileView,
@@ -171,6 +190,10 @@ router.beforeEach(async (to, from, next) => {
 
   if (to.meta.requiresStudent && userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
     return next('/admin/users');
+  }
+
+  if (to.meta.requiresReviewer && userRole !== 'REVIEWER') {
+    return next('/web/no-permission');
   }
 
   next();
