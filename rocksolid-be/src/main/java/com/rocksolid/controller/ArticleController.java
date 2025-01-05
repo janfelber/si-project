@@ -57,4 +57,10 @@ public class ArticleController {
     return articleService.getAllArticlesInSystem();
   }
 
+  @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('admin:read')")
+  public ArticleAdminResponseDto getArticleById(@PathVariable final Long id) {
+    return articleService.getArticleById(id);
+  }
+
 }

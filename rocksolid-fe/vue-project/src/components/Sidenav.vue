@@ -133,7 +133,7 @@ export default {
 
 .sidenav-nav-link {
   display: flex;
-  align-items: center; /* Zarovná ikonu a text na stred */
+  align-items: center;
   color: #aaa8bd;
   text-decoration: none;
   border-radius: 5px;

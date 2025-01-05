@@ -1,4 +1,5 @@
 import { getUserRole } from '@/helper/getUserRole.js';
+import AdminArticleDetailView from '@/views/AdminArticleDetailView.vue';
 import AdminArticlesView from '@/views/AdminArticlesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import { createRouter, createWebHistory } from 'vue-router'
@@ -57,6 +58,16 @@ const router = createRouter({
       meta: {
         requiresAdmin: true,
         title: 'Articles'
+      },
+    },
+    {
+      path: '/admin/articles/:id',
+      name: 'AdminArticleDetailView',
+      component: AdminArticleDetailView,
+      props: true,
+      meta: {
+        requiresAdmin: true,
+        title: 'Article Detail'
       },
     },
     {

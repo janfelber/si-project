@@ -42,4 +42,22 @@ public class ArtileServiceImpl implements ArticleService {
         )).collect(Collectors.toList());
   }
 
+  @Override
+  public ArticleAdminResponseDto getArticleById(final Long id) {
+    return articleRepository.findById(id)
+        .map(article -> new ArticleAdminResponseDto(
+            article.getId(),
+            article.getArticle_name(),
+            article.getCo_authors(),
+            article.getArticle_description(),
+            article.getKey_words(),
+            article.getConference().getName(),
+            article.getSection(),
+            article.getFirst_name(),
+            article.getLast_name(),
+            article.getUser().getId(),
+            article.getStatus()
+        )).orElseThrow();
+  }
+
 }
