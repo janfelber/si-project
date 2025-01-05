@@ -21,4 +21,6 @@ public class Choice {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
+  private String choice_name;
 }

@@ -31,6 +31,9 @@ public class Columns {
   @JoinColumn(name = "category_id", nullable = false)
   private Categories category;
 
+  private String column_name;
+
+  private String type;
 
   @OneToMany(mappedBy = "column")
   private List<ColumnChoices> choices;
