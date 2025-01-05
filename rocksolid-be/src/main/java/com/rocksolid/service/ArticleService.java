@@ -11,4 +11,6 @@ public interface ArticleService {
 
   List<ArticleAdminResponseDto> getAllArticlesInSystem();
 
+  ArticleAdminResponseDto getArticleById(Long id);
+
 }

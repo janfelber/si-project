@@ -80,7 +80,11 @@
         </thead>
         <tbody>
         <tr v-for="article in paginatedArticles" :key="article.id" class="table-rows">
-          <td class="cell" style="width: 15.924607%;"> {{ article.articleName }} </td>
+          <td class="cell" style="width: 15.924607%;">
+            <RouterLink :to="{ name: 'AdminArticleDetailView', params: { id: article.id } }" class="article-link">
+              {{ article.articleName }}
+            </RouterLink>
+          </td>
           <td class="cell" style="width: 15.924607%;" >{{ article.conferenceName }}</td>
           <td class="cell" style="width: 15.924607%;" >{{ article.section }}</td>
           <td class="cell" style="width: 15.924607%;" >{{ article.firstName }} {{ article.lastName }}</td>
@@ -180,7 +184,11 @@ export default {
 
 <style scoped>
 
-
+.article-link {
+  background-color: #0000;
+  color: #6895fa;
+  text-decoration: none;
+}
 
 .articles-table .cell {
   border-left: 1px solid #d8d8f0;
