@@ -14,6 +14,7 @@
         <input v-if="column.type === 'text'" :id="column.id" type="text" v-model="selectedChoices[column.id]" />
       </template>
     </div>
+    <button @click="submitReview()">Submit Review</button> <!-- Submit Button -->
   </div>
 </template>
 
@@ -52,7 +53,33 @@ export default {
       } finally {
         this.loading = false;  // Set loading to false when data is fetched
       }
-    }
+    },
+    async submitReview() {
+      try {
+        const token = localStorage.getItem("token");
+        const article_id = 1; // Example, replace with actual article ID
+
+        const reviewRequest = {
+          article_id,
+          columnValues: this.selectedChoices,
+        };
+
+        // Send review data to backend
+        const response = await axios.post(
+            `http://localhost:8080/api/v1/review/createReview`,
+            reviewRequest,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+
+        console.log('Review submitted successfully:', response.data);
+      } catch (error) {
+        console.error('Error submitting review:', error);
+      }
+    },
   }
 };
 </script>

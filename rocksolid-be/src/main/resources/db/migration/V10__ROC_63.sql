@@ -13,6 +13,7 @@ CREATE TABLE rock_solid.columns (
 CREATE TABLE rock_solid.reviews (
                                   id BIGSERIAL PRIMARY KEY ,
   article_id BIGINT,
+                                  FOREIGN KEY (article_id) REFERENCES rock_solid.article(id) ON DELETE CASCADE,
                                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

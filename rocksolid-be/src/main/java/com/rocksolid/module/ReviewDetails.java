@@ -32,4 +32,6 @@ public class ReviewDetails {
   @JoinColumn(name = "\"column_id\"")
   private Columns column_id;
 
+  private String value;
+
 }
