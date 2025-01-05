@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(user -> new UserResponseDto(
                         user.getId(),
-                        user.getEmail(),
                         user.getFirst_name(),
+                        user.getEmail(),
                         user.getLast_name(),
                         user.getRole().name(),
                         user.getUniversity()

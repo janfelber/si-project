@@ -4,6 +4,7 @@ package com.rocksolid.controller;
 import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ConferenceRequestDto;
 import com.rocksolid.dto.ConferenceResponseDto;
+import com.rocksolid.dto.UserResponseDto;
 import com.rocksolid.module.User;
 import com.rocksolid.module.conference;
 import com.rocksolid.repository.UserConferenceRepository;
