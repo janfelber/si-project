@@ -3,7 +3,7 @@
 
         <div v-if="articleInReview === true">
           <h1>
-            You aleready have an article in review
+            You already have an article in review
           </h1>
         </div>
 
@@ -113,6 +113,9 @@ export default {
       conferenceId: this.id,
       userInConference: null,
       articleInReview: null,
+      dateFrom: "",
+      dateTo: "",
+      currentDate: new Intl.DateTimeFormat('en-CA').format(new Date())
     };
   },
   methods: {
@@ -131,6 +134,24 @@ export default {
         this.userId = response.data.id;
       } catch (error) {
         console.error("Error checking user :", error);
+      }
+    },
+    async getDate() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            "http://localhost:8080/api/v1/conference/" + this.id,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        this.dateTo = response.data.date_to;
+        this.dateFrom = response.data.date_from;
+      } catch (error) {
+        console.error(error);
       }
     },
     async checkIfArticleIsInReview() {
@@ -196,6 +217,11 @@ export default {
         return;
       }
 
+      if (this.currentDate < this.dateFrom || this.currentDate > this.dateTo) {
+        alert("Do tejto konferencie momentálne nieje možné odovzdať prácu.");
+        return;
+      }
+
       try{
         const formData = new FormData();
         formData.append('file', this.file);
@@ -240,6 +266,7 @@ export default {
     this.getUser();
     this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
+    this.getDate();
   }
 }
 </script>
