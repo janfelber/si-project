@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rocksolid.module.Sections;
-import com.rocksolid.module.article;
+import com.rocksolid.module.Article;
 import com.rocksolid.module.User;
 import com.rocksolid.module.conference;
 import com.rocksolid.repository.ConferenceRepository;
@@ -41,7 +41,7 @@ public class FileServiceImpl implements FileService{
   }
 
   @Override
-  public article saveFile(
+  public Article saveFile(
       String firstName,
       String lastName,
       String fileName,
@@ -67,7 +67,7 @@ public class FileServiceImpl implements FileService{
     Files.createDirectories(filePath.getParent());
     Files.write(filePath, file.getBytes());
 
-    article fileEntity = new article();
+    Article fileEntity = new Article();
     fileEntity.setUser(user);
     fileEntity.setFirst_name(firstName);
     fileEntity.setLast_name(lastName);
@@ -84,7 +84,7 @@ public class FileServiceImpl implements FileService{
 
   @Override
   public byte[] loadFile(Long fileId) throws IOException {
-    article fileEntity = fileRepository.findById(Math.toIntExact(fileId))
+    Article fileEntity = fileRepository.findById(Math.toIntExact(fileId))
         .orElseThrow(() -> new RuntimeException("File not found with id " + fileId));
     Path filePath = Paths.get(fileEntity.getFile_path());
 

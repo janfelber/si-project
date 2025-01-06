@@ -1,6 +1,7 @@
 package com.rocksolid.controller;
 
 import com.rocksolid.auth.CurrentUserService;
+import com.rocksolid.dto.ReviewerAdminResponseDto;
 import com.rocksolid.dto.UserResponseDto;
 import com.rocksolid.module.User;
 import com.rocksolid.service.UserService;
@@ -58,6 +59,12 @@ public class UserController {
     @GetMapping("/me/role")
     public String verifyCurrentUser() {
         return currentUserService.getUserRole();
+    }
+
+    @GetMapping("/available-reviewers/{articleId}")
+    @PreAuthorize("hasAuthority('admin:read')")
+    public List<ReviewerAdminResponseDto> getAvailableReviewers(@PathVariable final Long articleId) {
+        return userService.getAvailableReviewers(articleId);
     }
 
 }

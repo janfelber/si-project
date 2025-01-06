@@ -6,20 +6,25 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.rocksolid.dto.AdminArticleUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
-import com.rocksolid.module.article;
+import com.rocksolid.module.Article;
+import com.rocksolid.module.User;
 import com.rocksolid.repository.ArticleRepository;
+import com.rocksolid.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ArtileServiceImpl implements ArticleService {
+public class ArticleServiceImpl implements ArticleService {
 
   private final ArticleRepository articleRepository;
 
+  private final UserRepository userRepository;
+
   @Override
-  public Optional<article> getArticleStatus(Long conferenceId, Long userId) {
+  public Optional<Article> getArticleStatus(Long conferenceId, Long userId) {
     return articleRepository.findByConferenceIdAndUserId(conferenceId, userId);
   }
 
@@ -38,7 +43,8 @@ public class ArtileServiceImpl implements ArticleService {
             article.getFirst_name(),
             article.getLast_name(),
             article.getUser().getId(),
-            article.getStatus()
+            article.getStatus(),
+            article.getReviewer() == null ? null : article.getReviewer().getId()
         )).collect(Collectors.toList());
   }
 
@@ -56,8 +62,23 @@ public class ArtileServiceImpl implements ArticleService {
             article.getFirst_name(),
             article.getLast_name(),
             article.getUser().getId(),
-            article.getStatus()
+            article.getStatus(),
+            article.getReviewer() == null ? null : article.getReviewer().getId()
         )).orElseThrow();
+  }
+
+  @Override
+  public Article adminUpdateArticle(final Long articleId, final AdminArticleUpdateRequest updateArticleRequest) {
+    final Article article = articleRepository.findById(articleId)
+        .orElseThrow(() -> new RuntimeException("Article not found"));
+
+    final Long reviewerId = updateArticleRequest.getReviewerId();
+    final User reviewer = userRepository.findById(reviewerId)
+        .orElseThrow(() -> new RuntimeException("Reviewer not found"));
+
+    article.setReviewer(reviewer);
+
+    return articleRepository.save(article);
   }
 
 }

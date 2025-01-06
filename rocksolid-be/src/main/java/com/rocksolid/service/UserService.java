@@ -1,5 +1,6 @@
 package com.rocksolid.service;
 
+import com.rocksolid.dto.ReviewerAdminResponseDto;
 import com.rocksolid.dto.UserResponseDto;
 import com.rocksolid.module.User;
 
@@ -11,4 +12,5 @@ public interface UserService {
     List<UserResponseDto> getAllUsers();
     Optional<UserResponseDto> getUserById(Long id);
     User updateUser(Long id, User userData);
+    List<ReviewerAdminResponseDto> getAvailableReviewers(Long articleId);
 }

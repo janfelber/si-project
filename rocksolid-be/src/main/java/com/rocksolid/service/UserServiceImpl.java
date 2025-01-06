@@ -1,22 +1,27 @@
 package com.rocksolid.service;
 
+import com.rocksolid.dto.ReviewerAdminResponseDto;
 import com.rocksolid.dto.UserResponseDto;
+import com.rocksolid.module.Article;
 import com.rocksolid.module.User;
+import com.rocksolid.repository.ArticleRepository;
 import com.rocksolid.repository.UserRepository;
+import com.rocksolid.security.enums.Role;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+import lombok.RequiredArgsConstructor;
 
+@Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final ArticleRepository articleRepository;
 
     @Override
     public void deleteUserById(Long id) {
@@ -63,6 +68,22 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(existingUser);
         }
         return null;
+    }
+
+    public List<ReviewerAdminResponseDto> getAvailableReviewers(final Long articleId) {
+        final Article article = articleRepository.findById(articleId)
+            .orElseThrow(() -> new RuntimeException("Article not found"));
+
+        final Long articleCreatorId = article.getUser().getId();
+
+        return userRepository.findByRole(Role.REVIEWER).stream()
+            .filter(user -> !user.getId().equals(articleCreatorId))
+            .map(user -> new ReviewerAdminResponseDto(
+                user.getId(),
+                user.getFirst_name(),
+                user.getLast_name()
+            ))
+            .collect(Collectors.toList());
     }
 
 }
