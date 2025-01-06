@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private List<Token> tokens;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<article> articles;
+    private List<Article> articles;
 
     @Override
     public String getPassword() {

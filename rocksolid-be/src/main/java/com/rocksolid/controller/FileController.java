@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.Sections;
-import com.rocksolid.module.article;
 import com.rocksolid.service.ArticleService;
+import com.rocksolid.module.Article;
 import com.rocksolid.service.FileService;
 import com.rocksolid.service.SectionService;
 
@@ -34,7 +34,7 @@ public class FileController {
   private final FileService fileService;
 
   @PostMapping("/upload")
-  public ResponseEntity<article> uploadFile(
+  public ResponseEntity<Article> uploadFile(
       @RequestParam("firstName") String firstName,
       @RequestParam("lastName") String lastName,
       @RequestParam("fileName") String fileName,
@@ -45,7 +45,7 @@ public class FileController {
       @RequestParam("file") MultipartFile file,
       @RequestParam("conferenceId") Long conferenceId) {
     try {
-      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId);
+      Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -63,5 +63,7 @@ public class FileController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+
 
 }

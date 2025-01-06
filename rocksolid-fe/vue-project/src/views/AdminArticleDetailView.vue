@@ -49,10 +49,20 @@
               <input v-model="articleStatus">
             </div>
           </div>
+          <div class="form-group">
+            <label>Reviewer</label>
+            <div class="form-input">
+              <select v-model="selectedReviewer">
+                <option v-for="reviewer in reviewers" :key="reviewer.id" :value="reviewer.id" :selected="reviewer.id === selectedReviewer">
+                  {{ reviewer.firstName }} {{ reviewer.lastName }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div class="button-section">
-        <button type="button" class="btn btn-primary" @click="updateUser()" style="color: white">Uložiť</button>
+        <button type="button" class="btn btn-primary" @click="updateArticle()" style="color: white">Uložiť</button>
       </div>
     </div>
     <div class="v-col-7">
@@ -95,6 +105,7 @@ export default {
   data() {
     return {
       id_user: null,
+      reviewers: [],
       article: [],
       articleName: '',
       articleDescription: '',
@@ -102,10 +113,15 @@ export default {
       coAuthors: '',
       section: '',
       conferenceName: '',
+      selectedReviewer: '',
       articleStatus: '',
       firstName: '',
       lastName: '',
       email: '',
+      reviewerFirstName:'',
+      reviewerLastName: '',
+      reviewerFullName: '',
+      reviewerId: null,
     };
   },
   methods: {
@@ -130,6 +146,7 @@ export default {
         this.firstName = this.article.firstName;
         this.lastName = this.article.lastName;
         this.articleStatus = this.article.status;
+        this.selectedReviewer = this.article.reviewerId;
       } catch (error) {
         console.error('Failed to fetch user:', error);
       }
@@ -151,11 +168,44 @@ export default {
         console.error("Failed to fetch user:", error);
       }
     },
+    async getAllReviewers() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:8080/api/v1/user/available-reviewers/${this.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+        this.reviewers = response.data;
+        this.reviewers.forEach(reviewer => {
+          this.reviewerFullName = `${reviewer.firstName} ${reviewer.lastName}`;
+        });
+      } catch (error) {
+        console.error("Failed to fetch reviewers:", error);
+      }
+    },
+    async updateArticle() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`http://localhost:8080/api/v1/article/admin/update/${this.id}`, {
+          reviewerId: this.selectedReviewer
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('Article updated:', response.data);
+      } catch (error) {
+        console.error('Failed to update reviewer:', error);
+      }
+    }
   },
   mounted: async function() {
     try {
       await this.getUserData();
       await this.getAuthorInformation();
+      await this.getAllReviewers();
     } catch (error) {
       console.error('Error during mounted lifecycle:', error.message);
     }
@@ -238,6 +288,17 @@ hr {
   float:         left;
   padding-right: .375rem;
 
+}
+
+.form-input select {
+  border:     1px solid #d8d8f0;
+  padding:    8px;
+  width:      100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"%3E%3Cpath d=\"M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414L8 10.414l-3.707-3.707a1 1 0 0 1 0-1.414z\"%3E%3C/path%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  background-size: 8px 8px;
+  cursor: pointer;
 }
 
 label {

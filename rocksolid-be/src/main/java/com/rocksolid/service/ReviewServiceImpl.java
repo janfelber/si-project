@@ -8,7 +8,7 @@ import com.rocksolid.dto.ReviewRequestDTO;
 import com.rocksolid.module.Columns;
 import com.rocksolid.module.ReviewDetails;
 import com.rocksolid.module.Reviews;
-import com.rocksolid.module.article;
+import com.rocksolid.module.Article;
 import com.rocksolid.repository.ArticleRepository;
 import com.rocksolid.repository.ColumnRepository;
 import com.rocksolid.repository.ReviewDeatailsRepository;
@@ -30,10 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
 
   @Override
   public Reviews createReview(ReviewRequestDTO reviewRequestDto) {
-    article article = articleRepository.findById(reviewRequestDto.getArticle_id())
+    Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-    article customArticle = article.builder()
+    Article customArticle = article.builder()
         .id(1L)  // Priradíš custom ID pre Article
         .build();
     Reviews review = Reviews.builder().article_id(customArticle).build();

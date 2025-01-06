@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "article", schema = "rock_solid")
-public class article {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,4 +44,8 @@ public class article {
     @ManyToOne
     @JoinColumn(name = "\"section_id\"")
     private Sections sections;
+
+    @ManyToOne
+    @JoinColumn(name = "\"reviewer_id\"")
+    private User reviewer;
 }

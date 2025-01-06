@@ -17,4 +17,5 @@ public class ArticleAdminResponseDto {
   private String lastName;
   private Long userId;
   private String status;
+  private Long reviewerId;
 }
