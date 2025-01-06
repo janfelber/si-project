@@ -148,15 +148,10 @@ export default {
               },
             }
         );
-        console.log(response);
-        console.log(this.id);
         this.dateTo = response.data.date_to;
         this.dateFrom = response.data.date_from;
-        console.log(this.dateTo + "-" + this.dateFrom);
-        console.log(this.currentDate);
-
       } catch (error) {
-        console.error("Error checking user :", error);
+        console.error(error);
       }
     },
     async checkIfArticleIsInReview() {
