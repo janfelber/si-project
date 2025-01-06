@@ -15,14 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories", schema = "rock_solid")
-public class Categories {
+@Table(name = "choices", schema = "rock_solid")
+public class Choice {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String category_name;
-
-
+  private String choice_name;
 }

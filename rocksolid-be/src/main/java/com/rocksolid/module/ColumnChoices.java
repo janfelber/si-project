@@ -17,19 +17,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "review_column_category", schema = "rock_solid")
-public class ColumnCategory {
+@Table(name = "column_choices", schema = "rock_solid")
+public class ColumnChoices {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "review_id", nullable = false)
-  private Review review;
+  @JoinColumn(name = "choice_id", referencedColumnName = "id" ,nullable = false)
+  private Choice choice;
 
   @ManyToOne
-  @JoinColumn(name = "category_id", nullable = false)
-  private Categories category;
+  @JoinColumn(name = "column_id", referencedColumnName = "id", nullable = false)
+  private Columns column;
 
 }

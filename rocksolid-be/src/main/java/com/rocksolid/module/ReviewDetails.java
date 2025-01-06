@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,14 +17,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories", schema = "rock_solid")
-public class Categories {
+@Table(name = "review_details", schema = "rock_solid")
+public class ReviewDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String category_name;
+  @ManyToOne
+  @JoinColumn(name = "\"review_id\"")
+  private Reviews review_id;
 
+  @ManyToOne
+  @JoinColumn(name = "\"column_id\"")
+  private Columns column_id;
+
+  private String value;
 
 }
