@@ -29,7 +29,7 @@ public class article {
 
     private String key_words;
 
-    private String section;
+    private String status;
 
     private String file_path;
 

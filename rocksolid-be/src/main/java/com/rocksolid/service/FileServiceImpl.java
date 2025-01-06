@@ -55,7 +55,7 @@ public class FileServiceImpl implements FileService{
         .orElseThrow(() -> new RuntimeException("Conference not found"));
 
 
-    String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    String storedFileName = file.getOriginalFilename();
     Path filePath = Paths.get(fileStoragePath, storedFileName);
     Files.createDirectories(filePath.getParent());
     Files.write(filePath, file.getBytes());
@@ -68,7 +68,6 @@ public class FileServiceImpl implements FileService{
     fileEntity.setCo_authors(coAuthors);
     fileEntity.setArticle_description(articleDescription);
     fileEntity.setKey_words(keyWords);
-    fileEntity.setSection(section);
     fileEntity.setFile_path(filePath.toString());
     fileEntity.setConference(conference);
     fileEntity.setStatus("SENT");
