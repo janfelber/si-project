@@ -31,8 +31,6 @@ public class article {
 
     private String section;
 
-    private String status;
-
     private String file_path;
 
     @ManyToOne
@@ -42,4 +40,8 @@ public class article {
     @ManyToOne
     @JoinColumn(name = "\"conference_id\"")
     private conference conference;
+
+    @ManyToOne
+    @JoinColumn(name = "\"section_id\"")
+    private Sections sections;
 }
