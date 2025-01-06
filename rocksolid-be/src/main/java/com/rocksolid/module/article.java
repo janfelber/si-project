@@ -33,8 +33,6 @@ public class article {
 
     private String file_path;
 
-    private String status;
-
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private User user;

@@ -138,7 +138,7 @@ export default {
       conferenceId: this.id,
       userInConference: null,
       articleInReview: null,
-      sections: []
+      sections: [],
       dateFrom: "",
       dateTo: "",
       currentDate: new Intl.DateTimeFormat('en-CA').format(new Date())
