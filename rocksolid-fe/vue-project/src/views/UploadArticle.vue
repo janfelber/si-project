@@ -3,7 +3,7 @@
 
         <div v-if="articleInReview === true">
           <h1>
-            You aleready have an article in review
+            You already have an article in review
           </h1>
         </div>
 
