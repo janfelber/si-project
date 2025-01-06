@@ -13,11 +13,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.rocksolid.module.Sections;
 import com.rocksolid.module.article;
 import com.rocksolid.module.User;
 import com.rocksolid.module.conference;
 import com.rocksolid.repository.ConferenceRepository;
 import com.rocksolid.repository.FileRepository;
+import com.rocksolid.repository.SectionRepository;
 import com.rocksolid.repository.UserRepository;
 
 @Service
@@ -28,11 +30,14 @@ public class FileServiceImpl implements FileService{
   private final FileRepository fileRepository;
   private final UserRepository userRepository;
   private final ConferenceRepository conferenceRepository;
+  private final SectionRepository sectionRepository;
 
-  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository, final ConferenceRepository conferenceRepository) {
+  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository, final ConferenceRepository conferenceRepository,
+      final SectionRepository sectionRepository) {
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
     this.conferenceRepository = conferenceRepository;
+    this.sectionRepository = sectionRepository;
   }
 
   @Override
@@ -43,7 +48,7 @@ public class FileServiceImpl implements FileService{
       String coAuthors,
       String articleDescription,
       String keyWords,
-      String section,
+      Long sectionId,
       MultipartFile file,
       Long conferenceId) throws IOException {
 
@@ -54,6 +59,8 @@ public class FileServiceImpl implements FileService{
     conference conference = conferenceRepository.findById(conferenceId)
         .orElseThrow(() -> new RuntimeException("Conference not found"));
 
+    Sections section = sectionRepository.findById(sectionId)
+        .orElseThrow(() -> new RuntimeException("Section not found"));
 
     String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
     Path filePath = Paths.get(fileStoragePath, storedFileName);
@@ -68,7 +75,7 @@ public class FileServiceImpl implements FileService{
     fileEntity.setCo_authors(coAuthors);
     fileEntity.setArticle_description(articleDescription);
     fileEntity.setKey_words(keyWords);
-    fileEntity.setSection(section);
+    fileEntity.setSections(section);
     fileEntity.setFile_path(filePath.toString());
     fileEntity.setConference(conference);
     fileEntity.setStatus("SENT");

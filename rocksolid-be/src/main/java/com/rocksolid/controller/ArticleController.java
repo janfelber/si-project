@@ -1,5 +1,6 @@
 package com.rocksolid.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ArticleAdminResponseDto;
+import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.article;
 import com.rocksolid.service.ArticleService;
+import com.rocksolid.service.SectionService;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,12 @@ public class ArticleController {
 
   private ArticleService articleService;
   private CurrentUserService currentUserService;
+  private SectionService sectionService;
+
+  @GetMapping("/sections")
+  public List<SectionResponseDTO> getAllSections() {
+    return sectionService.getAllSectionNames();
+  }
 
   @GetMapping("/status/{conferenceId}")
   public String getArticleStatus(@PathVariable Long conferenceId) {

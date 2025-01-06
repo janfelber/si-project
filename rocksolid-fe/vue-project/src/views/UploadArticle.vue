@@ -75,7 +75,32 @@
                 <p>Vybraná možnosť: {{ selectedOption }}</p>
               </v-container>
 
+
+
+              <p>{{ sections }}</p>
+
             </v-col>
+
+            <v-col>
+              <v-container>
+                <v-radio-group v-model="selectedOption" row>
+                  <v-radio
+                      v-for="section in sections"
+                      :key="section.id"
+                      :label="section.sectionName"
+                      :value="section.id"
+                  ></v-radio>
+                </v-radio-group>
+
+                <v-divider></v-divider>
+
+                <p>Vybraná možnosť: {{ selectedOption }}</p>
+              </v-container>
+
+              <p>{{ sections }}</p>
+
+            </v-col>
+
 
             <v-col cols="12">
               <v-btn @click="uploadFile()" block>
@@ -109,13 +134,31 @@ export default {
       keyWords: '',
       file: null,
       fileName: '',
-      selectedOption: '',
+      selectedOption: null,
       conferenceId: this.id,
       userInConference: null,
       articleInReview: null,
+      sections: []
     };
   },
   methods: {
+    async fetchSections() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/sections`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        this.sections = response.data;
+      } catch (error) {
+        console.error("Error checking user :", error);
+      }
+    },
     async getUser() {
       try {
         const token = localStorage.getItem("token");
@@ -155,7 +198,6 @@ export default {
           this.articleInReview = true;
         } else {
           this.articleInReview = false;
-          this.articleStatusMessage = "Article status is unknown.";
         }
 
       } catch (error) {
@@ -203,7 +245,7 @@ export default {
         formData.append('coAuthors', this.coAuthors);
         formData.append('articleDescription', this.articleDescription);
         formData.append('keyWords', this.keyWords);
-        formData.append('section', this.selectedOption);
+        formData.append('sectionId', this.selectedOption);
         formData.append('firstName', this.firstname);
         formData.append('lastName', this.lastname);
         formData.append('conferenceId', this.conferenceId);
@@ -216,7 +258,7 @@ export default {
                 'Content-Type': 'multipart/form-data'
               }
             });
-
+        console.log(this.selectedOption.id);
         if (response.status === 200) {
           alert('Súbor bol úspešne nahratý!');
           this.firstname = '';
@@ -228,6 +270,7 @@ export default {
           this.articleDescription = '';
           this.keyWords = '';
           this.articleInReview = true;
+
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
@@ -238,6 +281,7 @@ export default {
   },
   mounted() {
     this.getUser();
+    this.fetchSections();
     this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
   }

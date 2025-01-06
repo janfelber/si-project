@@ -1,11 +1,11 @@
 package com.rocksolid.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.rocksolid.dto.SectionResponseDTO;
+import com.rocksolid.module.Sections;
 import com.rocksolid.module.article;
+import com.rocksolid.service.ArticleService;
 import com.rocksolid.service.FileService;
+import com.rocksolid.service.SectionService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/file")
 @CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/api/v1/file")
 public class FileController {
 
   private final FileService fileService;
@@ -37,11 +41,11 @@ public class FileController {
       @RequestParam("coAuthors") String coAuthors,
       @RequestParam("articleDescription") String articleDescription,
       @RequestParam("keyWords") String keyWords,
-      @RequestParam("section") String section,
+      @RequestParam("sectionId") Long sectionId,
       @RequestParam("file") MultipartFile file,
       @RequestParam("conferenceId") Long conferenceId) {
     try {
-      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,section,file, conferenceId);
+      article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -59,7 +63,5 @@ public class FileController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
-
-
 
 }

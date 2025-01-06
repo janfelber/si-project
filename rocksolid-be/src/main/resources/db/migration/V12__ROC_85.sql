@@ -9,3 +9,7 @@ ALTER TABLE rock_solid.article
   ADD COLUMN section_id BIGINT, ADD CONSTRAINT fk_section_id
   FOREIGN KEY (section_id)
     REFERENCES rock_solid.sections (id);
+
+INSERT INTO rock_solid.sections (name) VALUES ('General');
+INSERT INTO rock_solid.sections (name) VALUES ('News');
+INSERT INTO rock_solid.sections (name) VALUES ('Sport');
