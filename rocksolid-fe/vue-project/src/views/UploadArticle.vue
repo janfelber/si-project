@@ -62,24 +62,16 @@
                     dense
                 ></v-file-input>
             </v-col>
-            <v-col>
-              <v-container>
-                <v-radio-group v-model="selectedOption" row>
-                  <v-radio label="Sekcia1" value="Sekcia1"></v-radio>
-                  <v-radio label="Sekcia2" value="Sekcia2"></v-radio>
-                  <v-radio label="Sekcia3" value="Sekcia3"></v-radio>
-                </v-radio-group>
 
-                <v-divider></v-divider>
+            <div class="form-group">
+            <label for="section">Vyberte sekciu:</label>
+            <select v-model="selectedOption">
+              <option v-for="section in sections" :key="section.id" :value="section.id" :selected="section.id === selectedOption">
+                {{ section.sectionName }}
+              </option>
+            </select>
+          </div>
 
-                <p>Vybraná možnosť: {{ selectedOption }}</p>
-              </v-container>
-
-
-
-              <p>{{ sections }}</p>
-
-            </v-col>
 
             <v-col>
               <v-container>
@@ -139,6 +131,9 @@ export default {
       userInConference: null,
       articleInReview: null,
       sections: [],
+      section: null,
+      sectionId: '',
+      sectionName: '',
       dateFrom: "",
       dateTo: "",
       currentDate: new Intl.DateTimeFormat('en-CA').format(new Date())
@@ -158,6 +153,10 @@ export default {
             }
         );
         this.sections = response.data;
+        this.sections.forEach(section => {
+          this.section = `${section.sectionId} ${section.sectionName}`;
+        })
+        console.log(this.sections);
       } catch (error) {
         console.error("Error checking user :", error);
       }
