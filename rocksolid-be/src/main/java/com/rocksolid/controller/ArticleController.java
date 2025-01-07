@@ -40,7 +40,6 @@ public class ArticleController {
   @GetMapping("/status/{conferenceId}")
   public String getArticleStatus(@PathVariable Long conferenceId) {
     final Long currentUserId = currentUserService.getCurrentUserId();
-    System.out.println("currentUserId: " + currentUserId);
     Optional<Article> article = articleService.getArticleStatus(conferenceId, currentUserId);
     if (article.isPresent()) {
       final String status = article.get().getStatus();
@@ -64,7 +63,7 @@ public class ArticleController {
 
   @GetMapping("/all")
   @PreAuthorize("hasAuthority('admin:read')")
-  public Iterable<ArticleAdminResponseDto> getAllArticles() {
+  public List<ArticleAdminResponseDto> getAllArticles() {
     return articleService.getAllArticlesInSystem();
   }
 

@@ -12,7 +12,7 @@ public class ArticleAdminResponseDto {
   private String articleDescription;
   private String keyWords;
   private String conferenceName;
-  // private String section;
+  private String section;
   private String firstName;
   private String lastName;
   private Long userId;
