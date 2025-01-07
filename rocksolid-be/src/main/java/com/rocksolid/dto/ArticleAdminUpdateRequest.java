@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminArticleUpdateRequest {
+public class ArticleAdminUpdateRequest {
   private Long reviewerId;
   private Long sectionId;
 }

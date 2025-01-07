@@ -1,5 +1,7 @@
 package com.rocksolid.module;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +50,6 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "\"reviewer_id\"")
     private User reviewer;
+
+    private Date created_at;
 }

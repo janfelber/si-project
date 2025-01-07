@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rocksolid.auth.CurrentUserService;
-import com.rocksolid.dto.AdminArticleUpdateRequest;
+import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
+import com.rocksolid.dto.ArticleReviewerResponseDto;
 import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.Article;
 import com.rocksolid.service.ArticleService;
@@ -75,8 +76,14 @@ public class ArticleController {
 
   @PutMapping("/admin/update/{articleId}")
   @PreAuthorize("hasAuthority('admin:update')")
-  public Article adminUpdateArticle(@PathVariable final Long articleId, @RequestBody final AdminArticleUpdateRequest updateArticleRequest) {
+  public Article adminUpdateArticle(@PathVariable final Long articleId, @RequestBody final ArticleAdminUpdateRequest updateArticleRequest) {
     return articleService.adminUpdateArticle(articleId, updateArticleRequest);
   }
+
+  @GetMapping("/reviewer/assigned")
+  public List<ArticleReviewerResponseDto> getArticlesForReviewer(final Long reviewerId) {
+    return articleService.getArticlesAssignedToReviewer(currentUserService.getCurrentUserId());
+  }
+
 
 }

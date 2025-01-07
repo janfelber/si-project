@@ -26,7 +26,7 @@ const userIdPage = computed(() => {
 
 <style scoped>
 .body {
-  padding-left: 12rem; /* Základný padding pre väčšinu stránok */
+  padding-left: 11.5rem; /* Základný padding pre väčšinu stránok */
 }
 
 .body-no-padding {
