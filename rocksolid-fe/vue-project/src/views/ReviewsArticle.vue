@@ -104,7 +104,6 @@ export default {
 
         this.articles = response.data;
         this.filteredArticles = this.articles;
-        console.log(this.articles);
       } catch (error) {
         console.error("Failed to verify user role:", error);
         this.articles = [];
