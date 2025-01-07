@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminArticleUpdateRequest {
   private Long reviewerId;
-
+  private Long sectionId;
 }

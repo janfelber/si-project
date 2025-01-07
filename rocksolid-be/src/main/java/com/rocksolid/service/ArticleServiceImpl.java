@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.rocksolid.dto.AdminArticleUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
 import com.rocksolid.module.Article;
+import com.rocksolid.module.Sections;
 import com.rocksolid.module.User;
 import com.rocksolid.repository.ArticleRepository;
+import com.rocksolid.repository.SectionRepository;
 import com.rocksolid.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ public class ArticleServiceImpl implements ArticleService {
   private final ArticleRepository articleRepository;
 
   private final UserRepository userRepository;
+
+  private final SectionRepository sectionRepository;
 
   @Override
   public Optional<Article> getArticleStatus(Long conferenceId, Long userId) {
@@ -72,11 +76,17 @@ public class ArticleServiceImpl implements ArticleService {
     final Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-    final Long reviewerId = updateArticleRequest.getReviewerId();
-    final User reviewer = userRepository.findById(reviewerId)
-        .orElseThrow(() -> new RuntimeException("Reviewer not found"));
+    if (updateArticleRequest.getReviewerId() != null) {
+      final User reviewer = userRepository.findById(updateArticleRequest.getReviewerId())
+          .orElseThrow(() -> new RuntimeException("Reviewer not found"));
+      article.setReviewer(reviewer);
+    }
 
-    article.setReviewer(reviewer);
+    if (updateArticleRequest.getSectionId() != null) {
+      final Sections section = sectionRepository.findById(updateArticleRequest.getSectionId())
+          .orElseThrow(() -> new RuntimeException("Section not found"));
+      article.setSections(section);
+    }
 
     return articleRepository.save(article);
   }

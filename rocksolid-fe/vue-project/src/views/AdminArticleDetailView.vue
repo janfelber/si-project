@@ -31,17 +31,11 @@
               <input v-model="coAuthors">
             </div>
           </div>
-<!--          <div class="form-group">-->
-<!--            <label>Sekcia</label>-->
-<!--            <div class="form-input">-->
-<!--              <input v-model="section">-->
-<!--            </div>-->
-<!--          </div>-->
           <div class="form-group">
             <label for="section">Vyberte sekciu:</label>
             <div class="form-input">
-            <select v-model="selectedOption">
-              <option v-for="section in sections" :key="section.id" :value="section.id" :selected="section.id === selectedOption">
+            <select v-model="selectedSection">
+              <option v-for="section in sections" :key="section.id" :value="section.id" :selected="section.id === selectedSection">
                 {{ section.sectionName }}
               </option>
             </select>
@@ -76,9 +70,6 @@
       </div>
     </div>
     <div class="v-col-7">
-      <div>
-        <p>Aktuálne vybraná sekcia: {{ selectedOption }}</p>
-      </div>
       <div class="card">
         <v-card-title class="card-title">Autor</v-card-title>
         <div class="card-body">
@@ -136,10 +127,8 @@ export default {
       reviewerFullName: '',
       reviewerId: null,
       sections: [],
-      section: null,
-      sectionId: '',
-      sectionName: '',
-      selectedOption: '',
+      selectedSection: '',
+      sectionName: ''
     };
   },
   methods: {
@@ -164,7 +153,7 @@ export default {
         console.error("Error checking user :", error);
       }
     },
-    async getUserData() {
+    async getArticleData() {
       try {
         const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:8080/api/v1/article/' + this.id,
@@ -180,12 +169,15 @@ export default {
         this.articleDescription = this.article.articleDescription;
         this.keyWords = this.article.keyWords;
         this.coAuthors = this.article.coAuthors;
-        this.section = this.article.section;
         this.conferenceName = this.article.conferenceName;
         this.firstName = this.article.firstName;
         this.lastName = this.article.lastName;
         this.articleStatus = this.article.status;
         this.selectedReviewer = this.article.reviewerId;
+        const matchedSection = this.sections.find(section => section.sectionName === this.article.section);
+        if (matchedSection) {
+          this.selectedSection = matchedSection.id;
+        }
       } catch (error) {
         console.error('Failed to fetch user:', error);
       }
@@ -202,7 +194,6 @@ export default {
         console.log("author information", response.data);
         this.user_data = response.data;
         this.email = this.user_data.email;
-        this.isReviewer = this.user_data.role === "REVIEWER";
       } catch (error) {
         console.error("Failed to fetch user:", error);
       }
@@ -228,12 +219,14 @@ export default {
       try {
         const token = localStorage.getItem('token');
         const response = await axios.put(`http://localhost:8080/api/v1/article/admin/update/${this.id}`, {
+          sectionId: this.selectedSection,
           reviewerId: this.selectedReviewer
         }, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+        console.log('Secion id:', this.selectedSection);
         console.log('Article updated:', response.data);
       } catch (error) {
         console.error('Failed to update reviewer:', error);
@@ -243,7 +236,7 @@ export default {
   mounted: async function() {
     try {
       await this.fetchSections();
-      await this.getUserData();
+      await this.getArticleData();
       await this.getAuthorInformation();
       await this.getAllReviewers();
     } catch (error) {
