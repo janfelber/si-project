@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.rocksolid.dto.AdminArticleUpdateRequest;
+import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
+import com.rocksolid.dto.ArticleReviewerResponseDto;
 import com.rocksolid.module.Article;
 import com.rocksolid.module.Sections;
 import com.rocksolid.module.User;
@@ -72,7 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public Article adminUpdateArticle(final Long articleId, final AdminArticleUpdateRequest updateArticleRequest) {
+  public Article adminUpdateArticle(final Long articleId, final ArticleAdminUpdateRequest updateArticleRequest) {
     final Article article = articleRepository.findById(articleId)
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
@@ -89,6 +90,23 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     return articleRepository.save(article);
+  }
+
+  @Override
+  public List<ArticleReviewerResponseDto> getArticlesAssignedToReviewer(final Long reviewerId) {
+    userRepository.findById(reviewerId)
+        .orElseThrow(() -> new RuntimeException("Reviewer not found"));
+
+    return articleRepository.findByReviewerId(reviewerId)
+        .stream()
+        .map(article -> new ArticleReviewerResponseDto(
+            article.getId(),
+            article.getArticle_name(),
+            article.getArticle_description(),
+            article.getKey_words(),
+            article.getSections().getName(),
+            article.getCreated_at()
+        )).collect(Collectors.toList());
   }
 
 }

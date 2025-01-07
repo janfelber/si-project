@@ -3,8 +3,9 @@ package com.rocksolid.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.rocksolid.dto.AdminArticleUpdateRequest;
+import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
+import com.rocksolid.dto.ArticleReviewerResponseDto;
 import com.rocksolid.module.Article;
 
 public interface ArticleService {
@@ -14,5 +15,7 @@ public interface ArticleService {
 
   ArticleAdminResponseDto getArticleById(Long id);
 
-  Article adminUpdateArticle(Long articleId, AdminArticleUpdateRequest updateArticleRequest);
+  Article adminUpdateArticle(Long articleId, ArticleAdminUpdateRequest updateArticleRequest);
+
+  List<ArticleReviewerResponseDto> getArticlesAssignedToReviewer(Long reviewerId);
 }

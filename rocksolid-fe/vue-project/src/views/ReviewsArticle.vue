@@ -31,24 +31,33 @@
             <div class="card-header-green"></div>
 
             <v-card-title class="text-h6 font-weight-bold">
-              {{ article.title }}
+              {{ article.articleName }}
             </v-card-title>
             <v-card-subtitle class="text-body-2 grey--text">
-              {{ article.date }}
+              {{ article.createdAt }}
             </v-card-subtitle>
             <v-divider></v-divider>
-            <v-card-text class="py-3 text-truncate">
-              {{ article.description }}
+            <v-card-text class="py-3">
+              <div class="text-truncate">
+                {{ article.description }}
+              </div>
             </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn
-                  color="green darken-1"
-                  class="white--text"
-                  @click="reviewArticle(article.id)"
-              >
-                Recenzovať
-              </v-btn>
-            </v-card-actions>
+            <v-card-actions>
+            <v-row class="w-100" justify="space-between">
+              <v-col class="d-flex justify-start " style="padding-left: 1rem">
+                <button class="btn btn-primary review" @click="reviewArticle(article.id)" style="color: white">Recenzovat</button>
+              </v-col>
+
+              <v-col class="d-flex justify-end">
+                <v-btn
+                    class="blue-darken-1 white--text"
+                    @click="downloadArticle(article.id)"
+                >
+                  <i class="fa fa-download" style="cursor: pointer;"></i>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
@@ -58,28 +67,42 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       searchQuery: '',
-      articles: [
-        { id: 1, title: 'Article 1', description: 'Description for article 1.', date: '2025-01-04' },
-        { id: 2, title: 'Article 2', description: 'Description for article 2.', date: '2025-01-02' },
-        { id: 3, title: 'Article 3', description: 'Description for article 3.', date: '2025-01-03' },
-        { id: 4, title: 'Article 4', description: 'Description for article 4.', date: '2025-01-01' },
-        { id: 5, title: 'Article 5', description: 'Description for article 5.', date: '2025-01-05' },
-      ],
+      articles: [],
       filteredArticles: []
     };
   },
   mounted() {
     this.filteredArticles = this.articles;
+    this.fetchAvailableArticles();
   },
   methods: {
     filter() {
       this.filteredArticles = this.articles.filter(article => {
         return article.title.toLowerCase().includes(this.searchQuery.toLowerCase());
       });
+    },
+    async fetchAvailableArticles() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/v1/article/reviewer/assigned", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.articles = response.data;
+        this.filteredArticles = this.articles;
+        console.log(this.articles);
+      } catch (error) {
+        console.error("Failed to verify user role:", error);
+        this.articles = [];
+      }
     },
 
     reset() {
@@ -116,10 +139,19 @@ export default {
   color: #1b5e20;
 }
 
+.v-card-text {
+  margin-bottom: 1rem;
+}
+
+.v-card-text .text-truncate {
+  font-size: 0.875rem;
+  color: #555;
+}
+
 .filter-header {
   align-items:      center;
   border-bottom:    1px solid #d8d8f0;
-  background-color: rgba(178, 224, 217, 0.17);
+  background-color: #f7f7fc;
   display:          flex;
   padding:          .75rem 2.5rem;
 
@@ -179,8 +211,17 @@ label {
   padding: 6px 12px;
 }
 
+.review {
+  font-size: 15px;
+  padding: 4px 8px;
+  height: auto;
+  width: auto;
+  font-weight: bold;
+  background-color: #1EB386;
+  border-color: #1EB386;
+}
+
 .form-input input:focus {
-  border: 1px solid #1EB386;
   outline: none;
 }
 </style>

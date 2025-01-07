@@ -1,5 +1,6 @@
 package com.rocksolid.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,7 @@ import com.rocksolid.module.Article;
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
   Optional<Article> findByConferenceIdAndUserId(Long conferenceId, Long userId);
+
+  List<Article> findByReviewerId(Long reviewerId);
 
 }
