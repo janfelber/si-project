@@ -34,7 +34,7 @@
               {{ article.articleName }}
             </v-card-title>
             <v-card-subtitle class="text-body-2 grey--text">
-              {{ article.createdAt }}
+              Nahrané: {{ dayjs(article.createdAt).format('D.M.YYYY') }}
             </v-card-subtitle>
             <v-divider></v-divider>
             <v-card-text class="py-3">
@@ -68,8 +68,14 @@
 
 <script>
 import axios from 'axios';
+import dayjs from 'dayjs';
 
 export default {
+  computed: {
+    dayjs() {
+      return dayjs
+    }
+  },
   data() {
     return {
       searchQuery: '',
