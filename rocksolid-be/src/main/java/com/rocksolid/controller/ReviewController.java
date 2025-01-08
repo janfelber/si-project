@@ -25,4 +25,9 @@ public class ReviewController {
     return reviewService.createReview(reviewRequestDto);
   }
 
+  @PostMapping("/rejectReview")
+  public Reviews rejectReview(@RequestBody ReviewRequestDTO reviewRequestDto) {
+    return reviewService.rejectReview(reviewRequestDto);
+  }
+
 }

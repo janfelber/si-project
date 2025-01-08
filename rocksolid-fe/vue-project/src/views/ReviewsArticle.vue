@@ -116,7 +116,7 @@ export default {
     },
 
     reviewArticle(id) {
-      alert(`Otvoriť článok č. ${id} na recenzovanie`);
+      this.$router.push({ name: 'reviewArticle', params: { id: id }});
     }
   }
 };
