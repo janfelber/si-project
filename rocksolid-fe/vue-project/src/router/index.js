@@ -17,6 +17,7 @@ import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ReviewView from "@/views/ReviewView.vue";
 import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
+import AdminCategoriesView from "@/views/AdminCategoriesView.vue";
 import ArticleHistory from "@/views/ArticleHistory.vue";
 import ArticleReviewResponse from "@/views/ArticleReviewResponse.vue";
 
@@ -72,6 +73,15 @@ const router = createRouter({
       meta: {
         requiresAdmin: true,
         title: 'Article Detail'
+      },
+    },
+    {
+      path: '/admin/categories',
+      name: 'AdminCategoriesView',
+      component: AdminCategoriesView,
+      meta: {
+        requiresAdmin: true,
+        title: 'Categories'
       },
     },
     {
