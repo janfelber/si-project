@@ -34,5 +34,11 @@ export const navBarData = [
         icon: 'mdi-account-multiple-outline',
         label: 'Articles',
         role: ["ADMIN"]
-    }
+    },
+    {
+        routerLink: '/web/history-articles',
+        icon: 'mdi-file-clock-outline',
+        label: 'Article History',
+        role: ["STUDENT"]
+    },
 ];

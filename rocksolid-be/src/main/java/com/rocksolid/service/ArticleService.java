@@ -18,4 +18,6 @@ public interface ArticleService {
   Article adminUpdateArticle(Long articleId, ArticleAdminUpdateRequest updateArticleRequest);
 
   List<ArticleReviewerResponseDto> getArticlesAssignedToReviewer(Long reviewerId);
+
+  List<ArticleReviewerResponseDto> getArticlesByUserId(Long userId);
 }

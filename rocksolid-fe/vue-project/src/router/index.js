@@ -17,6 +17,7 @@ import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import GradingView from "@/views/GradingView.vue";
 import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
+import ArticleHistory from "@/views/ArticleHistory.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -119,6 +120,15 @@ const router = createRouter({
       meta: {
         requiresReviewer: true,
         title: 'Review Conferences'
+      },
+    },
+    {
+      path: '/web/history-articles',
+      name: 'ArticleHistory',
+      component: ArticleHistory,
+      meta: {
+        requiresStudent: true,
+        title: 'Article History'
       },
     },
     {
