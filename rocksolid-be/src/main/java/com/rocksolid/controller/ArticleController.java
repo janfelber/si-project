@@ -99,5 +99,5 @@ public class ArticleController {
   public List<ArticleReviewerResponseDto> getArticleByUserId(@PathVariable final Long id) {
     return articleService.getArticlesByUserId(id);
   }
-  
+
 }
