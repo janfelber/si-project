@@ -109,4 +109,19 @@ public class ArticleServiceImpl implements ArticleService {
         )).collect(Collectors.toList());
   }
 
+  @Override
+  public List<ArticleReviewerResponseDto> getArticlesByUserId(Long userId){
+    userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    return articleRepository.findByUserId(userId)
+            .stream()
+            .map(article -> new ArticleReviewerResponseDto(
+                    article.getId(),
+                    article.getArticle_name(),
+                    article.getArticle_description(),
+                    article.getKey_words(),
+                    article.getSections().getName(),
+                    article.getCreated_at()
+            )).collect(Collectors.toList());
+  }
 }

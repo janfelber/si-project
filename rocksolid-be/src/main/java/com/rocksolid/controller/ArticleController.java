@@ -85,5 +85,10 @@ public class ArticleController {
     return articleService.getArticlesAssignedToReviewer(currentUserService.getCurrentUserId());
   }
 
-
+  @GetMapping("/user/{id}")
+  @PreAuthorize("hasAuthority('student:read')")
+  public List<ArticleReviewerResponseDto> getArticleByUserId(@PathVariable final Long id) {
+    return articleService.getArticlesByUserId(id);
+  }
+  
 }
