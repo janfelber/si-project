@@ -92,6 +92,7 @@ name: "ArticleHistory",
       articles: [],
       filteredArticles: [],
       user_id: null,
+      fileName: null,
     };
   },
   mounted() {
@@ -120,7 +121,6 @@ name: "ArticleHistory",
     },
     async fetchAvailableArticles() {
       try {
-        console.log(this.user_id);
         const token = localStorage.getItem("token");
         const response = await axios.get("http://localhost:8080/api/v1/article/user/" + this.user_id,
             {
@@ -136,10 +136,64 @@ name: "ArticleHistory",
         this.articles = [];
       }
     },
-
+    async getFileName(id){
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/v1/file/fileName/" + id,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+        this.fileName = response.data;
+      } catch (error) {
+        console.error("Failed to fetch article name", error);
+      }
+    },
     reset() {
       this.searchQuery = '';
       this.filteredArticles = this.articles;
+    },
+    downloadArticle(id){
+      this.getFileName(id);
+      let fileType;
+      if(this.fileName != null){
+        fileType = this.fileName.substring(this.fileName.lastIndexOf("."))
+      }
+      const token = localStorage.getItem("token");
+      const url = "http://localhost:8080/api/v1/file/download/" + id;
+      axios
+          .get(url, {
+            responseType: "blob",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            let type;
+            switch (fileType) {
+              case "pdf":
+                type = 'application/pdf';
+                break;
+              case "docx":
+                type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                break;
+              case "doc":
+                type = "application/msword";
+                break;
+            }
+            const blob = new Blob([response.data], { type: type });
+            const link = document.createElement("a");
+            link.href = window.URL.createObjectURL(blob);
+            link.download = this.fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          })
+          .catch((error) => {
+            console.error("File download failed:", error);
+          });
+
     },
   }
 };
