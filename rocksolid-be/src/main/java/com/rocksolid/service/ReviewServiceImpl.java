@@ -33,11 +33,13 @@ public class ReviewServiceImpl implements ReviewService {
     Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-    Article customArticle = article.builder()
-        .id(1L)  // Priradíš custom ID pre Article
-        .build();
-    Reviews review = Reviews.builder().article_id(customArticle).build();
 
+    Article articleId = article.builder()
+        .id(article.getId())
+        .build();
+    Reviews review = Reviews.builder().article_id(articleId).build();
+
+    article.setStatus("ACCEPTED");
     reviewRepository.save(review);
 
     Map<Long, String> columnValues = reviewRequestDto.getColumnValues();
@@ -45,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
       Long columnId = entry.getKey();
       String value = entry.getValue();
 
-      // Načítanie stĺpca na základe ID
+
       Columns column = columnRepository.findById(columnId)
           .orElseThrow(() -> new RuntimeException("Column not found"));
 
@@ -56,10 +58,48 @@ public class ReviewServiceImpl implements ReviewService {
           .value(value)       // Hodnota recenzie pre tento stĺpec
           .build();
 
+
       reviewDetailsRepository.save(reviewDetails);
     }
 
     return review;
   }
+
+  public Reviews rejectReview(ReviewRequestDTO reviewRequestDto) {
+    Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
+        .orElseThrow(() -> new RuntimeException("Article not found"));
+
+
+    Article articleId = article.builder()
+        .id(article.getId())
+        .build();
+    Reviews review = Reviews.builder().article_id(articleId).build();
+
+    article.setStatus("REJECTED");
+    reviewRepository.save(review);
+
+    Map<Long, String> columnValues = reviewRequestDto.getColumnValues();
+    for (Map.Entry<Long, String> entry : columnValues.entrySet()) {
+      Long columnId = entry.getKey();
+      String value = entry.getValue();
+
+
+      Columns column = columnRepository.findById(columnId)
+          .orElseThrow(() -> new RuntimeException("Column not found"));
+
+      // Vytvorenie a uloženie detailu recenzie (pre každý column_id)
+      ReviewDetails reviewDetails = ReviewDetails.builder()
+          .review_id(review) // Reference na recenziu
+          .column_id(column)  // Reference na stĺpec
+          .value(value)       // Hodnota recenzie pre tento stĺpec
+          .build();
+
+
+      reviewDetailsRepository.save(reviewDetails);
+    }
+
+    return review;
+  }
+
 
 }

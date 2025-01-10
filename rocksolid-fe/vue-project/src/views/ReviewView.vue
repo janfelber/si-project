@@ -15,6 +15,12 @@
       </template>
     </div>
     <button @click="submitReview()">Submit Review</button> <!-- Submit Button -->
+
+
+  </div>
+
+  <div>
+    <button @click="rejectReview()">Reject Article</button> <!-- Submit Button -->
   </div>
 </template>
 
@@ -27,11 +33,13 @@ export default {
     return {
       columns: [],
       selectedChoices: {},
-      loading: true  // Track loading state
+      loading: true,
+      article_id: this.$route.params.id,
     };
   },
   mounted() {
     this.fetchColumns();
+    console.log(this.article_id)
   },
   methods: {
     // Axios to fetch columns data
@@ -57,7 +65,7 @@ export default {
     async submitReview() {
       try {
         const token = localStorage.getItem("token");
-        const article_id = 1; // Example, replace with actual article ID
+        const article_id = this.article_id
 
         const reviewRequest = {
           article_id,
@@ -74,7 +82,32 @@ export default {
               },
             }
         );
+        console.log(article_id)
+        console.log('Review submitted successfully:', response.data);
+      } catch (error) {
+        console.error('Error submitting review:', error);
+      }
+    },
+    async rejectReview() {
+      try {
+        const token = localStorage.getItem("token");
+        const article_id = this.article_id
 
+        const reviewRequest = {
+          article_id,
+          columnValues: this.selectedChoices,
+        };
+
+        const response = await axios.post(
+            `http://localhost:8080/api/v1/review/rejectReview`,
+            reviewRequest,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        console.log(article_id)
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
         console.error('Error submitting review:', error);

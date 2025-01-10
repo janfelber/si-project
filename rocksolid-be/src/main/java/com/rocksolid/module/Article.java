@@ -35,6 +35,8 @@ public class Article {
 
     private String file_path;
 
+    private Date created_at;
+
     @ManyToOne
     @JoinColumn(name = "\"user_id\"")
     private User user;
@@ -50,6 +52,4 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "\"reviewer_id\"")
     private User reviewer;
-
-    private Date created_at;
 }
