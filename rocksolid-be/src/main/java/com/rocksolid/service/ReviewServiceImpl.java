@@ -1,6 +1,7 @@
 package com.rocksolid.service;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -101,5 +102,23 @@ public class ReviewServiceImpl implements ReviewService {
     return review;
   }
 
+  // public Map<String, String> getReviewColumns(Long reviewId) {
+  //   // Načítanie recenzie podľa ID
+  //   Reviews review = reviewRepository.findById(reviewId)
+  //       .orElseThrow(() -> new RuntimeException("Review not found"));
+  //
+  //   // Získanie všetkých detailov recenzie (column_id a hodnoty)
+  //   List<ReviewDetails> reviewDetailsList = reviewDetailsRepository.findByreview_id(review);
+  //
+  //   // Vytvorenie mapy stĺpcov a ich hodnôt
+  //   Map<String, String> columnValues = new HashMap<>();
+  //   for (ReviewDetails reviewDetails : reviewDetailsList) {
+  //     Columns column = reviewDetails.getColumn_id(); // Získanie stĺpca
+  //     String value = reviewDetails.getValue();       // Hodnota recenzie pre tento stĺpec
+  //     columnValues.put(column.getColumn_name(), value);     // Pridanie do mapy
+  //   }
+  //
+  //   return columnValues;
+  // }
 
 }

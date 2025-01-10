@@ -14,4 +14,5 @@ public class ArticleReviewerResponseDto {
   private String keywords;
   private String section;
   private Date createdAt;
+  private String status;
 }
