@@ -128,7 +128,8 @@ export default {
       reviewerId: null,
       sections: [],
       selectedSection: '',
-      sectionName: ''
+      sectionName: '',
+      fileName: null,
     };
   },
   methods: {
