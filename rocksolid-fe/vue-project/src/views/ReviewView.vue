@@ -83,6 +83,7 @@ export default {
             }
         );
         console.log(article_id)
+        console.log(this.selectedChoices)
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
         console.error('Error submitting review:', error);

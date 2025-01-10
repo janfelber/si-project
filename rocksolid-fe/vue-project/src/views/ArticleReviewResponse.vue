@@ -17,7 +17,7 @@ export default {
     async getArticles() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:8080/api/v1/review/article/${this.id}`,
+        const response = await axios.get(`http://localhost:8080/api/v1/review/getReviewByArticleId/${this.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`

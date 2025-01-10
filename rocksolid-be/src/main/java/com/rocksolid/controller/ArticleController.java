@@ -19,6 +19,7 @@ import com.rocksolid.dto.ArticleReviewerResponseDto;
 import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.Article;
 import com.rocksolid.service.ArticleService;
+import com.rocksolid.service.ReviewService;
 import com.rocksolid.service.SectionService;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ public class ArticleController {
   private ArticleService articleService;
   private CurrentUserService currentUserService;
   private SectionService sectionService;
+  private ReviewService reviewService;
 
   @GetMapping("/sections")
   public List<SectionResponseDTO> getAllSections() {
