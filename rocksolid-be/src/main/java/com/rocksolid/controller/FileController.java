@@ -1,12 +1,12 @@
 package com.rocksolid.controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,6 +64,22 @@ public class FileController {
     }
   }
 
+  @GetMapping("/download/{id}")
+  public ResponseEntity<byte[]> getFileByArticleId (@PathVariable Long id) {
+    try{
+      byte[] file = fileService.getFileByArticleId(id);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+      headers.setContentDisposition(ContentDisposition.attachment()
+              .build());
+      return new ResponseEntity<>(file, headers, HttpStatus.OK);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+  }
 
-
+  @GetMapping("/fileName/{id}")
+  public String getFileName (@PathVariable Long id) throws IOException {
+    return fileService.getFileName(id);
+  }
 }

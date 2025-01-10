@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 
+import com.rocksolid.repository.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,13 +19,10 @@ import com.rocksolid.module.Sections;
 import com.rocksolid.module.Article;
 import com.rocksolid.module.User;
 import com.rocksolid.module.conference;
-import com.rocksolid.repository.ConferenceRepository;
-import com.rocksolid.repository.FileRepository;
-import com.rocksolid.repository.SectionRepository;
-import com.rocksolid.repository.UserRepository;
 
 @Service
 public class FileServiceImpl implements FileService{
+  private final ArticleRepository articleRepository;
   @Value("${file.storage.path}")
   private String fileStoragePath;
 
@@ -33,11 +32,12 @@ public class FileServiceImpl implements FileService{
   private final SectionRepository sectionRepository;
 
   public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository, final ConferenceRepository conferenceRepository,
-      final SectionRepository sectionRepository) {
+                         final SectionRepository sectionRepository, ArticleRepository articleRepository) {
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
     this.conferenceRepository = conferenceRepository;
     this.sectionRepository = sectionRepository;
+    this.articleRepository = articleRepository;
   }
 
   @Override
@@ -104,5 +104,27 @@ public class FileServiceImpl implements FileService{
       throw new IllegalStateException("Authentication principal is not an instance of UserDetails");
     }
   }
+
+  @Override
+  public byte[] getFileByArticleId(Long articleId) throws IOException{
+    Optional<Article> article = articleRepository.findById(articleId);
+    if (article.isEmpty()) {
+      throw new RuntimeException("Article not found with ID: " + articleId);
+    }
+    String filePath = article.get().getFile_path();
+    Path path = Paths.get(filePath);
+    return Files.readAllBytes(path);
+  }
+
+  public String getFileName(Long articleId){
+    Optional<Article> article = articleRepository.findById(articleId);
+    if (article.isEmpty()) {
+      throw new RuntimeException("Article not found with ID: " + articleId);
+    }
+    String path = article.get().getFile_path();
+    String fullFileName = path.substring(path.lastIndexOf("\\"));
+    return fullFileName.substring(fullFileName.indexOf("_") + 1);
+  }
+
 
 }
