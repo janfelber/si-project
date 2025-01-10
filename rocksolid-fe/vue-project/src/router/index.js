@@ -15,7 +15,7 @@ import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
 import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
-import GradingView from "@/views/GradingView.vue";
+import ReviewView from "@/views/ReviewView.vue";
 import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
 import ArticleHistory from "@/views/ArticleHistory.vue";
 
@@ -94,13 +94,14 @@ const router = createRouter({
       props:true
     },
     {
-      path: '/grade',
-      component: GradingView,
+      path: '/reviewArticle/:id',
+      component: ReviewView,
+      props: true,
       children: [
         {
           path: '',
-          name: 'grade',
-          component: GradingView,
+          name: 'reviewArticle',
+          component: ReviewView,
         },
       ],
     },

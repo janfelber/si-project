@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -79,6 +80,7 @@ public class FileServiceImpl implements FileService{
     fileEntity.setFile_path(filePath.toString());
     fileEntity.setConference(conference);
     fileEntity.setStatus("SENT");
+    fileEntity.setCreated_at(new Date());
     return fileRepository.save(fileEntity);
   }
 
