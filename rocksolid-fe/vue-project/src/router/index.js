@@ -54,7 +54,10 @@ const router = createRouter({
       path: '/admin/conference',
       name: 'ConferenceView',
       component: ConferenceView,
-      meta: { requiresAdmin: true },
+      meta: {
+        requiresAdmin: true,
+        title: 'Conferences'
+      },
     },
     {
       path: '/admin/articles',
