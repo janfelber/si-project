@@ -27,7 +27,7 @@
               v-for="article in filteredArticles"
               :key="article.id"
           >
-            <v-card class="elevation-3">
+            <v-card class="elevation-3" @click="showArticleReview(article.id)">
               <div class="card-header-green"></div>
 
               <v-card-title class="text-h6 font-weight-bold">
@@ -39,7 +39,7 @@
               <v-divider></v-divider>
               <v-card-text class="py-3">
                 <div class="text-truncate">
-                  {{ article.description }}
+                  Popis: {{ article.description }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
@@ -49,22 +49,27 @@
                 <div class="text-truncate">
                   Kľúčové slová: {{ article.keywords }}
                 </div>
+                <v-divider></v-divider>
+                <div class="text-truncate">
+                  Status: {{ article.status }}
+                </div>
               </v-card-text>
 
               <v-card-actions>
                 <v-row class="w-100" justify="space-between">
 
-                  <v-col class="d-flex justify-end">
-                    <v-btn
-                        class="blue-darken-1 white--text"
-                        @click="downloadArticle(article.id)"
-                    >
-                      <i class="fa fa-download" style="cursor: pointer;"></i>
-                    </v-btn>
-                  </v-col>
+
                 </v-row>
               </v-card-actions>
             </v-card>
+            <v-col class="d-flex justify-end">
+              <v-btn
+                  class="blue-darken-1 white--text"
+                  @click="downloadArticle(article.id)"
+              >
+                <i class="fa fa-download" style="cursor: pointer;"></i>
+              </v-btn>
+            </v-col>
           </v-col>
         </v-row>
       </div>
@@ -136,6 +141,13 @@ name: "ArticleHistory",
         this.articles = [];
       }
     },
+    showArticleReview(id){
+      this.$router.push({ name: 'ArticleReviewResponse', params: { id: id } });
+    },
+    downloadArticle(id){
+      // window.open("http://localhost:8080/api/v1/article/download/" + id, "_blank");
+      console.log("Downloading article with id: " + id);
+
     async getFileName(id){
       try {
         const token = localStorage.getItem("token");

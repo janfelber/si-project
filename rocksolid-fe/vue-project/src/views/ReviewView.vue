@@ -67,11 +67,30 @@ export default {
         const token = localStorage.getItem("token");
         const article_id = this.article_id
 
+        const columnValues = {};
+        const textValues = {};
+
+        // Prejdeme všetky stĺpce
+        for (let columnId in this.selectedChoices) {
+          const value = this.selectedChoices[columnId];
+
+          // Skontrolujeme, či je hodnota číslo alebo text a správne ju priradíme
+          if (typeof value === 'string') {
+            textValues[columnId] = value;
+          } else {
+            columnValues[columnId] = value;
+          }
+        }
+
         const reviewRequest = {
           article_id,
-          columnValues: this.selectedChoices,
+          // columnValues: this.selectedChoices,
+          columnValues,
+          textValues,
         };
 
+        console.log(reviewRequest)
+        console.log(this.selectedChoices)
         // Send review data to backend
         const response = await axios.post(
             `http://localhost:8080/api/v1/review/createReview`,
@@ -83,7 +102,9 @@ export default {
             }
         );
         console.log(article_id)
+
         console.log('Review submitted successfully:', response.data);
+        // console.log('Review submitted successfully:', reviewRequest.data);
       } catch (error) {
         console.error('Error submitting review:', error);
       }

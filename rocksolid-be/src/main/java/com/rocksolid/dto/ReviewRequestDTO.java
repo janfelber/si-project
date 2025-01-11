@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ReviewRequestDTO {
   private Long article_id;
-  private Map<Long, String> columnValues;
+  private Map<Long, Long> columnValues;
+  private Map<Long, String> textValues;
 
 }

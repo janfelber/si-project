@@ -25,8 +25,8 @@ public class Reviews {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "\"article_id\"")
-  private Article article_id;
+  @JoinColumn(name = "\"article\"")
+  private Article article;
 
 
 }

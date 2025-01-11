@@ -1,12 +1,16 @@
 package com.rocksolid.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rocksolid.dto.ReviewRequestDTO;
+import com.rocksolid.dto.ReviewResponseDTO;
 import com.rocksolid.module.Reviews;
 import com.rocksolid.service.ReviewService;
 
@@ -28,6 +32,16 @@ public class ReviewController {
   @PostMapping("/rejectReview")
   public Reviews rejectReview(@RequestBody ReviewRequestDTO reviewRequestDto) {
     return reviewService.rejectReview(reviewRequestDto);
+  }
+
+  // @GetMapping("/getReviewByArticleId/{articleId}")
+  // public Reviews getReviewByArticleId(@PathVariable Long articleId) {
+  //   return reviewService.getReviewByArticleId(articleId);
+  // }
+
+  @GetMapping("/getReviewByArticleId/{articleId}")
+  public ResponseEntity<ReviewResponseDTO> getReviewByArticleId(@PathVariable Long articleId) {
+    return reviewService.getReviewByArticleId(articleId);
   }
 
 }

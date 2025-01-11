@@ -18,18 +18,22 @@ CREATE TABLE rock_solid.reviews (
                                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE rock_solid.review_details (
-  id BIGSERIAL PRIMARY KEY ,
-  review_id BIGINT,
-  column_id BIGINT,
-  value VARCHAR,
-  FOREIGN KEY (column_id) REFERENCES rock_solid.columns(id) ON DELETE CASCADE,
-  FOREIGN KEY (review_id) REFERENCES rock_solid.reviews(id) ON DELETE CASCADE
-);
+
 
 CREATE TABLE rock_solid.choices (
    id BIGSERIAL PRIMARY KEY ,
    choice_name VARCHAR
+);
+
+CREATE TABLE rock_solid.review_details (
+                                         id BIGSERIAL PRIMARY KEY ,
+                                         review_id BIGINT,
+                                         column_id BIGINT,
+                                         value BIGINT,
+                                        text_value VARCHAR,
+                                         FOREIGN KEY (column_id) REFERENCES rock_solid.columns(id) ON DELETE CASCADE,
+                                         FOREIGN KEY (review_id) REFERENCES rock_solid.reviews(id) ON DELETE CASCADE,
+                                         FOREIGN KEY (value) REFERENCES rock_solid.choices(id) ON DELETE CASCADE
 );
 
 CREATE TABLE rock_solid.column_choices (

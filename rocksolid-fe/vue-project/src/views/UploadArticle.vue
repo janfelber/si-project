@@ -15,7 +15,7 @@
 
         <div v-if="articleInReview === true">
           <h1>
-            You already have an article in review
+            Pracu si odovzdal, cakaj na vysledok
           </h1>
         </div>
 

@@ -25,13 +25,17 @@ public class ReviewDetails {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "\"review_id\"")
-  private Reviews review_id;
+  @JoinColumn(name = "\"review\"")
+  private Reviews review;
 
   @ManyToOne
   @JoinColumn(name = "\"column_id\"")
   private Columns column_id;
 
-  private String value;
+  @ManyToOne
+  @JoinColumn(name = "\"value\"")
+  private Choice value;
+
+  private String text_value;
 
 }

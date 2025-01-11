@@ -16,9 +16,11 @@ import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
 import com.rocksolid.dto.ArticleReviewerResponseDto;
+import com.rocksolid.dto.ArticleStudentResponseDto;
 import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.Article;
 import com.rocksolid.service.ArticleService;
+import com.rocksolid.service.ReviewService;
 import com.rocksolid.service.SectionService;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +34,7 @@ public class ArticleController {
   private ArticleService articleService;
   private CurrentUserService currentUserService;
   private SectionService sectionService;
+  private ReviewService reviewService;
 
   @GetMapping("/sections")
   public List<SectionResponseDTO> getAllSections() {
@@ -72,6 +75,12 @@ public class ArticleController {
   @PreAuthorize("hasAuthority('admin:read')")
   public ArticleAdminResponseDto getArticleById(@PathVariable final Long id) {
     return articleService.getArticleById(id);
+  }
+
+  @GetMapping("/student/{id}")
+  @PreAuthorize("hasAuthority('student:read')")
+  public ArticleStudentResponseDto getArticleByIdStudent(@PathVariable final Long id) {
+    return articleService.getArticleByIdStudent(id);
   }
 
   @PutMapping("/admin/update/{articleId}")
