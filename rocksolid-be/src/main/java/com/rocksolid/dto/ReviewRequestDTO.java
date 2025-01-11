@@ -10,5 +10,6 @@ import lombok.Data;
 public class ReviewRequestDTO {
   private Long article_id;
   private Map<Long, Long> columnValues;
+  private Map<Long, String> textValues;
 
 }

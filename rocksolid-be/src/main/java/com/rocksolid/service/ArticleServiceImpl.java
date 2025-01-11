@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
 import com.rocksolid.dto.ArticleReviewerResponseDto;
+import com.rocksolid.dto.ArticleStudentResponseDto;
 import com.rocksolid.module.Article;
 import com.rocksolid.module.Sections;
 import com.rocksolid.module.User;
@@ -70,6 +71,20 @@ public class ArticleServiceImpl implements ArticleService {
             article.getStatus(),
             article.getReviewer() == null ? null : article.getReviewer().getId()
         )).orElseThrow();
+  }
+
+  @Override
+  public ArticleStudentResponseDto getArticleByIdStudent(final Long id) {
+    return articleRepository.findById(id).map(article -> new ArticleStudentResponseDto(
+        article.getArticle_name(),
+        article.getCo_authors(),
+        article.getArticle_description(),
+        article.getKey_words(),
+        article.getSections().getName(),
+        article.getFirst_name(),
+        article.getLast_name(),
+        article.getStatus()
+    )).orElseThrow();
   }
 
   @Override

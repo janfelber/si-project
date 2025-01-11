@@ -30,6 +30,7 @@ CREATE TABLE rock_solid.review_details (
                                          review_id BIGINT,
                                          column_id BIGINT,
                                          value BIGINT,
+                                        text_value VARCHAR,
                                          FOREIGN KEY (column_id) REFERENCES rock_solid.columns(id) ON DELETE CASCADE,
                                          FOREIGN KEY (review_id) REFERENCES rock_solid.reviews(id) ON DELETE CASCADE,
                                          FOREIGN KEY (value) REFERENCES rock_solid.choices(id) ON DELETE CASCADE

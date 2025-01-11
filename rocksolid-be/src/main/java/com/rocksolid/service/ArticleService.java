@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.rocksolid.dto.ArticleAdminUpdateRequest;
 import com.rocksolid.dto.ArticleAdminResponseDto;
 import com.rocksolid.dto.ArticleReviewerResponseDto;
+import com.rocksolid.dto.ArticleStudentResponseDto;
 import com.rocksolid.module.Article;
 
 public interface ArticleService {
@@ -14,6 +15,8 @@ public interface ArticleService {
   List<ArticleAdminResponseDto> getAllArticlesInSystem();
 
   ArticleAdminResponseDto getArticleById(Long id);
+
+  ArticleStudentResponseDto getArticleByIdStudent(Long id);
 
   Article adminUpdateArticle(Long articleId, ArticleAdminUpdateRequest updateArticleRequest);
 

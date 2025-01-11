@@ -36,4 +36,6 @@ public class ReviewDetails {
   @JoinColumn(name = "\"value\"")
   private Choice value;
 
+  private String text_value;
+
 }

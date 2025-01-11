@@ -1,11 +1,15 @@
 package com.rocksolid.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.rocksolid.dto.ReviewDetailResponseDTO;
 import com.rocksolid.dto.ReviewRequestDTO;
+import com.rocksolid.dto.ReviewResponseDTO;
 import com.rocksolid.module.Choice;
 import com.rocksolid.module.Columns;
 import com.rocksolid.module.ReviewDetails;
@@ -37,35 +41,59 @@ public class ReviewServiceImpl implements ReviewService {
     Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-
     Article articleId = article.builder()
         .id(article.getId())
         .build();
     Reviews review = Reviews.builder().article(articleId).build();
 
-    System.out.println("Article ID: " + articleId);
+
     article.setStatus("ACCEPTED");
     reviewRepository.save(review);
 
     Map<Long, Long> columnValues = reviewRequestDto.getColumnValues();
+
+
+    // Iterácia cez výberové hodnoty (dropdown)
     for (Map.Entry<Long, Long> entry : columnValues.entrySet()) {
       Long columnId = entry.getKey();
       Long value = entry.getValue();
 
-
+      // Načítanie stĺpca
       Columns column = columnRepository.findById(columnId)
           .orElseThrow(() -> new RuntimeException("Column not found"));
 
+      // Načítanie voľby pre tento stĺpec
       Choice choice = choiceRepository.findById(value)
           .orElseThrow(() -> new RuntimeException("Choice not found"));
+
+
+
+      // Vytvorenie a uloženie detailu recenzie pre daný stĺpec a voľbu
+      ReviewDetails reviewDetails = ReviewDetails.builder()
+          .review(review) // Reference na recenziu
+          .column_id(column) // Reference na stĺpec
+          .value(choice) // Hodnota recenzie pre tento stĺpec
+          .build();
+
+      reviewDetailsRepository.save(reviewDetails);
+    }
+
+    Map<Long, String> columnValuess = reviewRequestDto.getTextValues();
+    for (Map.Entry<Long, String> entry : columnValuess.entrySet()) {
+      Long columnId = entry.getKey();
+      String value = entry.getValue();
+
+      // Načítanie stĺpca na základe ID
+      Columns column = columnRepository.findById(columnId)
+          .orElseThrow(() -> new RuntimeException("Column not found"));
 
       // Vytvorenie a uloženie detailu recenzie (pre každý column_id)
       ReviewDetails reviewDetails = ReviewDetails.builder()
           .review(review) // Reference na recenziu
           .column_id(column)  // Reference na stĺpec
-          .value(choice)       // Hodnota recenzie pre tento stĺpec
+          .value(null)       // Hodnota recenzie pre tento stĺpec
+          .text_value(value)       // Hodnota recenzie pre tento stĺpec
           .build();
-
 
       reviewDetailsRepository.save(reviewDetails);
     }
@@ -114,8 +142,7 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public Reviews getReviewByArticleId(final Long articleId) {
-    // Načítaj recenziu na základe articleId
+  public ResponseEntity<ReviewResponseDTO> getReviewByArticleId(final Long articleId) {
     Reviews review = reviewRepository.findByArticleId(articleId);
     if (review == null) {
       throw new RuntimeException("Review not found for article id: " + articleId);
@@ -123,19 +150,26 @@ public class ReviewServiceImpl implements ReviewService {
 
     List<ReviewDetails> reviewDetailsList = reviewDetailsRepository.findByReview(review);
 
-    // Vypíš hodnoty do logu
+    ReviewResponseDTO reviewResponse = new ReviewResponseDTO();
+    reviewResponse.setReviewId(review.getId());
+    reviewResponse.setReviewDetails(new ArrayList<>());
+
     if (reviewDetailsList != null && !reviewDetailsList.isEmpty()) {
-      System.out.println("Review Details for Article ID: " + articleId);
-      for (ReviewDetails reviewDetail : reviewDetailsList) {
+      for (int i = 0; i < reviewDetailsList.size(); i++) {
+        ReviewDetails reviewDetail = reviewDetailsList.get(i);
         Columns column = reviewDetail.getColumn_id();
         Choice choice = reviewDetail.getValue();
-        System.out.println("Column: " + column.getColumn_name() + ", Value: " + choice.getChoice_name());
+        String textValue = reviewDetail.getText_value();
+
+        if (i < reviewDetailsList.size() - 2) {
+          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(), choice.getChoice_name(), textValue));
+        } else {
+          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(), textValue, textValue));
+        }
       }
-    } else {
-      System.out.println("No details found for Review with Article ID: " + articleId);
     }
 
-    return review;
+    return ResponseEntity.ok(reviewResponse);
   }
 
 
