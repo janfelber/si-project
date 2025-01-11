@@ -12,7 +12,7 @@ export const navBarData = [
         role: ["STUDENT", "REVIEWER"]
     },
     {
-        routerLink: '/web/review-conferences',
+        routerLink: '/web/review-article',
         icon: 'mdi-file-document-multiple-outline',
         label: 'Review Article',
         role: ["REVIEWER"]

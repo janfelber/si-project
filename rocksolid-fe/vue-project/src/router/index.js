@@ -99,9 +99,10 @@ const router = createRouter({
       props: true,
       children: [
         {
-          path: '',
+          path: '/reviewArticle/:id',
           name: 'reviewArticle',
           component: ReviewView,
+          title: 'Review Article',
         },
       ],
     },
@@ -115,12 +116,12 @@ const router = createRouter({
       },
     },
     {
-      path: '/web/review-conferences',
+      path: '/web/review-article',
       name: 'reviewConferences',
       component: ReviewsArticle,
       meta: {
         requiresReviewer: true,
-        title: 'Review Conferences'
+        title: 'Recenzia článkov'
       },
     },
     {
