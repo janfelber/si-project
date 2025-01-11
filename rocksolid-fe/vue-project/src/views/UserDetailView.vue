@@ -9,9 +9,41 @@
       </div>
     </nav>
     <div class="vertical-divider"></div>
-    <v-icon @click="deleteUser(this.userID)">
+    <v-icon @click="this.dialog=true">
       mdi-trash-can-outline
     </v-icon>
+
+    <div class="dialog-window">
+      <v-dialog
+          v-model="dialog"
+          max-width="500"
+      >
+        <v-card>
+          <v-card-title class="text-center">
+            <v-icon class="mr-2" color="warning">mdi-alert-circle</v-icon>
+            Ste si istý, že chcete používateľa odstrániť?
+          </v-card-title>
+
+          <v-divider></v-divider>
+
+          <v-card-actions class="justify-center">
+            <v-btn
+                text="Zrušiť"
+                variant="plain"
+                @click="dialog = false;"
+            ></v-btn>
+            <v-btn
+                text="Odstrániť"
+                color="red"
+                variant="tonal"
+                @click="dialog = false; deleteUser(this.userID)"
+            ></v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+
+
     <div class="vertical-divider"></div>
     <div class="spacer"></div>
     <div class="vertical-divider"></div>
@@ -107,7 +139,8 @@ export default {
       isReviewer: false,
       isDropdownOpen: false,
       fullName: "",
-      admin_email: ""
+      admin_email: "",
+      dialog: false,
     }
   },
   methods: {

@@ -1,6 +1,18 @@
 <template >
       <v-app v-if="userInConference === true">
 
+        <transition name="fade">
+          <v-alert
+              v-if="alert_show"
+              class="alerts"
+              :color="alert_color"
+              variant="elevated"
+              :icon="alert_icon"
+              :text="alert_text"
+          ></v-alert>
+        </transition>
+
+
         <div v-if="articleInReview === true">
           <h1>
             Pracu si odovzdal, cakaj na vysledok
@@ -136,7 +148,11 @@ export default {
       sectionName: '',
       dateFrom: "",
       dateTo: "",
-      currentDate: new Intl.DateTimeFormat('en-CA').format(new Date())
+      currentDate: new Intl.DateTimeFormat('en-CA').format(new Date()),
+      alert_show: false,
+      alert_text: "",
+      alert_icon: "",
+      alert_color: ""
     };
   },
   methods: {
@@ -285,7 +301,8 @@ export default {
             });
         console.log(this.selectedOption.id);
         if (response.status === 200) {
-          alert('Súbor bol úspešne nahratý!');
+          //alert('Súbor bol úspešne nahratý!');
+          await this.showAlert("success")
           this.firstname = '';
           this.lastname = '';
           this.file = null;
@@ -299,8 +316,26 @@ export default {
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
-        alert('Došlo k chybe pri nahrávaní súboru.');
-
+        //alert('Došlo k chybe pri nahrávaní súboru.');
+        this.showAlert("error")
+      }
+    },
+    async showAlert(status){
+      if(status === "success"){
+        this.alert_show = true;
+        this.alert_text = "Práca bola úspešne nahraná";
+        this.alert_icon = "$success";
+        this.alert_color = "success";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
+      }
+      else if (status === "error"){
+        this.alert_show = true;
+        this.alert_text = "Prácu sa nepodarilo nahrať";
+        this.alert_icon = "$error";
+        this.alert_color = "error";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
       }
     },
   },
@@ -315,6 +350,25 @@ export default {
 </script>
 
 <style scoped>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.alerts{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: fit-content;
+  width: fit-content;
+  font-size: large;
+  z-index: 9999;
+}
 
 h1 {
   text-align: center;
