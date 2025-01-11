@@ -91,7 +91,7 @@ export default {
   methods: {
     filter() {
       this.filteredArticles = this.articles.filter(article => {
-        return article.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+        return article.articleName.toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
     async fetchAvailableArticles() {
