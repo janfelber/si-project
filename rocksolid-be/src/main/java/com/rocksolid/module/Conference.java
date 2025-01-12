@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "conference", schema = "rock_solid")
-public class conference {
+public class Conference {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,6 +26,8 @@ public class conference {
     private String name;
 
     private boolean status;
+
+    private String description;
 
     public boolean getStatus() {
         return status;

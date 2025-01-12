@@ -12,4 +12,5 @@ public class ConferenceRequestDto {
     private Long form_id;
     private int year;
     private String name;
+    private String description;
 }

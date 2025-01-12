@@ -2,10 +2,9 @@ package com.rocksolid.service;
 
 import com.rocksolid.dto.ConferenceRequestDto;
 import com.rocksolid.dto.ConferenceResponseDto;
-import com.rocksolid.dto.UserResponseDto;
-import com.rocksolid.module.conference;
+import com.rocksolid.module.Conference;
 import com.rocksolid.repository.ConferenceRepository;
-import com.rocksolid.repository.UserRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,13 @@ public class ConferenceServiceImpl  implements ConferenceService {
                         conference.getDateuntil(),
                         conference.getYear(),
                         conference.getName(),
-                        conference.getStatus()
+                        conference.getStatus(),
+                        conference.getDescription()
                 )).collect(Collectors.toList());
     }
 
     public ResponseEntity<Void> createConference (ConferenceRequestDto request){
-        conference conference = new conference();
+        Conference conference = new Conference();
         conference.setDatefrom(request.getDate_from());
         conference.setDateuntil(request.getDate_to());
         conference.setYear(request.getYear());
@@ -47,7 +47,7 @@ public class ConferenceServiceImpl  implements ConferenceService {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    public List<conference> getActiveConferences() {
+    public List<Conference> getActiveConferences() {
         return conferenceRepository.findByStatusTrue();  // Získanie aktívnych konferencií
     }
 
@@ -60,14 +60,15 @@ public class ConferenceServiceImpl  implements ConferenceService {
             conference.getDateuntil(),
             conference.getYear(),
             conference.getName(),
-            conference.getStatus()
+            conference.getStatus(),
+            conference.getDescription()
         ));
     }
 
-    public conference updateConference(Long id, conference conference){
-        Optional<conference> conf = conferenceRepository.findById(id);
+    public Conference updateConference(Long id, Conference conference){
+        Optional<Conference> conf = conferenceRepository.findById(id);
         if(conf.isPresent()){
-            conference existingConference = conf.get();
+            Conference existingConference = conf.get();
             existingConference.setYear(conference.getYear());
             existingConference.setName(conference.getName());
             existingConference.setStatus(conference.getStatus());

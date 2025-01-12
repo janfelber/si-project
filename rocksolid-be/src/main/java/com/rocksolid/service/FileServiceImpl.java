@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.rocksolid.module.Sections;
 import com.rocksolid.module.Article;
 import com.rocksolid.module.User;
-import com.rocksolid.module.conference;
+import com.rocksolid.module.Conference;
 
 @Service
 public class FileServiceImpl implements FileService{
@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService{
     User user = userRepository.findById(userID)
         .orElseThrow(() -> new RuntimeException("User not found"));
 
-    conference conference = conferenceRepository.findById(conferenceId)
+    Conference conference = conferenceRepository.findById(conferenceId)
         .orElseThrow(() -> new RuntimeException("Conference not found"));
 
     Sections section = sectionRepository.findById(sectionId)

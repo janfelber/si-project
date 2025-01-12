@@ -5,11 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.rocksolid.module.User;
 import com.rocksolid.module.UserConference;
-import com.rocksolid.module.conference;
+import com.rocksolid.module.Conference;
 
 
 @Repository
 public interface UserConferenceRepository extends JpaRepository<UserConference, Long> {
-  boolean existsByUserAndConference(User user, conference conference);
-  UserConference findByUserAndConference(User user, conference conference);
+  boolean existsByUserAndConference(User user, Conference conference);
+  UserConference findByUserAndConference(User user, Conference conference);
 }
