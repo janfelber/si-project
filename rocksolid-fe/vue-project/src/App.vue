@@ -1,7 +1,7 @@
 <template>
     <Header v-if="!isAuthPage && !userIdPage" />
     <SideNav v-if="!isAuthPage" />
-    <div class="body" :class="{ 'body-no-padding': userIdPage }">
+    <div class="body" :class="{ 'body-no-padding': userIdPage || isAuthPage }">
       <router-view />
     </div>
 
@@ -26,7 +26,7 @@ const userIdPage = computed(() => {
 
 <style scoped>
 .body {
-  padding-left: 11.5rem; /* Základný padding pre väčšinu stránok */
+  padding-left: 11.5rem;
 }
 
 .body-no-padding {

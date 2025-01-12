@@ -144,10 +144,6 @@ name: "ArticleHistory",
     showArticleReview(id){
       this.$router.push({ name: 'ArticleReviewResponse', params: { id: id } });
     },
-    downloadArticle(id){
-      // window.open("http://localhost:8080/api/v1/article/download/" + id, "_blank");
-      console.log("Downloading article with id: " + id);
-
     async getFileName(id){
       try {
         const token = localStorage.getItem("token");

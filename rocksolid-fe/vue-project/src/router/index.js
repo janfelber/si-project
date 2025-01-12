@@ -193,14 +193,12 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userRole = await getUserRole();
 
-  if (to.path === '/') {
-    if (userRole === 'ADMIN') {
-      return next('/admin/users');
-    } else if (userRole === 'STUDENT' || userRole === 'REVIEWER') {
-      return next('/web/home');
-    } else {
-      return next('/login');
-    }
+  if ((to.meta.requiresAdmin || to.meta.requiresStudent || to.meta.requiresReviewer) && !userRole) {
+    return next('/login');
+  }
+
+  if (!userRole && to.path !== '/login' && to.path !== '/register') {
+    return next('/login');
   }
 
   if (to.path === '/login' || to.path === '/register') {
