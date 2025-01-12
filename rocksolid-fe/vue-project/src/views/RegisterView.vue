@@ -1,12 +1,26 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="column">
-        <div v-if="!hide_form" class="login-container">
-          <h2>Registrácia</h2>
+  <main>
+  <form class="register-form">
+    <div>
+      <div>
+          <h3 class="text-center">Registrácia</h3>
+          <div v-if="error" class="error-message-container">
+            <span class="mdi mdi-close-circle-outline alert-icon"></span>
+            <span>
+                {{ error }}
+              </span>
+          </div>
+          <div v-if="success_register" class="success-message-container">
+            <span class="mdi mdi-check-circle success-icon"></span>
+            <span>
+                Registrácia bola úspešná. Späť na prihlásenie <router-link to="/login" style="text-decoration: none">login</router-link>
+              </span>
+          </div>
+          <div class="divider">
+            <hr>
+          </div>
           <form @submit.prevent="registerUser">
             <div class="input-group">
-              <label>Meno:</label>
               <input
                   type="text"
                   v-model="name"
@@ -15,7 +29,6 @@
               />
             </div>
             <div class="input-group">
-              <label>Priezvisko:</label>
               <input
                   type="text"
                   v-model="surname"
@@ -24,15 +37,16 @@
               />
             </div>
             <div class="input-group">
-              <label>Univerzita:</label>
-              <v-select
-                  :items="items"
-                  v-model="university"
-                  outlined
-              ></v-select>
+            <div class="form-input">
+                <select v-model="university" required>
+                  <option value="" disabled selected>Univerzita</option>
+                  <option v-for="item in items" :key="item" :value="item">
+                    {{ item }}
+                  </option>
+                </select>
+            </div>
             </div>
             <div class="input-group">
-              <label>E-mail:</label>
               <input
                   type="email"
                   v-model="email"
@@ -41,7 +55,6 @@
               />
             </div>
             <div class="input-group">
-              <label>Heslo:</label>
               <input
                   type="password"
                   v-model="password"
@@ -49,24 +62,18 @@
                   required
               />
             </div>
-            <button type="submit" class="login-button">Registrovať</button>
-          </form>
+            <button type="submit" class="login-button">
+              <span style="font-size: 0.875rem" class="text-center">Registrovať</span>
 
-          <div v-if="error" class="error-message">
-            {{ error }}
-          </div>
-        </div>
-        <div class="register-success" v-if="hide_form">
-          <h1>Registrácia bola úspešná</h1>
-          <router-link to="/home">Späť na domovskú stránku</router-link>
+            </button>
+          </form>
         </div>
       </div>
 
       <div class="column" style="background-color: green">
       </div>
-    </div>
-  </div>
-
+  </form>
+  </main>
 </template>
 
 <script>
@@ -85,7 +92,7 @@ export default {
       university: '',
       items: ["UKF", "UCM", "UMB"],
       error: null,
-      hide_form: false
+      success_register: false
     };
   },
   methods: {
@@ -103,11 +110,10 @@ export default {
 
       authentication.register(registerRequest)
           .then(() => {
-            this.message = 'Účet bol úspešne vytvorený. Budete presmerovaní na prihlasovaciu stránku za 3 sekundy.';
-            this.hide_form = true;
+            this.success_register = true;
             setTimeout(() => {
               this.$router.push('/login');
-            }, 3000);
+            }, 5000);
           })
           .catch((err) => {
             if (err.response) {
@@ -124,51 +130,30 @@ export default {
 </script>
 
 <style scoped>
-.register-success {
-  display: table-cell;
-  justify-content: center;
-  text-align: center;
-  align-items: center;
-}
 
-.container {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: 100%;
-}
-
-.column {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 50%;
-}
-
-.login-container {
-  padding: 40px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px grey;
+main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  width: 100%;
-  max-width: 400px;
+  min-height: 100vh;
 }
 
-.login-container h2 {
-  font-size: 26px;
-  margin-bottom: 20px;
-  color: grey;
+.register-form {
+  margin: auto;
+  max-width: 20rem;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+h3 {
+  font-size: 1.625rem;
+  font-family: "Axiforma", sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.divider {
+  padding-right: 1rem;
+  padding-left: 1rem
 }
 
 .input-group {
@@ -185,7 +170,7 @@ export default {
 
 .input-group input {
   width: 100%;
-  padding: 12px;
+  padding: 7px;
   border: 1px solid grey;
   border-radius: 5px;
   font-size: 16px;
@@ -199,7 +184,7 @@ export default {
 
 .login-button {
   width: 100%;
-  padding: 12px;
+  padding: 4px;
   background-color: darkgreen;
   border: none;
   border-radius: 5px;
@@ -210,19 +195,66 @@ export default {
   transition: background-color 0.3s;
 }
 
-.login-button:hover {
-  background-color: lawngreen;
+.error-message-container {
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+  border-radius: .5rem;
+  border: 1px solid #fd6f6f;
+  background-color: snow;
+  color: #333638;
+  font-size: .875rem;
+  font-weight: 500;
+  padding: .5625rem .75rem;
+  line-height: 1.25rem;
 }
 
-.login-button:disabled {
-  background-color: #222222;
-  cursor: default;
-}
-
-.error-message {
+.alert-icon {
   color: red;
-  margin-top: 15px;
-  text-align: center;
-  font-size: 14px;
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.error-message-container span {
+  display: block;
+}
+
+.success-icon {
+  color: green;
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.success-message-container {
+  display:          flex;
+  align-items:      flex-start;
+  gap:              .5rem;
+  border-radius:    .5rem;
+  border:           1px solid green;
+  background-color: rgba(0, 255, 0, 0.09);
+  color:            #333638;
+  font-size:        .875rem;
+  font-weight:      500;
+  padding:          .5625rem .75rem;
+  line-height:      1.25rem;
+}
+
+.success-message-container span {
+  display: block;
+}
+
+.form-input select {
+  border: 1px solid grey;
+  padding:    8px;
+  width:      100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"%3E%3Cpath d=\"M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414L8 10.414l-3.707-3.707a1 1 0 0 1 0-1.414z\"%3E%3C/path%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  background-size: 8px 8px;
+  cursor: pointer;
+}
+
+.form-input {
+  flex: 1;
 }
 </style>

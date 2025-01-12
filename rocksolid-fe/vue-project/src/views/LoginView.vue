@@ -1,43 +1,47 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <div class="column">
-        <div class="login-container">
-          <h2>Login</h2>
+  <main>
+  <form class="login-form">
+      <div>
+        <div>
+          <h3 class="text-center">Log in</h3>
+          <div v-if="error" class="error-message-container">
+            <span class="mdi mdi-close-circle-outline alert-icon"></span>
+              <span>
+                {{ error }}
+              </span>
+          </div>
+          <div class="divider">
+            <hr>
+          </div>
           <form @submit.prevent="submitLogin">
             <div class="input-group">
-              <label for="username">Email:</label>
               <input
                   type="text"
                   v-model="email"
-                  placeholder="Enter email"
+                  placeholder="Email"
                   required
               />
             </div>
             <div class="input-group">
-              <label for="password">Password:</label>
               <input
                   type="password"
                   v-model="password"
-                  placeholder="Enter password"
+                  placeholder="Heslo"
                   required
               />
             </div>
-            <button type="submit" class="login-button">Login</button>
+            <button type="submit" class="login-button">
+              <span style="font-size: 0.875rem" class="text-center">Log in</span>
+            </button>
           </form>
-          <router-link class="register" to="/register">Registrovať</router-link>
-
-          <div v-if="error" class="error-message">
-            {{ error }}
-          </div>
+          <span class="register-prompt">
+          Nemáte účet?
+          <router-link class="register" to="/register">Zaregistruj sa!</router-link>
+        </span>
         </div>
       </div>
-
-      <div class="column" style="background-color: green">
-      </div>
-    </div>
-  </div>
-
+    </form>
+  </main>
 </template>
 
 <script>
@@ -62,7 +66,7 @@ export default {
         localStorage.setItem('token', response.data.access_token);
         this.$router.push(response.data.redirect_url);
       } catch (err) {
-        this.error = "Login failed. Please check your credentials.";
+        this.error = "Neznámy používateľ alebo nesprávne heslo. Skúste to znova.";
       }
     }
   }
@@ -71,58 +75,75 @@ export default {
 
 <style scoped>
 
-
-.container {
-  height: 100vh;
+.error-message-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  gap: .5rem;
+  border-radius: .5rem;
+  border: 1px solid #fd6f6f;
+  background-color: snow;
+  color: #333638;
+  font-size: .875rem;
+  font-weight: 500;
+  padding: .5625rem .75rem;
+  line-height: 1.25rem;
 }
 
-.row {
-  display: flex;
-  justify-content: space-between;
+.alert-icon {
+  color: red;
+  font-size: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.error-message-container span {
+  display: block;
+}
+
+.login-form {
+  margin: auto;
+  max-width: 20rem;
+  padding: 2rem 0;
   width: 100%;
-  height: 100%;
 }
 
-.column {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 0 0 50%;
-}
-
-
-.register{
-  text-align: center;
-  margin-top: 10px;
-  color: black;
-}
-
-.register:hover{
-  color: green;
-}
-
-
-
-.login-container {
-  padding: 40px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px grey;
+main {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  font-family: Arial, sans-serif;
-  width: 100%;
-  max-width: 400px;
+  min-height: 100vh;
 }
 
-.login-container h2 {
-  font-size: 26px;
-  margin-bottom: 20px;
-  color: grey;
+h3 {
+  font-size: 1.625rem;
+  font-family: "Axiforma", sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.divider {
+  padding-right: 1rem;
+  padding-left: 1rem
+}
+
+
+.register-prompt {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.register {
+  text-decoration: none;
+  color: darkgreen;
+  font-weight: bold;
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+.register:hover {
+  color: #3c8d40;
+  text-decoration: underline;
 }
 
 .input-group {
@@ -139,7 +160,7 @@ export default {
 
 .input-group input {
   width: 100%;
-  padding: 12px;
+  padding: 7px;
   border: 1px solid grey;
   border-radius: 5px;
   font-size: 16px;
@@ -153,25 +174,13 @@ export default {
 
 .login-button {
   width: 100%;
-  padding: 12px;
+  padding: 4px;
   background-color: darkgreen;
   border: none;
   border-radius: 5px;
   color: white;
-  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s;
-}
-
-.login-button:hover {
-  background-color: lawngreen;
-}
-
-.error-message {
-  color: red;
-  margin-top: 15px;
-  text-align: center;
-  font-size: 14px;
 }
 </style>
