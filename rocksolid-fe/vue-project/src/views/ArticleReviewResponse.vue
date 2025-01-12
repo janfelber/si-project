@@ -8,7 +8,7 @@
     <h2>Meno : {{this.firstName}}</h2>
     <h2>Priezvisko : {{this.lastName}}</h2>
 
-<!--    <div v-if="articleAccepted === true">-->
+    <div v-if="articleAccepted === true || articleRejected === true">
     <h2>Detaily recenzie</h2>
     <div v-for="(detail, index) in reviewDetails" :key="index">
       <p><strong> {{ detail.columnName }}</strong></p>
@@ -16,13 +16,19 @@
       <p><strong></strong> {{ detail.text_value }}</p>
       <hr />
     </div>
-<!--    </div>-->
+    </div>
     <div v-if="articleInReview === true">
       <h1>
         Clanok sa posudzuje
       </h1>
     </div>
 
+
+    <div v-if="articleRejected === true">
+      <v-btn>
+        Znova vlozit pracu
+      </v-btn>
+    </div>
   </div>
 </template>
 <script>
@@ -43,6 +49,7 @@ export default {
       lastName: "",
       articleInReview: null,
       articleAccepted: null,
+      articleRejected: null,
     }
   },
   methods: {
@@ -55,10 +62,9 @@ export default {
                 Authorization: `Bearer ${token}`
               }
             });
-        // this.articles = response.data;
+
         console.log(response.data)
         this.reviewDetails = response.data.reviewDetails
-        // this.articleName = response.data.articleName
       } catch (error) {
         console.error(error);
       }
@@ -102,7 +108,7 @@ export default {
         if (this.articleStatus === "SENT") {
           this.articleInReview = true;
         } else if (this.articleStatus === "REJECTED") {
-          this.articleInReview = false;
+          this.articleRejected = true;
         } else if (this.articleStatus === "ACCEPTED") {
           this.articleAccepted = true;
         } else {
