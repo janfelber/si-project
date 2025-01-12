@@ -10,5 +10,8 @@ public class ReviewDetailResponseDTO {
   private String columnName;
   private String choiceName;
   private String textValue;
+  private Long categoryId;
+  private String categoryName;
+
 
 }

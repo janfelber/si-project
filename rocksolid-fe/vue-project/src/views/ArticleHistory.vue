@@ -27,7 +27,7 @@
               v-for="article in filteredArticles"
               :key="article.id"
           >
-            <v-card class="elevation-3" @click="showArticleReview(article.id)">
+            <v-card class="elevation-3" >
               <div class="card-header-green"></div>
 
               <v-card-title class="text-h6 font-weight-bold">
@@ -51,25 +51,42 @@
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
-                  Status: {{ article.status }}
+
+                  <div v-if="article.status === 'ACCEPTED'">
+                    <v-icon v-if="article.status === 'ACCEPTED'" color="green">mdi-check </v-icon> <span v-if="article.status === 'ACCEPTED'" style="color: green; margin-left: 8px;">Accepted</span>
+                  </div>
+
+                  <div v-if="article.status === 'REJECTED'">
+                    <v-icon v-if="article.status === 'REJECTED'" color="red">mdi-close</v-icon> <span v-if="article.status === 'REJECTED'" style="color: red; margin-left: 8px;">Rejected</span>
+                  </div>
+
+                  <div v-if="article.status === 'SENT'">
+                    <v-icon v-if="article.status === 'SENT'" color="orange">mdi-alert-circle-outline</v-icon> <span v-if="article.status === 'SENT'" style="color: orange; margin-left: 8px;">Sent</span>
+                  </div>
                 </div>
               </v-card-text>
-
               <v-card-actions>
                 <v-row class="w-100" justify="space-between">
+                  <v-col class="d-flex justify-right">
+                    <btn class="btn btn-primary review-button"
+                        @click="showArticleReview(article.id)">
+                      Pozrieť recenziu
+                    </btn>
+                  </v-col>
 
+                  <v-col class="d-flex justify-end">
+                    <v-btn
+                        class="blue-darken-1 white--text"
+                        @click="downloadArticle(article.id)"
+                    >
+                      <i class="fa fa-download" style="cursor: pointer;"></i>
+                    </v-btn>
+                  </v-col>
 
                 </v-row>
               </v-card-actions>
             </v-card>
-            <v-col class="d-flex justify-end">
-              <v-btn
-                  class="blue-darken-1 white--text"
-                  @click="downloadArticle(article.id)"
-              >
-                <i class="fa fa-download" style="cursor: pointer;"></i>
-              </v-btn>
-            </v-col>
+
           </v-col>
         </v-row>
       </div>
@@ -309,6 +326,12 @@ label {
   font-weight: bold;
   background-color: #1EB386;
   border-color: #1EB386;
+}
+
+.review-button {
+  background-color: #1EB386;
+  border-color: #1EB386;
+  font-size: 14px;
 }
 
 .form-input input:focus {
