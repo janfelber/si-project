@@ -26,10 +26,16 @@ public class ColumnController {
   @GetMapping("/getcolumns")
   public List<ColumnDTO> getAllColumns() {
     return columnService.getAllColumns().stream()
-        .map(column -> new ColumnDTO(column.getId(), column.getCategory().getId(),column.getColumn_name(), column.getType(),
+        .map(column -> new ColumnDTO(
+            column.getId(),
+            column.getCategory().getId(),
+            column.getCategory().getCategory_name(),
+            column.getColumn_name(),
+            column.getType(),
             column.getChoices().stream()
                 .map(choice -> new ColumnChoicesDTO(choice.getChoice().getId(), choice.getChoice().getChoice_name()))
-                .collect(Collectors.toList())))
+                .collect(Collectors.toList())
+        ))
         .collect(Collectors.toList());
   }
 
