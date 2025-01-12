@@ -44,7 +44,8 @@
             <v-card-actions>
               <v-row class="w-100" justify="space-between">
                 <v-col class="d-flex justify-start" style="padding-left: 1rem">
-                  <button class="btn btn-primary conference-details" @click="viewConference(conference.id)" style="color: white">View Details</button>
+                  <button class="btn btn-primary conference-details" v-if="!userConferenceStatuses[conference.id]" @click="addUserToConference(conference.id)" style="color: white">Prihlasit</button>
+                  <button class="btn btn-primary conference-details" v-if="userConferenceStatuses[conference.id]" @click="uploadArticle(conference.id)" style="color: white">Odovzdat</button>
                 </v-col>
               </v-row>
             </v-card-actions>
@@ -59,57 +60,110 @@
 <script>
 import axios from 'axios';
 export default {
-  name : 'ActiveConferences',
+  name: 'ActiveConferences',
   data() {
     return {
-      activeConferences : [],
+      activeConferences: [],
       searchQuery: '',
-      filteredConferences: []
-    }
+      filteredConferences: [],
+      userConferenceStatuses: {}
+    };
   },
-  methods : {
-    viewConference(id){
-      this.$router.push({ name: 'conferenceDetail', params: { id: id }});
-    },
+  methods: {
     formatDate(date) {
       try {
         const formatter = new Intl.DateTimeFormat('en-GB');
         return formatter.format(new Date(date)).replace(/\//g, '.');
       } catch (error) {
-        console.log("Invalid date format for date : " + date + " " + error);
+        console.log('Invalid date format for date : ' + date + ' ' + error);
       }
+    },
+    uploadArticle(conferenceId) {
+      this.$router.push({ name: 'upload', params: { id: conferenceId }});
     },
     async getConferences() {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/v1/conference/active",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              }
-            });
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:8080/api/v1/conference/active', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         this.activeConferences = response.data;
         this.filteredConferences = this.activeConferences;
-        console.log(this.activeConferences)
+        console.log(this.activeConferences);
+
+        await this.getUserStatusesForAllConferences();
       } catch (error) {
         console.error(error);
       }
     },
+    async checkIfUserInConference(conferenceId) {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/conference/isUserInConference?conferenceId=${conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        return response.data === 'User is in the conference';
+      } catch (error) {
+        console.error(`Error checking user in conference ${conferenceId}:`, error);
+        return false;
+      }
+    },
+    async getUserStatusesForAllConferences() {
+      const statusPromises = this.activeConferences.map(async (conference) => {
+        const isInConference = await this.checkIfUserInConference(conference.id);
+        return { id: conference.id, isInConference };
+      });
+
+      const statuses = await Promise.all(statusPromises);
+
+      statuses.forEach(({ id, isInConference }) => {
+        this.userConferenceStatuses[id] = isInConference;
+      });
+    },
+    async addUserToConference(conferenceId) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+            `http://localhost:8080/api/v1/conference/addUserToConference?conferenceId=${conferenceId}`,
+            null,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+
+        console.log(`User added to conference ${conferenceId}:`, response.data);
+
+        this.userConferenceStatuses = {
+          ...this.userConferenceStatuses,
+          [conferenceId]: true,
+        };
+      } catch (error) {
+        console.error(`Failed to add user to conference ${conferenceId}:`, error);
+      }
+    },
     filter() {
-      this.filteredArticles = this.articles.filter(article => {
-        return article.articleName.toLowerCase().includes(this.searchQuery.toLowerCase());
+      this.filteredConferences = this.activeConferences.filter((conference) => {
+        return conference.name.toLowerCase().includes(this.searchQuery.toLowerCase());
       });
     },
     reset() {
       this.searchQuery = '';
-      this.filteredArticles = this.articles;
-    },
+      this.filteredConferences = this.activeConferences;
+    }
   },
   mounted() {
-    this.filteredConferences = this.activeConferences;
     this.getConferences();
   },
-}
+};
 </script>
 
 <style scoped>
@@ -173,6 +227,10 @@ label {
   font-weight: bold;
   font-size: 14px;
   padding: 6px 12px;
+}
+
+.form-input input:focus {
+  outline: none;
 }
 
 .v-card {
