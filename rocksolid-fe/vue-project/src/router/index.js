@@ -85,7 +85,10 @@ const router = createRouter({
       name: 'upload',
       component: UploadFile,
       props: true,
-      meta: { requiresStudent: true },
+      meta: {
+        requiresStudent: true,
+        title: 'Nahraj článok'
+      },
     },
     {
       path: '/admin/conferenceDetail/:id',

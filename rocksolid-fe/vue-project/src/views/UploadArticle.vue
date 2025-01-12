@@ -20,110 +20,103 @@
         </div>
 
         <div v-if="articleInReview === false">
-        <h1>Nahravas pracu</h1>
-      <v-form v-model="valid">
-        <v-container>
-          <v-row>
-            <v-col md="4">
-              <v-text-field
-                  v-model="firstname"
-                  label="Meno"
-                  required
-              ></v-text-field>
 
-              <v-text-field
-                  v-model="lastname"
-                  label="Priezvisko"
-                  required
-              ></v-text-field>
-
-                <v-text-field
-                    v-model="fileName"
-                    label="Názov práce"
-                    outlined
-                    dense
-                ></v-text-field>
-
-              <v-text-field
-                  v-model="coAuthors"
-                  label="coAthors"
-                  outlined
-                  dense
-              ></v-text-field>
-
-              <v-text-field
-                  v-model="articleDescription"
-                  label="articleDescription"
-                  outlined
-                  dense
-              ></v-text-field>
-
-              <v-text-field
-                  v-model="keyWords"
-                  label="keyWords"
-                  outlined
-                  dense
-              ></v-text-field>
-
-                <v-file-input
-                    prepend-icon="mdi-upload"
-                    v-model="file"
-                    label="Vyberte súbor"
-                    accept=".pdf,.doc,.docx"
-                    outlined
-                    dense
-                ></v-file-input>
-            </v-col>
-
-            <div class="form-group">
-            <label for="section">Vyberte sekciu:</label>
-            <select v-model="selectedOption">
-              <option v-for="section in sections" :key="section.id" :value="section.id" :selected="section.id === selectedOption">
-                {{ section.sectionName }}
-              </option>
-            </select>
+          <div class="card-container">
+            <div class="v-col-7">
+              <div class="card">
+                <v-card-title class="card-title">O práci
+                </v-card-title>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label class="input-label">Meno</label>
+                    <div class="form-input">
+                      <input v-model="firstName">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label">Priezvisko</label>
+                    <div class="form-input">
+                      <input v-model="lastName">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label">Názov práce</label>
+                    <div class="form-input">
+                      <input v-model="fileName">
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="form-group">
+                    <label class="input-label">Popis práce</label>
+                    <div class="form-input">
+                      <input v-model="articleDescription">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label">Klúčove slová</label>
+                    <div class="form-input">
+                      <input v-model="keyWords">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label">Spolu autori</label>
+                    <div class="form-input">
+                      <input v-model="coAuthors" @input="removeTrailingComma">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="section">Vyberte sekciu:</label>
+                    <div class="form-input">
+                      <select v-model="selectedOption">
+                        <option v-for="section in sections" :key="section.id" :value="section.id" :selected="section.id === selectedOption">
+                          {{ section.sectionName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="button-section">
+                <button type="button" class="btn btn-primary save-button" @click="uploadFile()">Uložiť</button>
+              </div>
+            </div>
+            <div class="v-col-7">
+              <div class="card">
+                <v-card-title class="card-title">Nahrať súbor
+                </v-card-title>
+                <div class="card-body">
+                  <div class="upload-info">
+                    <p class="p">Nahratý súbor musi byť vo formáte .doc alebo .docx</p>
+                    <div v-if="file" class="form-group">
+                      <label class="input-label">Nazov suboru</label>
+                      <div class="form-input">
+                        <input v-model="file.name" disabled>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="upload-container"
+                       @dragover.prevent="onDragOver"
+                       @drop.prevent="onFileDropped">
+                    <span class="icon-text">
+                      <i class="upload-icon fas fa-upload"></i> Presuňte súbor alebo,
+                    </span>
+                    <label for="file-upload" class="upload-label">
+                      vyberte súbor
+                    </label>
+                    <input type="file" id="file-upload" class="file-input" accept=".pdf,.doc,.docx" @change="onFileSelected"/>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-
-
-            <v-col>
-              <v-container>
-                <v-radio-group v-model="selectedOption" row>
-                  <v-radio
-                      v-for="section in sections"
-                      :key="section.id"
-                      :label="section.sectionName"
-                      :value="section.id"
-                  ></v-radio>
-                </v-radio-group>
-
-                <v-divider></v-divider>
-
-                <p>Vybraná možnosť: {{ selectedOption }}</p>
-              </v-container>
-
-              <p>{{ sections }}</p>
-
-            </v-col>
-
-
-            <v-col cols="12">
-              <v-btn @click="uploadFile()" block>
-                Nahrať prácu
-              </v-btn>
-            </v-col>
-
-
-          </v-row>
-
-        </v-container>
-      </v-form>
         </div>
+
   </v-app>
 </template>
 
 <script>
 import axios from 'axios';
-import { th, tr } from 'vuetify/locale';
+import { fi, th, tr } from 'vuetify/locale';
 
 export default {
 
@@ -131,8 +124,8 @@ export default {
   props: ['id'],
   data() {
     return {
-      firstname: '',
-      lastname: '',
+      firstName: '',
+      lastName: '',
       coAuthors: '',
       articleDescription: '',
       keyWords: '',
@@ -190,6 +183,9 @@ export default {
             }
         );
         this.userId = response.data.id;
+        this.firstName = response.data.first_name;
+        this.lastName = response.data.last_name;
+        console.log(response.data)
       } catch (error) {
         console.error("Error checking user :", error);
       }
@@ -211,6 +207,37 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    onFileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (this.isValidFile(file)) {
+          this.file = file;
+        } else {
+          alert("Please select a .doc or .docx file.");
+        }
+      }
+    },
+
+    onDragOver(event) {
+      event.preventDefault();
+    },
+
+    onFileDropped(event) {
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        if (this.isValidFile(file)) {
+          this.file = file.name;
+          this.file = file;
+        } else {
+          alert("Nahratý súbor musi byť vo formáte .doc alebo .docx");
+        }
+      }
+    },
+    isValidFile(file) {
+      const allowedExtensions = ['.doc', '.docx'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      return allowedExtensions.includes(`.${fileExtension}`);
     },
     async checkIfArticleIsInReview() {
       try {
@@ -264,7 +291,7 @@ export default {
       }
     },
     async uploadFile() {
-      if (!this.firstname || !this.lastname || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
+      if (!this.firstName || !this.lastName || !this.fileName || !this.selectedOption || !this.coAuthors || !this.articleDescription || !this.keyWords) {
         alert('Prosím, vyplňte všetky údaje');
         return;
       }
@@ -287,8 +314,8 @@ export default {
         formData.append('articleDescription', this.articleDescription);
         formData.append('keyWords', this.keyWords);
         formData.append('sectionId', this.selectedOption);
-        formData.append('firstName', this.firstname);
-        formData.append('lastName', this.lastname);
+        formData.append('firstName', this.firstName);
+        formData.append('lastName', this.lastName);
         formData.append('conferenceId', this.conferenceId);
 
         const token = localStorage.getItem("token")
@@ -303,8 +330,8 @@ export default {
         if (response.status === 200) {
           //alert('Súbor bol úspešne nahratý!');
           await this.showAlert("success")
-          this.firstname = '';
-          this.lastname = '';
+          this.firstName = '';
+          this.lastName = '';
           this.file = null;
           this.fileName = '';
           this.selectedOption = '';
@@ -340,6 +367,7 @@ export default {
     },
   },
   mounted() {
+    const conferenceName = this.$route.query.conferenceName;
     this.getUser();
     this.fetchSections();
     this.checkIfArticleIsInReview()
@@ -350,6 +378,133 @@ export default {
 </script>
 
 <style scoped>
+
+.button-section {
+  display:    flex;
+  margin-top: 1rem;
+}
+
+.save-button {
+  color: white;
+  background-color: #3c8d40;
+  border-color: #3c8d40;
+}
+
+.form-group {
+  display:       flex;
+  flex-wrap:     wrap;
+  align-items:   center;
+  margin-bottom: .75rem;
+}
+
+.form-input input {
+  border:     1px solid #d8d8f0;
+  padding:    8px;
+  width:      100%;
+  box-sizing: border-box;
+}
+
+.form-input {
+  flex: 1;
+}
+
+.input-label {
+  width:      10rem;
+  align-self: center;
+}
+
+.card-title {
+  font-weight:   500;
+  font-size:     17px;
+  border-bottom: 1px solid #d8d8f0;
+}
+
+.form-input select {
+  border:     1px solid #d8d8f0;
+  padding:    8px;
+  width:      100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"%3E%3Cpath d=\"M4.293 5.293a1 1 0 0 1 1.414 0L8 7.586l2.293-2.293a1 1 0 0 1 1.414 1.414L8 10.414l-3.707-3.707a1 1 0 0 1 0-1.414z\"%3E%3C/path%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  background-size: 8px 8px;
+  cursor: pointer;
+}
+
+.card-container {
+  display: flex;
+}
+
+.card {
+  display:          flex;
+  flex-direction:   column;
+  min-width:        0;
+  position:         relative;
+  word-wrap:        break-word;
+  background-clip:  initial;
+  background-color: #fefefe;
+  border:           1px solid #d8d8f0;
+  border-radius:    .5rem;
+}
+
+.card-body {
+  min-height: 1px;
+  padding:    .75rem;
+}
+
+.v-col-7 {
+  flex: 1;
+  max-width: 48%;
+}
+
+hr {
+  border:        0;
+  border-top:    1px solid darkgrey;
+  margin-bottom: .75rem;
+  margin-top:    .75rem;
+}
+
+.upload-container {
+  border: 2px dashed darkgreen;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.upload-container:hover {
+  background-color: #e9ecef;
+  border-color: #3c8d40;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label {
+  cursor: pointer;
+  font-size: 16px;
+  color: darkgreen;
+  text-decoration: none;
+}
+
+.upload-label:hover {
+  color: #3c8d40;
+  text-decoration: underline;
+}
+
+
+.icon-text {
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.upload-icon {
+  font-size: 18px;
+  color: #3c8d40;
+}
 
 .fade-enter-active,
 .fade-leave-active {
