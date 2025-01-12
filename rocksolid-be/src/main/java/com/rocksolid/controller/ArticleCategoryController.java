@@ -3,6 +3,7 @@ package com.rocksolid.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +31,7 @@ public class ArticleCategoryController {
   public List<SectionResponseDTO> getAllSections() {
     return sectionService.getAllSectionNames();
   }
+
 
   @PostMapping("/create")
   public void createCategory(@RequestBody final SectionResponseDTO request) {

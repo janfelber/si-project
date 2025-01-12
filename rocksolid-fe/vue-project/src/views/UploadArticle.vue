@@ -232,6 +232,7 @@ export default {
           this.articleInReview = false;
         } else if (status === "ACCEPTED") {
           this.articleInReview = true;
+          console.log("Article is accepted");
         } else {
           this.articleInReview = false;
         }
