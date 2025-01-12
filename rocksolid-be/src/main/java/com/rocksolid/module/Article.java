@@ -43,7 +43,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "\"conference_id\"")
-    private conference conference;
+    private Conference conference;
 
     @ManyToOne
     @JoinColumn(name = "\"section_id\"")

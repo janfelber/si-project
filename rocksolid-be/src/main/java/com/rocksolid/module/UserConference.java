@@ -26,7 +26,7 @@ public class UserConference {
 
   @ManyToOne
   @JoinColumn(name = "\"conference_id\"")
-  private conference conference;
+  private Conference conference;
 
   @ManyToOne
   @JoinColumn(name = "\"user_id\"")

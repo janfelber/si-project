@@ -5,8 +5,7 @@ import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ConferenceRequestDto;
 import com.rocksolid.dto.ConferenceResponseDto;
 import com.rocksolid.dto.UserResponseDto;
-import com.rocksolid.module.User;
-import com.rocksolid.module.conference;
+import com.rocksolid.module.Conference;
 import com.rocksolid.repository.UserConferenceRepository;
 import com.rocksolid.service.ConferenceService;
 import com.rocksolid.service.UserConferenceService;
@@ -50,12 +49,12 @@ public class ConferenceController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('admin:update')")
-    public conference updateConference(@PathVariable Long id, @RequestBody conference request){
+    public Conference updateConference(@PathVariable Long id, @RequestBody Conference request){
         return conferenceService.updateConference(id, request);
     }
 
     @GetMapping("/active")
-    public List<conference> getActiveConferences() {
+    public List<Conference> getActiveConferences() {
         return conferenceService.getActiveConferences();
     }
 

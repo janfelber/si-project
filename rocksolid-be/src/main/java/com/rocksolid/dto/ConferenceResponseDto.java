@@ -13,6 +13,5 @@ public class ConferenceResponseDto {
     private int year;
     private String name;
     private boolean status;
-
-
+    private String description;
 }

@@ -2,9 +2,9 @@ package com.rocksolid.repository;
 
 import java.util.List;
 
-import com.rocksolid.module.conference;
+import com.rocksolid.module.Conference;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ConferenceRepository extends JpaRepository<conference,Long> {
-  List<conference> findByStatusTrue();
+public interface ConferenceRepository extends JpaRepository<Conference,Long> {
+  List<Conference> findByStatusTrue();
 }
