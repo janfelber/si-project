@@ -1,36 +1,54 @@
 <template>
   <div>
-    <h2>Nazov : {{this.articleName}}</h2>
-    <h2>Status : {{this.articleStatus}}</h2>
-    <h2>Klucove slova : {{this.articleKeyWords}}</h2>
-    <h2>Spoluautori : {{this.articleCoAuthors}}</h2>
-    <h2>Sekcia : {{this.articleSection}}</h2>
-    <h2>Meno : {{this.firstName}}</h2>
-    <h2>Priezvisko : {{this.lastName}}</h2>
-
-    <div v-if="articleAccepted === true || articleRejected === true">
-    <h2>Detaily recenzie</h2>
-    <div v-for="(detail, index) in reviewDetails" :key="index">
-      <p><strong> {{ detail.columnName }}</strong></p>
-      <p><strong></strong> {{ detail.choiceName }}</p>
-      <p><strong></strong> {{ detail.text_value }}</p>
-      <hr />
-    </div>
-    </div>
-    <div v-if="articleInReview === true">
-      <h1>
-        Clanok sa posudzuje
-      </h1>
-    </div>
+    <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
+      <div style="flex: 1;" class="review-card" v-if="articleAccepted || articleRejected">
+        <v-simple-table  dense>
+          <tbody>
+          <tr v-for="(detail, index) in reviewDetails" :key="index">
+            <td><strong>{{ detail.columnName }} </strong></td>
+            <td>{{ detail.choiceName }}</td>
+            <td>{{ detail.text_value }}</td>
+          </tr>
+          </tbody>
+        </v-simple-table>
 
 
-    <div v-if="articleRejected === true">
-      <v-btn>
-        Znova vlozit pracu
-      </v-btn>
+      </div>
+
+      <div style="flex: 1;" class="article-info-card" v-if="articleAccepted || articleRejected">
+        <h2>Názov: {{ articleName }}</h2>
+        <h2>Meno: {{ firstName }}</h2>
+        <h2>Priezvisko: {{ lastName }}</h2>
+        <h2>Kľúčové slová: {{ articleKeyWords }}</h2>
+        <h2>Spoluautori: {{ articleCoAuthors }}</h2>
+        <h2>Sekcia: {{ articleSection }}</h2>
+
+        <div v-if="articleStatus === 'ACCEPTED'">
+          <span v-if="articleStatus === 'ACCEPTED'" style="color: green;font-size: 30px;">Accepted</span>
+        </div>
+
+        <div v-if="articleStatus === 'REJECTED'">
+          <span v-if="articleStatus === 'REJECTED'" style="color: red;font-size: 30px">Rejected</span>
+        </div>
+
+        <div v-if="articleStatus === 'SENT'">
+          <span v-if="articleStatus === 'SENT'" style="color: orange;font-size: 30px">Sent</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tlačidlo pre zamietnutý článok -->
+    <div v-if="articleRejected" style="margin-top: 1rem;">
+      <v-btn color="primary">Znova vložiť prácu</v-btn>
     </div>
   </div>
+
+  <div v-if="articleInReview" style="display: flex; justify-content: center; align-items: center; height: 75vh;">
+    <h1>Článok sa posudzuje</h1>
+  </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -50,6 +68,21 @@ export default {
       articleInReview: null,
       articleAccepted: null,
       articleRejected: null,
+    }
+  },
+  computed: {
+    groupedColumns() {
+      const grouped = {};
+      this.columns.forEach((column) => {
+        if (!grouped[column.category_id]) {
+          grouped[column.category_id] = {
+            name: column.category_name,
+            columns: []
+          };
+        }
+        grouped[column.category_id].columns.push(column);
+      });
+      return grouped;
     }
   },
   methods: {
@@ -128,3 +161,46 @@ export default {
   },
 }
 </script>
+<style scoped>
+
+
+.review-card {
+  max-height: fit-content;
+  max-width: fit-content;
+  border:     1px solid #d8d8f0;
+  padding: 20px;
+  border-radius: .5rem;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.article-info-card {
+  max-height: fit-content;
+  max-width: 25%;
+  border:     1px solid #d8d8f0;
+  padding: 20px;
+  border-radius: .5rem;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+v-simple-table {
+  border-radius:    4px;
+}
+
+v-simple-table th {
+  text-align: left;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-bottom: 2px solid #ddd;
+}
+
+v-simple-table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+</style>

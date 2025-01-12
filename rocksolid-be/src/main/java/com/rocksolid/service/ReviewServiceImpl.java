@@ -174,9 +174,9 @@ public class ReviewServiceImpl implements ReviewService {
         String textValue = reviewDetail.getText_value();
 
         if (i < reviewDetailsList.size() - 2) {
-          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(), choice.getChoice_name(), textValue));
+          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(),choice.getChoice_name(), textValue, column.getCategory().getId(),column.getCategory().getCategory_name()));
         } else {
-          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(), textValue, textValue));
+          reviewResponse.getReviewDetails().add(new ReviewDetailResponseDTO(column.getColumn_name(), textValue, textValue, column.getCategory().getId(),column.getCategory().getCategory_name()));
         }
       }
     }
