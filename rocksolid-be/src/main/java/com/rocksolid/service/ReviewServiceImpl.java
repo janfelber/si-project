@@ -53,26 +53,22 @@ public class ReviewServiceImpl implements ReviewService {
     Map<Long, Long> columnValues = reviewRequestDto.getColumnValues();
 
 
-    // Iterácia cez výberové hodnoty (dropdown)
+
     for (Map.Entry<Long, Long> entry : columnValues.entrySet()) {
       Long columnId = entry.getKey();
       Long value = entry.getValue();
 
-      // Načítanie stĺpca
+
       Columns column = columnRepository.findById(columnId)
           .orElseThrow(() -> new RuntimeException("Column not found"));
 
-      // Načítanie voľby pre tento stĺpec
       Choice choice = choiceRepository.findById(value)
           .orElseThrow(() -> new RuntimeException("Choice not found"));
 
-
-
-      // Vytvorenie a uloženie detailu recenzie pre daný stĺpec a voľbu
       ReviewDetails reviewDetails = ReviewDetails.builder()
-          .review(review) // Reference na recenziu
-          .column_id(column) // Reference na stĺpec
-          .value(choice) // Hodnota recenzie pre tento stĺpec
+          .review(review)
+          .column_id(column)
+          .value(choice)
           .build();
 
       reviewDetailsRepository.save(reviewDetails);
@@ -83,16 +79,14 @@ public class ReviewServiceImpl implements ReviewService {
       Long columnId = entry.getKey();
       String value = entry.getValue();
 
-      // Načítanie stĺpca na základe ID
       Columns column = columnRepository.findById(columnId)
           .orElseThrow(() -> new RuntimeException("Column not found"));
 
-      // Vytvorenie a uloženie detailu recenzie (pre každý column_id)
       ReviewDetails reviewDetails = ReviewDetails.builder()
-          .review(review) // Reference na recenziu
-          .column_id(column)  // Reference na stĺpec
-          .value(null)       // Hodnota recenzie pre tento stĺpec
-          .text_value(value)       // Hodnota recenzie pre tento stĺpec
+          .review(review)
+          .column_id(column)
+          .value(null)
+          .text_value(value)
           .build();
 
       reviewDetailsRepository.save(reviewDetails);
@@ -105,20 +99,22 @@ public class ReviewServiceImpl implements ReviewService {
     Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-
     Article articleId = article.builder()
         .id(article.getId())
         .build();
-    System.out.println("Article ID: " + articleId);
     Reviews review = Reviews.builder().article(articleId).build();
+
 
     article.setStatus("REJECTED");
     reviewRepository.save(review);
 
     Map<Long, Long> columnValues = reviewRequestDto.getColumnValues();
+
+
+
     for (Map.Entry<Long, Long> entry : columnValues.entrySet()) {
       Long columnId = entry.getKey();
-      Long value = entry.getKey();
+      Long value = entry.getValue();
 
 
       Columns column = columnRepository.findById(columnId)
@@ -127,13 +123,29 @@ public class ReviewServiceImpl implements ReviewService {
       Choice choice = choiceRepository.findById(value)
           .orElseThrow(() -> new RuntimeException("Choice not found"));
 
-      // Vytvorenie a uloženie detailu recenzie (pre každý column_id)
       ReviewDetails reviewDetails = ReviewDetails.builder()
-          .review(review) // Reference na recenziu
-          .column_id(column)  // Reference na stĺpec
-          .value(choice)       // Hodnota recenzie pre tento stĺpec
+          .review(review)
+          .column_id(column)
+          .value(choice)
           .build();
 
+      reviewDetailsRepository.save(reviewDetails);
+    }
+
+    Map<Long, String> columnValuess = reviewRequestDto.getTextValues();
+    for (Map.Entry<Long, String> entry : columnValuess.entrySet()) {
+      Long columnId = entry.getKey();
+      String value = entry.getValue();
+
+      Columns column = columnRepository.findById(columnId)
+          .orElseThrow(() -> new RuntimeException("Column not found"));
+
+      ReviewDetails reviewDetails = ReviewDetails.builder()
+          .review(review)
+          .column_id(column)
+          .value(null)
+          .text_value(value)
+          .build();
 
       reviewDetailsRepository.save(reviewDetails);
     }

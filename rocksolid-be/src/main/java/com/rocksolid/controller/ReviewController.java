@@ -34,11 +34,6 @@ public class ReviewController {
     return reviewService.rejectReview(reviewRequestDto);
   }
 
-  // @GetMapping("/getReviewByArticleId/{articleId}")
-  // public Reviews getReviewByArticleId(@PathVariable Long articleId) {
-  //   return reviewService.getReviewByArticleId(articleId);
-  // }
-
   @GetMapping("/getReviewByArticleId/{articleId}")
   public ResponseEntity<ReviewResponseDTO> getReviewByArticleId(@PathVariable Long articleId) {
     return reviewService.getReviewByArticleId(articleId);
