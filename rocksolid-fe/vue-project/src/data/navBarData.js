@@ -39,6 +39,6 @@ export const navBarData = [
         routerLink: '/web/history-articles',
         icon: 'mdi-file-clock-outline',
         label: 'Article History',
-        role: ["STUDENT"]
+        role: ["STUDENT", "REVIEWER"]
     },
 ];
