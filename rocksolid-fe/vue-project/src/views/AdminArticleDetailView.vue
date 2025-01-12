@@ -9,26 +9,26 @@
           <div class="form-group">
             <label>Nazov prace</label>
             <div class="form-input">
-              <input v-model="articleName">
+              <input v-model="articleName" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>Popis</label>
             <div class="form-input">
-              <input v-model="articleDescription">
+              <input v-model="articleDescription" disabled>
             </div>
           </div>
           <hr>
           <div class="form-group">
             <label>Klucove slova</label>
             <div class="form-input">
-              <input v-model="keyWords">
+              <input v-model="keyWords" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>Spolu autori</label>
             <div class="form-input">
-              <input v-model="coAuthors">
+              <input v-model="coAuthors" disabled>
             </div>
           </div>
           <div class="form-group">
@@ -44,13 +44,13 @@
           <div class="form-group">
             <label>Konferencia</label>
             <div class="form-input">
-              <input v-model="conferenceName">
+              <input v-model="conferenceName" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>Status</label>
             <div class="form-input">
-              <input v-model="articleStatus">
+              <input v-model="articleStatus" disabled>
             </div>
           </div>
           <div class="form-group">
@@ -76,19 +76,19 @@
           <div class="form-group">
             <label>Meno</label>
             <div class="form-input">
-              <input v-model="articleName">
+              <input v-model="firstName" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>Priezvisko</label>
             <div class="form-input">
-              <input v-model="lastName">
+              <input v-model="lastName" disabled>
             </div>
           </div>
           <div class="form-group">
             <label>E-mail</label>
             <div class="form-input">
-              <input v-model="email">
+              <input v-model="email" disabled>
             </div>
           </div>
         </div>
