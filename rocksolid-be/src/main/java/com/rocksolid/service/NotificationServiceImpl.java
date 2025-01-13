@@ -1,5 +1,6 @@
 package com.rocksolid.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,8 @@ public class NotificationServiceImpl implements NotificationService {
     return notificationRepository.findByUserId(userId)
         .stream()
         .filter(notification -> !notification.is_read())
+        .sorted(Comparator.comparing(Notification::getCreated_at).reversed())
+        .limit(5)
         .map(notification -> new NotificationResponseDto(
             notification.getId(),
             notification.getMessage(),

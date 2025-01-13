@@ -1,6 +1,7 @@
 package com.rocksolid.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,12 +13,15 @@ import com.rocksolid.dto.ReviewRequestDTO;
 import com.rocksolid.dto.ReviewResponseDTO;
 import com.rocksolid.module.Choice;
 import com.rocksolid.module.Columns;
+import com.rocksolid.module.Notification;
 import com.rocksolid.module.ReviewDetails;
 import com.rocksolid.module.Reviews;
 import com.rocksolid.module.Article;
+import com.rocksolid.module.User;
 import com.rocksolid.repository.ArticleRepository;
 import com.rocksolid.repository.ChoiceRepository;
 import com.rocksolid.repository.ColumnRepository;
+import com.rocksolid.repository.NotificationRepository;
 import com.rocksolid.repository.ReviewDeatailsRepository;
 import com.rocksolid.repository.ReviewsRepository;
 
@@ -35,13 +39,14 @@ public class ReviewServiceImpl implements ReviewService {
   private final ChoiceRepository choiceRepository;
 
   private final ArticleRepository articleRepository;
+  private final NotificationRepository notificationRepository;
 
   @Override
-  public Reviews createReview(ReviewRequestDTO reviewRequestDto) {
-    Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
+  public Reviews createReview(final ReviewRequestDTO reviewRequestDto) {
+    final Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-    Article articleId = article.builder()
+    final Article articleId = Article.builder()
         .id(article.getId())
         .build();
     Reviews review = Reviews.builder().article(articleId).build();
@@ -92,14 +97,16 @@ public class ReviewServiceImpl implements ReviewService {
       reviewDetailsRepository.save(reviewDetails);
     }
 
+    createNotification(article.getUser(), "Článok s názvom " + article.getArticle_name() + " bol prijatý pre konferenciu " + article.getConference().getName());
+
     return review;
   }
 
   public Reviews rejectReview(ReviewRequestDTO reviewRequestDto) {
-    Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
+    final Article article = articleRepository.findById(reviewRequestDto.getArticle_id())
         .orElseThrow(() -> new RuntimeException("Article not found"));
 
-    Article articleId = article.builder()
+    final Article articleId = article.builder()
         .id(article.getId())
         .build();
     Reviews review = Reviews.builder().article(articleId).build();
@@ -149,6 +156,8 @@ public class ReviewServiceImpl implements ReviewService {
 
       reviewDetailsRepository.save(reviewDetails);
     }
+
+    createNotification(article.getUser(), "Článok s názvom " + article.getArticle_name() + " bol zamietnutý pre konferenciu " + article.getConference().getName() + " - článok je potrebné upraviť");
 
     return review;
   }
@@ -209,4 +218,14 @@ public class ReviewServiceImpl implements ReviewService {
   //   return columnValues;
   // }
 
+  private void createNotification(User user, String message) {
+    Notification notification = Notification.builder()
+        .user(user)
+        .message(message)
+        .is_read(false)
+        .created_at(new Date())
+        .build();
+
+    notificationRepository.save(notification);
+  }
 }

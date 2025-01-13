@@ -258,8 +258,8 @@ p {
   padding: 0.5rem;
   gap: 0.25rem;
   border-radius: 0.25rem;
-  width: 20rem;
-  margin-top: 0.5rem;
+  width: 32rem;
+  margin-top: 0.9rem;
 }
 
 .blue-dot {
@@ -270,6 +270,7 @@ p {
   margin-right: 0.5rem;
   position: relative;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .blue-dot:hover {
@@ -310,6 +311,7 @@ p {
   flex-grow: 1;
   align-items: center;
   font-size: 13px;
+  gap: 0.5rem;
 }
 
 .created-at {
