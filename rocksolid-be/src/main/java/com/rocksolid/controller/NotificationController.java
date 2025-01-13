@@ -28,7 +28,6 @@ public class NotificationController {
   @GetMapping("/get/unread")
   public List<NotificationResponseDto> getUnreadNotifications() {
     final Long userId = currentUserService.getCurrentUserId();
-    System.out.println("userId: " + userId);
     return notificationService.getNotificationsForUser(userId);
   }
 
