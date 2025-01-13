@@ -3,6 +3,7 @@ package com.rocksolid.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rocksolid.auth.CurrentUserService;
@@ -19,6 +21,7 @@ import com.rocksolid.dto.ArticleReviewerResponseDto;
 import com.rocksolid.dto.ArticleStudentResponseDto;
 import com.rocksolid.dto.SectionResponseDTO;
 import com.rocksolid.module.Article;
+import com.rocksolid.repository.ArticleRepository;
 import com.rocksolid.service.ArticleService;
 import com.rocksolid.service.ReviewService;
 import com.rocksolid.service.SectionService;
@@ -35,6 +38,7 @@ public class ArticleController {
   private CurrentUserService currentUserService;
   private SectionService sectionService;
   private ReviewService reviewService;
+  private ArticleRepository articleRepository;
 
   @GetMapping("/sections")
   public List<SectionResponseDTO> getAllSections() {
@@ -98,6 +102,13 @@ public class ArticleController {
   @PreAuthorize("hasAuthority('student:read')")
   public List<ArticleReviewerResponseDto> getArticleByUserId(@PathVariable final Long id) {
     return articleService.getArticlesByUserId(id);
+  }
+
+  @GetMapping("/check/{articleId}/{conferenceId}")
+  @PreAuthorize("hasAuthority('student:read')")
+  public ResponseEntity<Boolean> checkIfArticleInConference(@PathVariable Long articleId, @PathVariable Long conferenceId) {
+    boolean exists = articleRepository.existsByIdAndConferenceId(articleId, conferenceId);
+    return ResponseEntity.ok(exists);
   }
   
 }

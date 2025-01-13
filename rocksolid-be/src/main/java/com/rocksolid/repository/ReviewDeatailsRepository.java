@@ -11,6 +11,7 @@ public interface ReviewDeatailsRepository extends JpaRepository<ReviewDetails, L
 
   List<ReviewDetails> findByReviewId(Long reviewId);
   List<ReviewDetails> findByReview(Reviews review);
+  List<ReviewDetails> deleteReviewDetailsByReviewId(Long reviewid);
 
 
 }

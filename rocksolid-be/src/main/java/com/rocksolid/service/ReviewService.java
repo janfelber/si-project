@@ -11,5 +11,6 @@ public interface ReviewService {
   Reviews createReview(ReviewRequestDTO reviewRequestDto);
   Reviews rejectReview(ReviewRequestDTO reviewRequestDto);
   ResponseEntity<ReviewResponseDTO> getReviewByArticleId(Long articleId);
+  Reviews deleteReview(Long id);
 
 }

@@ -140,7 +140,7 @@ import { fi, th, tr } from 'vuetify/locale';
 export default {
 
   name : 'UploadArticle',
-  props: ['id'],
+  props: ['id', 'review_id'],
   data() {
     return {
       firstName: '',
@@ -165,10 +165,37 @@ export default {
       alert_show: false,
       alert_text: "",
       alert_icon: "",
-      alert_color: ""
+      alert_color: "",
+      exists: false,
+      review_id: null,
     };
   },
   methods: {
+    async checkIfArticleExists(){
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/check/${this.id}/${this.conferenceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+
+        if(response.data === true){
+          this.exists = true;
+          console.log("existuje " + this.exists);
+        }else {
+          this.exists = false;
+          console.log("existuje " + this.exists);
+        }
+
+      } catch (error) {
+        console.error("Error checking user :", error);
+      }
+    },
     async fetchSections() {
       try {
         const token = localStorage.getItem("token");
@@ -341,7 +368,10 @@ export default {
         return;
       }
 
-      try {
+
+      await this.checkIfArticleExists();
+
+      if (this.exists === false) {
         const formData = new FormData();
         formData.append('wordFile', this.word_file);
         formData.append('pdfFile', this.pdf_file);
@@ -354,31 +384,124 @@ export default {
         formData.append('lastName', this.lastName);
         formData.append('conferenceId', this.conferenceId);
 
-        const token = localStorage.getItem("token")
-        const response = await axios.post("http://localhost:8080/api/v1/file/upload",formData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-        console.log(this.selectedOption.id);
-        if (response.status === 200) {
-          //alert('Súbor bol úspešne nahratý!');
-          await this.showAlert("success")
-          this.firstName = '';
-          this.lastName = '';
-          this.fileName = '';
-          this.selectedOption = '';
-          this.coAuthors = '';
-          this.articleDescription = '';
-          this.keyWords = '';
-          this.articleInReview = true;
+        try {
+
+            const token = localStorage.getItem("token")
+            const response = await axios.post("http://localhost:8080/api/v1/file/upload", formData,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                  }
+                });
+
+          // console.log(this.selectedOption.id);
+          if (response.status === 200) {
+            //alert('Súbor bol úspešne nahratý!');
+            await this.showAlert("success")
+            this.firstName = '';
+            this.lastName = '';
+            this.file = null;
+            this.fileName = '';
+            this.selectedOption = '';
+            this.coAuthors = '';
+            this.articleDescription = '';
+            this.keyWords = '';
+            this.articleInReview = true;
+
+          }
+
+
+        } catch (error) {
+          console.error("Chyba pri nahrávaní súboru", error);
+          await this.showAlert("error")
         }
+      } else {
+
+        const formData = new FormData();
+        formData.append('wordFile', this.word_file);
+        // formData.append('pdfFile', this.pdf_file);
+        formData.append('fileName', this.fileName);
+        formData.append('coAuthors', this.coAuthors);
+        formData.append('articleDescription', this.articleDescription);
+        formData.append('keyWords', this.keyWords);
+        formData.append('sectionId', this.selectedOption);
+        formData.append('firstName', this.firstName);
+        formData.append('lastName', this.lastName);
+        formData.append('conferenceId', this.conferenceId);
+        formData.append('articleId', this.id);
+
+        try {
+          const token = localStorage.getItem("token")
+          const response = await axios.put("http://localhost:8080/api/v1/file/updateArticle", formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+
+          // console.log(this.selectedOption.id);
+          if (response.status === 200) {
+            //alert('Súbor bol úspešne nahratý!');
+            await this.showAlert("success")
+            this.firstName = '';
+            this.lastName = '';
+            this.file = null;
+            this.fileName = '';
+            this.selectedOption = '';
+            this.coAuthors = '';
+            this.articleDescription = '';
+            this.keyWords = '';
+            this.articleInReview = true;
+
+          }
+
+          await this.deleteReview();
+
+
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
         //alert('Došlo k chybe pri nahrávaní súboru.');
         this.showAlert("error")
+      }
+
+    }
+      },
+    async getReview() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:8080/api/v1/review/getReviewByArticleId/${this.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+
+        console.log(response.data)
+        this.review_id = response.data.reviewId
+        console.log("review id", this.review_id)
+        this.reviewDetails = response.data.reviewDetails
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteReview() {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await axios.delete(
+            `http://localhost:8080/api/v1/review/deleteReview/${this.review_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        console.log("Review deleted successfully:", response.data);
+        // this.$router.push({ name: 'activeConferences', params: { id: this.id }});
+      } catch (error) {
+        console.error("Error deleting review:", error);
       }
     },
     async showAlert(status){
@@ -401,12 +524,14 @@ export default {
     },
   },
   mounted() {
+    this.checkIfArticleExists()
     const conferenceName = this.$route.query.conferenceName;
     this.getUser();
     this.fetchSections();
     this.checkIfArticleIsInReview()
     this.checkIfUserInConference();
     this.getDate();
+    this.getReview();
   }
 }
 </script>

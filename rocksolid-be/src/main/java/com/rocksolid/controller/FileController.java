@@ -4,8 +4,10 @@ import java.io.IOException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +46,29 @@ public class FileController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
+
+  @PutMapping("/updateArticle")
+  public ResponseEntity<Article> updateFile(
+      @RequestParam("firstName") String firstName,
+      @RequestParam("lastName") String lastName,
+      @RequestParam("fileName") String fileName,
+      @RequestParam("coAuthors") String coAuthors,
+      @RequestParam("articleDescription") String articleDescription,
+      @RequestParam("keyWords") String keyWords,
+      @RequestParam("sectionId") Long sectionId,
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("conferenceId") Long conferenceId,
+      @RequestParam("articleId") Long articleId) {
+    try {
+      Article savedFile = fileService.updateFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId, articleId);
+      return ResponseEntity.ok(savedFile);
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+
+
 
   @GetMapping("/{id}")
   public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {

@@ -16,4 +16,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   List<Article> findByReviewerId(Long reviewerId);
 
   List <Article> findByUserId(Long userId);
+
+  boolean existsByIdAndConferenceId(Long articleId, Long conferenceId);
 }
