@@ -14,9 +14,22 @@
 
 
         <div v-if="articleInReview === true">
-          <h1>
-            Pracu si odovzdal, cakaj na vysledok
-          </h1>
+
+          <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: row; text-align: center; color: black">
+            <span style="margin-right: 5px; font-size: 30px">Vaša práca je momentálne v procese hodnotenia.</span>
+          </div>
+
+        </div>
+
+        <div v-if="articleReviewed === true">
+
+          <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: row; text-align: center; color: black">
+            <span style="margin-right: 5px; font-size: 30px">Gratulujeme, vaša práca bola schválená!</span>
+            <btn style="text-decoration: underline green; cursor: pointer; font-size: 30px" @click="sendUserToReview(this.review_id)">
+              pozrieť recenziu
+            </btn>
+          </div>
+
         </div>
 
         <div v-if="articleInReview === false">
@@ -168,9 +181,13 @@ export default {
       alert_color: "",
       exists: false,
       review_id: null,
+      articleReviewed: null,
     };
   },
   methods: {
+    async sendUserToReview(reviewId) {
+      this.$router.push({ name: 'ArticleReviewResponse', params: { review_id: reviewId }});
+    },
     async checkIfArticleExists(){
       try {
         const token = localStorage.getItem("token");
@@ -317,10 +334,14 @@ export default {
 
         if (status === "SENT") {
           this.articleInReview = true;
+          this.articleReviewed = false;
+          console.log("Article is in review");
         } else if (status === "REJECTED") {
           this.articleInReview = false;
+          this.articleReviewed = false;
+          console.log("Article is in review");
         } else if (status === "ACCEPTED") {
-          this.articleInReview = true;
+          this.articleReviewed = true;
           console.log("Article is accepted");
         } else {
           this.articleInReview = false;
@@ -523,11 +544,13 @@ export default {
     },
   },
   mounted() {
+    // console.log(this.articleInReview)
+    this.checkIfArticleIsInReview()
     this.checkIfArticleExists()
     const conferenceName = this.$route.query.conferenceName;
     this.getUser();
     this.fetchSections();
-    this.checkIfArticleIsInReview()
+
     this.checkIfUserInConference();
     this.getDate();
     this.getReview();
@@ -683,13 +706,7 @@ hr {
   z-index: 9999;
 }
 
-h1 {
-  text-align: center;
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  color: #3f51b5;
-}
+
 
  .v-container {
   background-color: #f9f9f9;

@@ -123,7 +123,8 @@ public class ArticleServiceImpl implements ArticleService {
             article.getKey_words(),
             article.getSections().getName(),
             article.getCreated_at(),
-            article.getStatus()
+            article.getStatus(),
+            article.getConference().getName()
         )).collect(Collectors.toList());
   }
 
@@ -140,7 +141,8 @@ public class ArticleServiceImpl implements ArticleService {
                     article.getKey_words(),
                     article.getSections().getName(),
                     article.getCreated_at(),
-                    article.getStatus()
+                    article.getStatus(),
+                    article.getConference().getName()
             )).collect(Collectors.toList());
   }
 }

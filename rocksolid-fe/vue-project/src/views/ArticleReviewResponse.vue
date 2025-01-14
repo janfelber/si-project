@@ -1,51 +1,72 @@
 <template>
   <div>
-    <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
+    <div v-if="loading">Loading...</div>
+    <div  style="display: flex; gap: 0.8rem;align-items: flex-start;">
       <div style="flex: 1;" class="review-card" v-if="articleAccepted || articleRejected">
-<!--        <v-simple-table>-->
+        <table class="custom-table">
+          <thead>
+          <tr>
+            <th>Oblasť</th>
+            <th>Hodnotenie</th>
+          </tr>
+          </thead>
           <tbody>
           <tr v-for="(detail, index) in reviewDetails" :key="index">
-            <td><strong>{{ detail.columnName }} </strong></td>
-            <td>{{ detail.choiceName }}</td>
-            <td>{{ detail.text_value }}</td>
+            <td><strong>{{ detail.columnName }}</strong></td>
+            <td class="wrap-text">{{ detail.choiceName }}</td>
+<!--            <td>{{ detail.text_value }}</td>-->
           </tr>
           </tbody>
-<!--        </v-simple-table>-->
-
-
+        </table>
       </div>
 
-      <div style="flex: 1;" class="article-info-card" v-if="articleAccepted || articleRejected">
-        <h2>Názov: {{ articleName }}</h2>
-        <h2>Meno: {{ firstName }}</h2>
-        <h2>Priezvisko: {{ lastName }}</h2>
-        <h2>Kľúčové slová: {{ articleKeyWords }}</h2>
-        <h2>Spoluautori: {{ articleCoAuthors }}</h2>
-        <h2>Sekcia: {{ articleSection }}</h2>
 
-        <div v-if="articleStatus === 'ACCEPTED'">
-          <span v-if="articleStatus === 'ACCEPTED'" style="color: green;font-size: 30px;">Accepted</span>
+      <div style="flex-direction: column">
+        <div style="flex: 1; " class="article-info-card" v-if="articleAccepted || articleRejected" >
+          <div class="card">
+
+            <h2>Informácie o práci</h2>
+
+            <div class="card-content">
+              <p><strong>Názov práce:</strong> {{ articleName }}</p>
+              <v-divider></v-divider>
+              <p><strong>Meno:</strong> {{ firstName }}</p>
+              <v-divider></v-divider>
+              <p><strong>Priezvisko:</strong> {{ lastName }}</p>
+              <v-divider></v-divider>
+              <p><strong>Kľúčové slová:</strong> {{ articleKeyWords }}</p>
+              <v-divider></v-divider>
+              <p><strong>Spoluautori:</strong> {{ articleCoAuthors }}</p>
+              <v-divider></v-divider>
+              <p><strong>Kategória:</strong> {{ articleSection }}</p>
+              <v-divider></v-divider>
+            </div>
+            <div class="footer">
+              <span v-if="articleStatus === 'ACCEPTED'" class="status accepted">Akceptované</span>
+              <span v-if="articleStatus === 'REJECTED'" class="status rejected">Zamietnuté</span>
+              <span v-if="articleStatus === 'SENT'" class="status sent">Poslane</span>
+            </div>
+          </div>
+
+
         </div>
-
-        <div v-if="articleStatus === 'REJECTED'">
-          <span v-if="articleStatus === 'REJECTED'" style="color: red;font-size: 30px">Rejected</span>
+        <div v-if="articleRejected" style="margin-top: 1rem;">
+          <btn class="button" @click="sendUserToUpload(this.conference_id)">Znova vložiť prácu</btn>
         </div>
-
-        <div v-if="articleStatus === 'SENT'">
-          <span v-if="articleStatus === 'SENT'" style="color: orange;font-size: 30px">Sent</span>
-        </div>
-
       </div>
+
+
+
+
+
+
     </div>
 
-    <!-- Tlačidlo pre zamietnutý článok -->
-    <div v-if="articleRejected" style="margin-top: 1rem;">
-      <v-btn color="primary" @click="sendUserToUpload(this.conference_id)">Znova vložiť prácu</v-btn>
-    </div>
+
   </div>
 
   <div v-if="articleInReview" style="display: flex; justify-content: center; align-items: center; height: 75vh;">
-    <h1>Článok sa posudzuje</h1>
+    <h1>Vaša práca je momentálne v procese hodnotenia.</h1>
   </div>
 </template>
 
@@ -69,23 +90,11 @@ export default {
       articleAccepted: null,
       articleRejected: null,
       conference_id: null,
-      review_id: null
+      review_id: null,
+      loading: true
     }
   },
   computed: {
-    groupedColumns() {
-      const grouped = {};
-      this.columns.forEach((column) => {
-        if (!grouped[column.category_id]) {
-          grouped[column.category_id] = {
-            name: column.category_name,
-            columns: []
-          };
-        }
-        grouped[column.category_id].columns.push(column);
-      });
-      return grouped;
-    }
   },
   methods: {
     async sendUserToUpload(conferenceId) {
@@ -107,6 +116,8 @@ export default {
         this.reviewDetails = response.data.reviewDetails
       } catch (error) {
         console.error(error);
+      } finally {
+        this.loading = false;  // Set loading to false when data is fetched
       }
     },
     async getArticle() {
@@ -163,13 +174,94 @@ export default {
 
   },
   mounted() {
-    this.checkIfArticleIsInReview();
     this.getReview();
+    this.checkIfArticleIsInReview();
     this.getArticle();
   },
 }
 </script>
 <style scoped>
+
+.button {
+  background-color: #1EB386;
+  border-color: #1EB386;
+  font-size: 16px;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.article-info-card .card {
+  background-color: white;
+  border: none;
+  margin-top: 10px;
+
+}
+
+.article-info-card .card-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.article-info-card .card-content p {
+  margin: 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+
+.article-info-card .status {
+  font-weight: bold;
+  font-size: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.article-info-card .status.accepted {
+  color: white;
+  background-color: #28a745;
+}
+
+.article-info-card .status.rejected {
+  color: white;
+  background-color: #dc3545;
+}
+
+.article-info-card .status.sent {
+  color: white;
+  background-color: #ffc107;
+}
+
+
+.wrap-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 300px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  text-align: left;
+}
+
+.custom-table th,
+.custom-table td {
+  border: 1px solid #d8d8f0;
+  padding: 12px 15px;
+}
+
+.custom-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  color: #333;
+}
 
 
 .review-card {
@@ -186,7 +278,8 @@ export default {
 
 .article-info-card {
   max-height: fit-content;
-  max-width: 25%;
+  width: 150%;
+  min-width: 100%;
   border:     1px solid #d8d8f0;
   padding: 20px;
   border-radius: .5rem;

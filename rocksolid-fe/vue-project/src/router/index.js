@@ -100,7 +100,7 @@ const router = createRouter({
       props: true,
       meta: {
         requiresStudent: true,
-        title: 'Nahraj článok'
+        title: 'Nahraj prácu'
       },
     },
     {
@@ -138,7 +138,7 @@ const router = createRouter({
       component: ReviewsArticle,
       meta: {
         requiresReviewer: true,
-        title: 'Recenzia článkov'
+        title: 'Recenzia prác'
       },
     },
     {
