@@ -88,7 +88,7 @@
                   <div class="upload-info">
                     <p class="p">Nahratý súbor musi byť vo formáte .doc alebo .docx</p>
                     <div v-if="word_file" class="form-group">
-                      <label class="input-label">Nazov suboru word</label>
+                      <label class="input-label">Názov súboru Word</label>
                       <div class="form-input">
                         <input v-model="word_file.name" disabled>
                       </div>
@@ -108,7 +108,7 @@
                   <br>
                   <p class="p">Nahratý súbor musi byť vo formáte .pdf</p>
                   <div v-if="pdf_file" class="form-group">
-                    <label class="input-label">Nazov suboru pdf</label>
+                    <label class="input-label">Názov súboru PDF</label>
                     <div class="form-input">
                       <input v-model="pdf_file.name" disabled>
                     </div>

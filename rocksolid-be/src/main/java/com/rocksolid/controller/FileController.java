@@ -38,7 +38,7 @@ public class FileController {
       @RequestParam("conferenceId") Long conferenceId) {
     try {
       Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,
-          wordFile,pdfFile, conferenceId);
+          wordFile, pdfFile, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
