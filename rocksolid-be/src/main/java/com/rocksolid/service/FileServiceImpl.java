@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Date;
 import java.util.UUID;
 
 import com.rocksolid.repository.*;
+
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,18 +26,24 @@ import com.rocksolid.module.User;
 import com.rocksolid.module.Conference;
 
 @Service
-public class FileServiceImpl implements FileService{
+public class FileServiceImpl implements FileService {
+
   private final ArticleRepository articleRepository;
+
   @Value("${file.storage.path}")
   private String fileStoragePath;
 
   private final FileRepository fileRepository;
+
   private final UserRepository userRepository;
+
   private final ConferenceRepository conferenceRepository;
+
   private final SectionRepository sectionRepository;
 
-  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository, final ConferenceRepository conferenceRepository,
-                         final SectionRepository sectionRepository, ArticleRepository articleRepository) {
+  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository,
+      final ConferenceRepository conferenceRepository,
+      final SectionRepository sectionRepository, ArticleRepository articleRepository) {
     this.fileRepository = fileRepository;
     this.userRepository = userRepository;
     this.conferenceRepository = conferenceRepository;
@@ -50,7 +60,8 @@ public class FileServiceImpl implements FileService{
       String articleDescription,
       String keyWords,
       Long sectionId,
-      MultipartFile file,
+      MultipartFile wordFile,
+      MultipartFile pdfFile,
       Long conferenceId) throws IOException {
 
     Long userID = getCurrentUserId();
@@ -63,10 +74,13 @@ public class FileServiceImpl implements FileService{
     Sections section = sectionRepository.findById(sectionId)
         .orElseThrow(() -> new RuntimeException("Section not found"));
 
-    String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    String storedFileName = UUID.randomUUID() + "_" + wordFile.getOriginalFilename();
     Path filePath = Paths.get(fileStoragePath, storedFileName);
+
+    String pdfFileName = UUID.randomUUID() + "_" + pdfFile.getOriginalFilename();
+    Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
     Files.createDirectories(filePath.getParent());
-    Files.write(filePath, file.getBytes());
+    Files.write(filePath, wordFile.getBytes());
 
     Article fileEntity = new Article();
     fileEntity.setUser(user);
@@ -77,7 +91,8 @@ public class FileServiceImpl implements FileService{
     fileEntity.setArticle_description(articleDescription);
     fileEntity.setKey_words(keyWords);
     fileEntity.setSections(section);
-    fileEntity.setFile_path(filePath.toString());
+    fileEntity.setWord_file_path(filePath.toString());
+    fileEntity.setPdf_file_path(pdfFilePath.toString());
     fileEntity.setConference(conference);
     fileEntity.setStatus("SENT");
     fileEntity.setCreated_at(new Date());
@@ -88,7 +103,7 @@ public class FileServiceImpl implements FileService{
   public byte[] loadFile(Long fileId) throws IOException {
     Article fileEntity = fileRepository.findById(Math.toIntExact(fileId))
         .orElseThrow(() -> new RuntimeException("File not found with id " + fileId));
-    Path filePath = Paths.get(fileEntity.getFile_path());
+    Path filePath = Paths.get(fileEntity.getWord_file_path());
 
     return Files.readAllBytes(filePath);
   }
@@ -113,7 +128,8 @@ public class FileServiceImpl implements FileService{
     if (article.isEmpty()) {
       throw new RuntimeException("Article not found with ID: " + articleId);
     }
-    String filePath = article.get().getFile_path();
+    String filePath = article.get().getWord_file_path();
+    String pdfFilePath = article.get().getPdf_file_path();
     Path path = Paths.get(filePath);
     return Files.readAllBytes(path);
   }
@@ -123,7 +139,7 @@ public class FileServiceImpl implements FileService{
     if (article.isEmpty()) {
       throw new RuntimeException("Article not found with ID: " + articleId);
     }
-    String path = article.get().getFile_path();
+    String path = article.get().getWord_file_path();
     String fullFileName = path.substring(path.lastIndexOf("\\"));
     return fullFileName.substring(fullFileName.indexOf("_") + 1);
   }

@@ -33,7 +33,9 @@ public class Article {
 
     private String status;
 
-    private String file_path;
+    private String word_file_path;
+
+    private String pdf_file_path;
 
     private Date created_at;
 

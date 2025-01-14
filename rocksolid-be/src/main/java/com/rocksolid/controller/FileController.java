@@ -1,11 +1,6 @@
 package com.rocksolid.controller;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.rocksolid.dto.SectionResponseDTO;
-import com.rocksolid.module.Sections;
-import com.rocksolid.service.ArticleService;
 import com.rocksolid.module.Article;
 import com.rocksolid.service.FileService;
-import com.rocksolid.service.SectionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,10 +33,12 @@ public class FileController {
       @RequestParam("articleDescription") String articleDescription,
       @RequestParam("keyWords") String keyWords,
       @RequestParam("sectionId") Long sectionId,
-      @RequestParam("file") MultipartFile file,
+      @RequestParam("wordFile") MultipartFile wordFile,
+      @RequestParam("pdfFile") MultipartFile pdfFile,
       @RequestParam("conferenceId") Long conferenceId) {
     try {
-      Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId);
+      Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,
+          wordFile,pdfFile, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

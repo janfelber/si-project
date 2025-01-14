@@ -87,10 +87,10 @@
                 <div class="card-body">
                   <div class="upload-info">
                     <p class="p">Nahratý súbor musi byť vo formáte .doc alebo .docx</p>
-                    <div v-if="file" class="form-group">
-                      <label class="input-label">Nazov suboru</label>
+                    <div v-if="word_file" class="form-group">
+                      <label class="input-label">Nazov suboru word</label>
                       <div class="form-input">
-                        <input v-model="file.name" disabled>
+                        <input v-model="word_file.name" disabled>
                       </div>
                     </div>
                   </div>
@@ -103,7 +103,26 @@
                     <label for="file-upload" class="upload-label">
                       vyberte súbor
                     </label>
-                    <input type="file" id="file-upload" class="file-input" accept=".pdf,.doc,.docx" @change="onFileSelected"/>
+                    <input type="file" id="file-upload" class="file-input" accept=".doc,.docx" @change="onWordFileSelected"/>
+                  </div>
+                  <br>
+                  <p class="p">Nahratý súbor musi byť vo formáte .pdf</p>
+                  <div v-if="pdf_file" class="form-group">
+                    <label class="input-label">Nazov suboru pdf</label>
+                    <div class="form-input">
+                      <input v-model="pdf_file.name" disabled>
+                    </div>
+                  </div>
+                  <div class="upload-container"
+                       @dragover.prevent="onDragOver"
+                       @drop.prevent="onFileDropped">
+  <span class="icon-text">
+    <i class="upload-icon fas fa-upload"></i> Presuňte PDF súbor alebo,
+  </span>
+                    <label for="pdf-file-upload" class="upload-label">
+                      vyberte PDF súbor
+                    </label>
+                    <input type="file" id="pdf-file-upload" class="file-input" accept=".pdf" @change="onPdfFileSelected"/>
                   </div>
                 </div>
               </div>
@@ -129,7 +148,8 @@ export default {
       coAuthors: '',
       articleDescription: '',
       keyWords: '',
-      file: null,
+      word_file: null,
+      pdf_file: null,
       fileName: '',
       selectedOption: null,
       conferenceId: this.id,
@@ -208,13 +228,23 @@ export default {
         console.error(error);
       }
     },
-    onFileSelected(event) {
+    onWordFileSelected(event) {
       const file = event.target.files[0];
       if (file) {
         if (this.isValidFile(file)) {
-          this.file = file;
+          this.word_file = file;
         } else {
           alert("Please select a .doc or .docx file.");
+        }
+      }
+    },
+    onPdfFileSelected(event) {
+      const file = event.target.files[0];
+      if (file) {
+        if (this.isValidPdfFile(file)) {
+          this.pdf_file = file;
+        } else {
+          alert("Please select a .pdf file.");
         }
       }
     },
@@ -227,8 +257,8 @@ export default {
       const file = event.dataTransfer.files[0];
       if (file) {
         if (this.isValidFile(file)) {
-          this.file = file.name;
-          this.file = file;
+          this.word_file = file.name;
+          this.word_file = file;
         } else {
           alert("Nahratý súbor musi byť vo formáte .doc alebo .docx");
         }
@@ -236,6 +266,11 @@ export default {
     },
     isValidFile(file) {
       const allowedExtensions = ['.doc', '.docx'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      return allowedExtensions.includes(`.${fileExtension}`);
+    },
+    isValidPdfFile(file) {
+      const allowedExtensions = ['.pdf'];
       const fileExtension = file.name.split('.').pop().toLowerCase();
       return allowedExtensions.includes(`.${fileExtension}`);
     },
@@ -296,7 +331,7 @@ export default {
         return;
       }
 
-      if(!this.file) {
+      if(!this.word_file || !this.pdf_file) {
         alert('Prosím, vyberte súbor.');
         return;
       }
@@ -306,9 +341,10 @@ export default {
         return;
       }
 
-      try{
+      try {
         const formData = new FormData();
-        formData.append('file', this.file);
+        formData.append('wordFile', this.word_file);
+        formData.append('pdfFile', this.pdf_file);
         formData.append('fileName', this.fileName);
         formData.append('coAuthors', this.coAuthors);
         formData.append('articleDescription', this.articleDescription);
@@ -332,14 +368,12 @@ export default {
           await this.showAlert("success")
           this.firstName = '';
           this.lastName = '';
-          this.file = null;
           this.fileName = '';
           this.selectedOption = '';
           this.coAuthors = '';
           this.articleDescription = '';
           this.keyWords = '';
           this.articleInReview = true;
-
         }
       }catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
