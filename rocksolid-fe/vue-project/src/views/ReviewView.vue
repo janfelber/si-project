@@ -1,4 +1,15 @@
 <template>
+  <transition name="fade">
+    <v-alert
+        v-if="alert_show"
+        class="alerts"
+        :color="alert_color"
+        variant="elevated"
+        :icon="alert_icon"
+        :text="alert_text"
+    ></v-alert>
+  </transition>
+
   <div>
     <div v-if="loading">Loading...</div>
 
@@ -68,6 +79,10 @@ export default {
       selectedChoices: {},
       loading: true,
       article_id: this.$route.params.id,
+      alert_show: false,
+      alert_text: "",
+      alert_icon: "",
+      alert_color: ""
     };
   },
   mounted() {
@@ -148,10 +163,11 @@ export default {
             }
         );
         console.log(article_id)
-
+        await this.showAlert("success", "Hodnotenie článku bolo uložené")
         await router.push({ name: 'reviewConferences' });
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
+        await this.showAlert("error", "Hodnotenie sa nepodarilo uložiť")
         console.error('Error submitting review:', error);
       }
     },
@@ -191,16 +207,56 @@ export default {
             }
         );
         console.log(article_id)
+        await this.showAlert("success", "Článok bol zamietnutý")
         await router.push({ name: 'reviewConferences' });
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
+        await this.showAlert("error", "Článok sa nepodarilo zamietnuť")
         console.error('Error submitting review:', error);
+      }
+    },
+    async showAlert(status, message){
+      if(status === "success"){
+        this.alert_show = true;
+        this.alert_text = message;
+        this.alert_icon = "$success";
+        this.alert_color = "success";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
+      }
+      else if (status === "error"){
+        this.alert_show = true;
+        this.alert_text = message;
+        this.alert_icon = "$error";
+        this.alert_color = "error";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
       }
     },
   }
 };
 </script>
 <style scoped>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.alerts{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: fit-content;
+  width: fit-content;
+  font-size: large;
+  z-index: 9999;
+}
+
 .tables-container {
   margin-top: 10px;
   display: flex;
