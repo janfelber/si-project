@@ -68,18 +68,6 @@ public class FileController {
     }
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
-    try {
-      byte[] fileContent = fileService.loadFile(id);
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file\"")
-          .body(fileContent);
-    } catch (IOException e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
-
   @GetMapping("/download/{id}/{fileType}")
   public ResponseEntity<byte[]> downloadPdfFile (
       @PathVariable final Long id,
