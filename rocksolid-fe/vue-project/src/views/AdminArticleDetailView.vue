@@ -1,4 +1,16 @@
 <template>
+
+  <transition name="fade">
+    <v-alert
+        v-if="alert_show"
+        class="alerts"
+        :color="alert_color"
+        variant="elevated"
+        :icon="alert_icon"
+        :text="alert_text"
+    ></v-alert>
+  </transition>
+
   <div class="card-container">
     <div class="v-col-7">
       <div class="card">
@@ -149,6 +161,10 @@ export default {
       selectedSection: '',
       sectionName: '',
       fileName: null,
+      alert_show: false,
+      alert_text: "",
+      alert_icon: "",
+      alert_color: ""
     };
   },
   methods: {
@@ -247,8 +263,16 @@ export default {
           },
         });
         console.log('Secion id:', this.selectedSection);
-        console.log('Article updated:', response.data);
+        console.log("pred upravou: " + this.article.section + "po " + this.selectedSection);
+        if(this.article.reviewerId !== this.selectedReviewer){
+          await this.showAlert("success", "Článok úspešne priradený recenzentovi")
+          this.article.reviewerId = this.selectedReviewer
+        }
+        else {
+          await this.showAlert("success", "Článok úspešne upravený")
+        }
       } catch (error) {
+        await this.showAlert("error", "Článok sa nepodarilo upraviť")
         console.error('Failed to update reviewer:', error);
       }
     },
@@ -317,6 +341,24 @@ export default {
         console.error('Failed to fetch article name', error);
       }
     },
+    async showAlert(status, message){
+      if(status === "success"){
+        this.alert_show = true;
+        this.alert_text = message;
+        this.alert_icon = "$success";
+        this.alert_color = "success";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
+      }
+      else if (status === "error"){
+        this.alert_show = true;
+        this.alert_text = message;
+        this.alert_icon = "$error";
+        this.alert_color = "error";
+        await new Promise(resolve => setTimeout(resolve, 4000));
+        this.alert_show = false;
+      }
+    },
   },
   mounted: async function() {
     try {
@@ -332,6 +374,25 @@ export default {
 </script>
 
 <style scoped>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.alerts{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  height: fit-content;
+  width: fit-content;
+  font-size: large;
+  z-index: 9999;
+}
 
 .card-title i {
   font-size: 1.25rem;
