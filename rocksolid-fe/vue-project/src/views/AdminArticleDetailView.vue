@@ -2,8 +2,27 @@
   <div class="card-container">
     <div class="v-col-7">
       <div class="card">
-        <v-card-title class="card-title">O praci
-          <i class="fa fa-download" @click="downloadArticle(this.id)" style="cursor: pointer; float: right;"></i>
+        <v-card-title class="card-title">
+          O praci
+          <v-menu offset-y>
+            <template #activator="{ props }">
+              <button
+                  class="blue-darken-1 white--text download"
+                  v-bind="props"
+                  style="border: none; box-shadow: none; height: 20px; float: right; padding: 0;"
+              >
+                <i class="fa fa-download" style="cursor: pointer; "></i>
+              </button>
+            </template>
+            <v-list>
+              <v-list-item @click="downloadArticle(article.id, 'pdf')">
+                <v-list-item-title style="font-size: 14px">Stiahnuť PDF</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="downloadArticle(article.id, 'word')">
+                <v-list-item-title style="font-size: 14px">Stiahnuť Word</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-card-title>
         <div class="card-body">
           <div class="form-group">
@@ -233,36 +252,47 @@ export default {
         console.error('Failed to update reviewer:', error);
       }
     },
-    downloadArticle(id){
-      this.getFileName(id);
-      let fileType;
-      if(this.fileName != null){
-        fileType = this.fileName.substring(this.fileName.lastIndexOf("."))
+    async downloadArticle(id, fileType) {
+      await this.getFileName(id, fileType);
+      if (this.fileName != null) {
+        const extension = this.fileName.substring(this.fileName.lastIndexOf('.'));
+        switch (extension.toLowerCase()) {
+          case '.pdf':
+            fileType = 'pdf';
+            break;
+          case '.docx':
+          case '.doc':
+            fileType = 'word';
+            break;
+          default:
+            console.error('Unsupported file type extension:', extension);
+            return;
+        }
       }
-      const token = localStorage.getItem("token");
-      const url = "http://localhost:8080/api/v1/file/download/" + id;
+      const token = localStorage.getItem('token');
+      const url = `http://localhost:8080/api/v1/file/download/${id}/${fileType}`;
       axios
           .get(url, {
-            responseType: "blob",
+            responseType: 'blob',
             headers: {
-              Authorization: `Bearer ${token}`,
-            },
+              Authorization: `Bearer ${token}`
+            }
           })
           .then((response) => {
             let type;
             switch (fileType) {
-              case "pdf":
+              case 'pdf':
                 type = 'application/pdf';
                 break;
-              case "docx":
-                type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+              case 'docx':
+                type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
                 break;
-              case "doc":
-                type = "application/msword";
+              case 'doc':
+                type = 'application/msword';
                 break;
             }
             const blob = new Blob([response.data], { type: type });
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.download = this.fileName;
             document.body.appendChild(link);
@@ -270,21 +300,21 @@ export default {
             document.body.removeChild(link);
           })
           .catch((error) => {
-            console.error("File download failed:", error);
+            console.error('File download failed:', error);
           });
     },
-    async getFileName(id){
+    async getFileName(id, fileType) {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/v1/file/fileName/" + id,
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`http://localhost:8080/api/v1/file/fileName/${id}/${fileType}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
-              },
+                Authorization: `Bearer ${token}`
+              }
             });
         this.fileName = response.data;
       } catch (error) {
-        console.error("Failed to fetch article name", error);
+        console.error('Failed to fetch article name', error);
       }
     },
   },
@@ -393,5 +423,4 @@ label {
   width:      10rem;
   align-self: center;
 }
-
 </style>

@@ -1,5 +1,6 @@
 package com.rocksolid.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,6 +72,7 @@ public class FileServiceImpl implements FileService {
     Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
     Files.createDirectories(filePath.getParent());
     Files.write(filePath, wordFile.getBytes());
+    Files.write(pdfFilePath, pdfFile.getBytes());
 
     Article fileEntity = new Article();
     fileEntity.setUser(user);
@@ -108,6 +110,7 @@ public class FileServiceImpl implements FileService {
     Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
     Files.createDirectories(filePath.getParent());
     Files.write(filePath, wordFile.getBytes());
+    Files.write(pdfFilePath, pdfFile.getBytes());
 
       fileEntity.setFirst_name(firstName);
       fileEntity.setLast_name(lastName);
@@ -120,7 +123,7 @@ public class FileServiceImpl implements FileService {
       fileEntity.setConference(conferenceRepository.findById(conferenceId)
           .orElseThrow(() -> new RuntimeException("Conference not found")));
       fileEntity.setWord_file_path(filePath.toString());
-      fileEntity.setPdf_file_path(filePath.toString());
+      fileEntity.setPdf_file_path(pdfFilePath.toString());
       fileEntity.setStatus("SENT");
       fileEntity.setCreated_at(new Date());
       fileEntity.setReviewed(false);
@@ -128,12 +131,18 @@ public class FileServiceImpl implements FileService {
   }
 
   @Override
-  public byte[] loadFile(Long fileId) throws IOException {
-    Article fileEntity = fileRepository.findById(Math.toIntExact(fileId))
-        .orElseThrow(() -> new RuntimeException("File not found with id " + fileId));
-    Path filePath = Paths.get(fileEntity.getWord_file_path());
+  public byte[] loadFile(final Long articleId, final String fileType) throws IOException {
+    final Article article = articleRepository.findById(articleId)
+        .orElseThrow(() -> new RuntimeException("Article not found with ID: " + articleId));
 
-    return Files.readAllBytes(filePath);
+    final String filePath = switch (fileType) {
+      case "pdf" -> article.getPdf_file_path();
+      case "word" -> article.getWord_file_path();
+      default -> throw new IllegalArgumentException("Unsupported file type: " + fileType);
+    };
+
+    final Path path = Paths.get(filePath);
+    return Files.readAllBytes(path);
   }
 
   public Long getCurrentUserId() {
@@ -150,26 +159,24 @@ public class FileServiceImpl implements FileService {
     }
   }
 
-  @Override
-  public byte[] getFileByArticleId(Long articleId) throws IOException{
-    Optional<Article> article = articleRepository.findById(articleId);
+  public String getFileName(final Long articleId, final String fileType) {
+    final Optional<Article> article = articleRepository.findById(articleId);
     if (article.isEmpty()) {
       throw new RuntimeException("Article not found with ID: " + articleId);
     }
-    String filePath = article.get().getWord_file_path();
-    String pdfFilePath = article.get().getPdf_file_path();
-    Path path = Paths.get(filePath);
-    return Files.readAllBytes(path);
-  }
 
-  public String getFileName(Long articleId){
-    Optional<Article> article = articleRepository.findById(articleId);
-    if (article.isEmpty()) {
-      throw new RuntimeException("Article not found with ID: " + articleId);
+    final String filePath = switch (fileType) {
+      case "pdf" -> article.get().getPdf_file_path();
+      case "word" -> article.get().getWord_file_path();
+      default -> throw new IllegalArgumentException("Unsupported file type: " + fileType);
+    };
+
+    String fullFileName = filePath.substring(filePath.lastIndexOf(File.separator) + 1);
+
+    if (fullFileName.contains("_")) {
+      fullFileName = fullFileName.substring(fullFileName.indexOf('_') + 1);
     }
-    String path = article.get().getWord_file_path();
-    String fullFileName = path.substring(path.lastIndexOf("\\"));
-    return fullFileName.substring(fullFileName.indexOf("_") + 1);
+    return fullFileName;
   }
 
 
