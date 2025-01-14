@@ -56,19 +56,17 @@ public class FileController {
       @RequestParam("articleDescription") String articleDescription,
       @RequestParam("keyWords") String keyWords,
       @RequestParam("sectionId") Long sectionId,
-      @RequestParam("file") MultipartFile file,
+      @RequestParam("wordFile") MultipartFile wordFile,
+      @RequestParam("pdfFile") MultipartFile pdfFile,
       @RequestParam("conferenceId") Long conferenceId,
       @RequestParam("articleId") Long articleId) {
     try {
-      Article savedFile = fileService.updateFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,file, conferenceId, articleId);
+      Article savedFile = fileService.updateFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords, sectionId, wordFile, pdfFile ,conferenceId, articleId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
   }
-
-
-
 
   @GetMapping("/{id}")
   public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {

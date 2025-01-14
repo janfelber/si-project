@@ -92,17 +92,22 @@ public class FileServiceImpl implements FileService {
   @Override
   public Article updateFile(final String firstName, final String lastName, final String fileName,
       final String coAuthors,
-      final String articleDescription, final String keyWords, final Long sectionId, final MultipartFile file,
+      final String articleDescription, final String keyWords, final Long sectionId, final MultipartFile wordFile, final MultipartFile pdfFile,
       final Long conferenceId, final Long articleId)
       throws IOException {
 
       Article fileEntity = articleRepository.findById(articleId)
           .orElseThrow(() -> new RuntimeException("File not found with id " + articleId));
 
-    String storedFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    String storedFileName = UUID.randomUUID() + "_" + wordFile.getOriginalFilename();
     Path filePath = Paths.get(fileStoragePath, storedFileName);
     Files.createDirectories(filePath.getParent());
-    Files.write(filePath, file.getBytes());
+    Files.write(filePath, wordFile.getBytes());
+
+    String pdfFileName = UUID.randomUUID() + "_" + pdfFile.getOriginalFilename();
+    Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
+    Files.createDirectories(filePath.getParent());
+    Files.write(filePath, wordFile.getBytes());
 
       fileEntity.setFirst_name(firstName);
       fileEntity.setLast_name(lastName);
@@ -114,7 +119,8 @@ public class FileServiceImpl implements FileService {
           .orElseThrow(() -> new RuntimeException("Section not found")));
       fileEntity.setConference(conferenceRepository.findById(conferenceId)
           .orElseThrow(() -> new RuntimeException("Conference not found")));
-      fileEntity.setFile_path(filePath.toString());
+      fileEntity.setWord_file_path(filePath.toString());
+      fileEntity.setPdf_file_path(filePath.toString());
       fileEntity.setStatus("SENT");
       fileEntity.setCreated_at(new Date());
       fileEntity.setReviewed(false);

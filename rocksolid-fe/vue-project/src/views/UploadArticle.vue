@@ -346,7 +346,7 @@ export default {
           this.userInConference = true;
         } else {
           this.userInConference = false;
-          this.$router.push({ name: 'activeConferences', params: { id: this.id }});
+          this.$router.push({ name: 'activeConferences', params: { id: this.id } });
         }
       } catch (error) {
         console.error("Error checking user in conference:", error);
@@ -358,7 +358,7 @@ export default {
         return;
       }
 
-      if(!this.word_file || !this.pdf_file) {
+      if (!this.word_file || !this.pdf_file) {
         alert('Prosím, vyberte súbor.');
         return;
       }
@@ -367,7 +367,6 @@ export default {
         alert("Do tejto konferencie momentálne nieje možné odovzdať prácu.");
         return;
       }
-
 
       await this.checkIfArticleExists();
 
@@ -386,14 +385,14 @@ export default {
 
         try {
 
-            const token = localStorage.getItem("token")
-            const response = await axios.post("http://localhost:8080/api/v1/file/upload", formData,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'multipart/form-data'
-                  }
-                });
+          const token = localStorage.getItem("token")
+          const response = await axios.post("http://localhost:8080/api/v1/file/upload", formData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
 
           // console.log(this.selectedOption.id);
           if (response.status === 200) {
@@ -411,7 +410,6 @@ export default {
 
           }
 
-
         } catch (error) {
           console.error("Chyba pri nahrávaní súboru", error);
           await this.showAlert("error")
@@ -420,7 +418,7 @@ export default {
 
         const formData = new FormData();
         formData.append('wordFile', this.word_file);
-        // formData.append('pdfFile', this.pdf_file);
+        formData.append('pdfFile', this.pdf_file);
         formData.append('fileName', this.fileName);
         formData.append('coAuthors', this.coAuthors);
         formData.append('articleDescription', this.articleDescription);
