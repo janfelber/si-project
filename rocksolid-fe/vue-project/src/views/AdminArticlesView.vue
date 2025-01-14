@@ -65,6 +65,16 @@
           />
           <span class="mdi mdi-magnify search-icon"></span>
         </div>
+        <v-btn
+            style="
+            display: flex;
+            margin-left: auto;"
+            class="text-none font-weight-regular"
+            prepend-icon="mdi-download"
+            text="Stiahnuť všetky"
+            variant="tonal"
+            @click="downloadAll()"
+        ></v-btn>
       </div>
       <table class="articles-table">
         <thead>
@@ -139,6 +149,33 @@ export default {
       if (this.currentPageInput > 0 && this.currentPageInput <= this.totalPages) {
         this.goToPage(this.currentPageInput);
       }
+    },
+    async downloadAll(){
+      let ids = [];
+      for (let article of this.filterArticles){
+        ids.push(article.id);
+      }
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post("http://localhost:8080/api/v1/file/zip",
+            ids,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              responseType: 'blob',
+            }
+        );
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'articles.zip');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.error("Failed to download articles:", error);
+      }
     }
   },
   mounted() {
@@ -157,6 +194,12 @@ export default {
           return true;
         }
         if (String(article.id).includes(this.search)) {
+          return true;
+        }
+        if (article.conferenceName.toLowerCase().includes(this.search.toLowerCase())){
+          return true;
+        }
+        if (article.section.toLowerCase().includes(this.search.toLowerCase())){
           return true;
         }
         return false;
@@ -227,6 +270,7 @@ export default {
 }
 
 .table-search {
+  display: flex;
   padding: .5em 1.5em;
   border-bottom: 1px solid rgb(216, 216, 240);
 }

@@ -1,16 +1,16 @@
 package com.rocksolid.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rocksolid.module.Article;
@@ -97,6 +97,42 @@ public class FileController {
       return new ResponseEntity<>("Article not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @PreAuthorize("hasAuthority('admin:read')")
+  @PostMapping("/zip")
+  public ResponseEntity<ByteArrayResource> downloadZip(@RequestBody List<Long> Ids) {
+    try {
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
+        int namingCounter = 0;
+        for (Long id : Ids) {
+          namingCounter++;
+          byte[] fileContent = fileService.getFileByArticleId(id);
+          String fileName = namingCounter + " - " + fileService.getFileName(id);
+
+          ZipEntry zipEntry = new ZipEntry(fileName);
+          zipOutputStream.putNextEntry(zipEntry);
+          zipOutputStream.write(fileContent);
+          zipOutputStream.closeEntry();
+        }
+      }
+
+      ByteArrayResource resource = new ByteArrayResource(byteArrayOutputStream.toByteArray());
+
+      HttpHeaders headers = new HttpHeaders();
+      headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=articles.zip");
+
+      return ResponseEntity
+              .ok()
+              .headers(headers)
+              .contentLength(resource.contentLength())
+              .contentType(org.springframework.http.MediaType.APPLICATION_OCTET_STREAM)
+              .body(resource);
+
+    } catch (IOException e) {
+      throw new RuntimeException("Error creating ZIP file", e);
     }
   }
 }
