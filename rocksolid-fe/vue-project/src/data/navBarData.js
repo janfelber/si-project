@@ -36,6 +36,12 @@ export const navBarData = [
         role: ["ADMIN"]
     },
     {
+        routerLink: '/admin/categories',
+        icon: 'mdi-view-list',
+        label: 'Kategórie',
+        role: ["ADMIN"]
+    },
+    {
         routerLink: '/web/history-articles',
         icon: 'mdi-file-clock-outline',
         label: 'Article History',

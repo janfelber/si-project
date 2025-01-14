@@ -110,5 +110,5 @@ public class ArticleController {
     boolean exists = articleRepository.existsByIdAndConferenceId(articleId, conferenceId);
     return ResponseEntity.ok(exists);
   }
-  
+
 }
