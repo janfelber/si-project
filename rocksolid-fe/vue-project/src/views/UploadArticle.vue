@@ -129,9 +129,9 @@
                   <div class="upload-container"
                        @dragover.prevent="onDragOver"
                        @drop.prevent="onFileDropped">
-  <span class="icon-text">
-    <i class="upload-icon fas fa-upload"></i> Presuňte PDF súbor alebo,
-  </span>
+                    <span class="icon-text">
+                      <i class="upload-icon fas fa-upload"></i> Presuňte PDF súbor alebo,
+                    </span>
                     <label for="pdf-file-upload" class="upload-label">
                       vyberte PDF súbor
                     </label>

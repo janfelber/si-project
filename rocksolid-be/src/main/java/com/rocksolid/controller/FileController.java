@@ -68,23 +68,13 @@ public class FileController {
     }
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
-    try {
-      byte[] fileContent = fileService.loadFile(id);
-      return ResponseEntity.ok()
-          .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"file\"")
-          .body(fileContent);
-    } catch (IOException e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    }
-  }
-
-  @GetMapping("/download/{id}")
-  public ResponseEntity<byte[]> getFileByArticleId (@PathVariable Long id) {
+  @GetMapping("/download/{id}/{fileType}")
+  public ResponseEntity<byte[]> downloadPdfFile (
+      @PathVariable final Long id,
+      @PathVariable final String fileType) {
     try{
-      byte[] file = fileService.getFileByArticleId(id);
-      HttpHeaders headers = new HttpHeaders();
+      final byte[] file = fileService.loadFile(id, fileType);
+      final HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
       headers.setContentDisposition(ContentDisposition.attachment()
               .build());
@@ -94,8 +84,19 @@ public class FileController {
     }
   }
 
-  @GetMapping("/fileName/{id}")
-  public String getFileName (@PathVariable Long id) throws IOException {
-    return fileService.getFileName(id);
+  @GetMapping("/fileName/{articleId}/{fileType}")
+  public ResponseEntity<String> getFileName(
+      @PathVariable final Long articleId,
+      @PathVariable final String fileType) {
+    try {
+      final String fileName = fileService.getFileName(articleId, fileType);
+      return new ResponseEntity<>(fileName, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return new ResponseEntity<>("Invalid file type: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (RuntimeException e) {
+      return new ResponseEntity<>("Article not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
