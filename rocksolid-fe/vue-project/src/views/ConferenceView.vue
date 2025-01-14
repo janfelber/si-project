@@ -238,7 +238,7 @@
           <td class="cell" style="width: 5.452637%;">{{this.formatDate(conference.date_from) }}</td>
           <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.date_to) }}</td>
           <td class="cell" style="width: 5.452637%;">{{ conference.status}}</td>
-          <td class="cell" style="width: 5.452637%;"><v-btn @click="updateDialog(conference.id, conference.name, conference.date_from, conference.date_to, conference.status, conference.article_id, conference.form_id, conference.year)">Edit</v-btn></td>
+          <td class="cell" style="width: 5.452637%;"><v-btn @click="updateDialog(conference.id, conference.name, conference.date_from, conference.date_to, conference.status, conference.article_id, conference.form_id, conference.year)" prepend-icon="mdi-pen">Edit</v-btn></td>
         </tr>
         </tbody>
       </table>
