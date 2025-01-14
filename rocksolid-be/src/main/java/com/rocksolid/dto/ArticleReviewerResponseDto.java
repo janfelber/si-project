@@ -2,6 +2,8 @@ package com.rocksolid.dto;
 
 import java.util.Date;
 
+import com.rocksolid.module.Conference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,4 +17,5 @@ public class ArticleReviewerResponseDto {
   private String section;
   private Date createdAt;
   private String status;
+  private String conferenceName;
 }

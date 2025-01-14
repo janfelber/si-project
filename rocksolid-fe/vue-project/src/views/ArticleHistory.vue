@@ -39,11 +39,15 @@
               <v-divider></v-divider>
               <v-card-text class="py-3">
                 <div class="text-truncate">
+                  Konferencia: {{ article.conferenceName }}
+                </div>
+                <v-divider></v-divider>
+                <div class="text-truncate">
                   Popis: {{ article.description }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
-                  Sekcia: {{ article.section }}
+                  Kategória: {{ article.section }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
@@ -52,24 +56,30 @@
                 <v-divider></v-divider>
                 <div class="text-truncate">
 
-                  <div v-if="article.status === 'ACCEPTED'">
-                    <v-icon v-if="article.status === 'ACCEPTED'" color="green">mdi-check </v-icon> <span v-if="article.status === 'ACCEPTED'" style="color: green; margin-left: 8px;">Accepted</span>
+                  <div style="margin-left: -10px">
+                    <div class="status">
+                      <div v-if="article.status === 'ACCEPTED'">
+                        <span v-if="article.status === 'ACCEPTED'" class="status accepted" >Akcteptované</span>
+                      </div>
+
+                      <div v-if="article.status === 'REJECTED'">
+                        <span v-if="article.status === 'REJECTED'" class="status rejected">Zamietnuté</span>
+                      </div>
+
+                      <div v-if="article.status === 'SENT'">
+                        <span v-if="article.status === 'SENT'" class="status sent">POSLANÉ</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div v-if="article.status === 'REJECTED'">
-                    <v-icon v-if="article.status === 'REJECTED'" color="red">mdi-close</v-icon> <span v-if="article.status === 'REJECTED'" style="color: red; margin-left: 8px;">Rejected</span>
-                  </div>
 
-                  <div v-if="article.status === 'SENT'">
-                    <v-icon v-if="article.status === 'SENT'" color="orange">mdi-alert-circle-outline</v-icon> <span v-if="article.status === 'SENT'" style="color: orange; margin-left: 8px;">Sent</span>
-                  </div>
                 </div>
               </v-card-text>
               <v-card-actions>
                 <v-row class="w-100" justify="space-between">
-                  <v-col class="d-flex justify-right">
+                  <v-col class="d-flex justify-right" style="margin-left: 7px">
                     <btn class="btn btn-primary review-button"
-                        @click="showArticleReview(article.id)">
+                        @click="showArticleReview(article.id)" v-if="article.status !== 'SENT'">
                       Pozrieť recenziu
                     </btn>
                   </v-col>
@@ -114,7 +124,7 @@ name: "ArticleHistory",
       articles: [],
       filteredArticles: [],
       user_id: null,
-      fileName: null,
+      fileName: null
     };
   },
   mounted() {
@@ -152,7 +162,7 @@ name: "ArticleHistory",
         });
         this.articles = response.data;
         this.filteredArticles = this.articles;
-        console.log(this.articles);
+        this.conference_name = this.articles.conferenceName;
       } catch (error) {
         console.error("Failed to fetch articles", error);
         this.articles = [];
@@ -225,6 +235,30 @@ name: "ArticleHistory",
 </script>
 
 <style scoped>
+
+
+.status{
+  font-weight: bold;
+  font-size: 15px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.status.accepted {
+  color: white;
+  background-color: #28a745;
+}
+
+.status.rejected {
+  color: white;
+  background-color: #dc3545;
+}
+
+.status.sent {
+  color: white;
+  background-color: #ffc107;
+}
+
 .card-header-green {
   height: 5px;
   background-color: #4caf50;
