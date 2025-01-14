@@ -22,7 +22,10 @@ import com.rocksolid.module.Article;
 import com.rocksolid.module.User;
 import com.rocksolid.module.Conference;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
   private final ArticleRepository articleRepository;
@@ -37,16 +40,6 @@ public class FileServiceImpl implements FileService {
   private final ConferenceRepository conferenceRepository;
 
   private final SectionRepository sectionRepository;
-
-  public FileServiceImpl(FileRepository fileRepository, final UserRepository userRepository,
-      final ConferenceRepository conferenceRepository,
-      final SectionRepository sectionRepository, ArticleRepository articleRepository) {
-    this.fileRepository = fileRepository;
-    this.userRepository = userRepository;
-    this.conferenceRepository = conferenceRepository;
-    this.sectionRepository = sectionRepository;
-    this.articleRepository = articleRepository;
-  }
 
   @Override
   public Article saveFile(

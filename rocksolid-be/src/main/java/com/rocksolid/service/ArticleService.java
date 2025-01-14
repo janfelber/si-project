@@ -10,7 +10,7 @@ import com.rocksolid.dto.ArticleStudentResponseDto;
 import com.rocksolid.module.Article;
 
 public interface ArticleService {
-  Optional<Article> getArticleStatus(Long articleId, Long userId);
+  Optional<Article> getArticleStatus(Long conferenceId, Long userId);
 
   List<ArticleAdminResponseDto> getAllArticlesInSystem();
 

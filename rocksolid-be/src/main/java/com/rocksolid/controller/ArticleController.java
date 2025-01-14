@@ -41,10 +41,10 @@ public class ArticleController {
     return sectionService.getAllSectionNames();
   }
 
-  @GetMapping("/status/{articleId}")
-  public String getArticleStatus(@PathVariable Long articleId) {
+  @GetMapping("/status/{conferenceId}")
+  public String getArticleStatus(@PathVariable Long conferenceId) {
     final Long currentUserId = currentUserService.getCurrentUserId();
-    Optional<Article> article = articleService.getArticleStatus(articleId, currentUserId);
+    Optional<Article> article = articleService.getArticleStatus(conferenceId, currentUserId);
     if (article.isPresent()) {
       final String status = article.get().getStatus();
 

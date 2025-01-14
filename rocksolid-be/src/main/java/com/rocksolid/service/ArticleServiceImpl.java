@@ -30,8 +30,8 @@ public class ArticleServiceImpl implements ArticleService {
   private final SectionRepository sectionRepository;
 
   @Override
-  public Optional<Article> getArticleStatus(Long articleId, Long userId) {
-    return articleRepository.findByConferenceIdAndUserId(articleId, userId);
+  public Optional<Article> getArticleStatus(Long conferenceId, Long userId) {
+    return articleRepository.findByConferenceIdAndUserId(conferenceId, userId);
   }
 
   @Override
