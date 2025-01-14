@@ -2,7 +2,7 @@
   <div>
     <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
       <div style="flex: 1;" class="review-card" v-if="articleAccepted || articleRejected">
-        <v-simple-table  dense>
+<!--        <v-simple-table>-->
           <tbody>
           <tr v-for="(detail, index) in reviewDetails" :key="index">
             <td><strong>{{ detail.columnName }} </strong></td>
@@ -10,7 +10,7 @@
             <td>{{ detail.text_value }}</td>
           </tr>
           </tbody>
-        </v-simple-table>
+<!--        </v-simple-table>-->
 
 
       </div>
@@ -40,7 +40,7 @@
 
     <!-- Tlačidlo pre zamietnutý článok -->
     <div v-if="articleRejected" style="margin-top: 1rem;">
-      <v-btn color="primary">Znova vložiť prácu</v-btn>
+      <v-btn color="primary" @click="sendUserToUpload(this.conference_id)">Znova vložiť prácu</v-btn>
     </div>
   </div>
 
@@ -68,6 +68,8 @@ export default {
       articleInReview: null,
       articleAccepted: null,
       articleRejected: null,
+      conference_id: null,
+      review_id: null
     }
   },
   computed: {
@@ -86,6 +88,9 @@ export default {
     }
   },
   methods: {
+    async sendUserToUpload(conferenceId) {
+      this.$router.push({ name: 'upload', params: { id: conferenceId }});
+    },
     async getReview() {
       try {
         const token = localStorage.getItem("token");
@@ -97,6 +102,8 @@ export default {
             });
 
         console.log(response.data)
+        this.review_id = response.data.reviewId
+        console.log("review id", this.review_id)
         this.reviewDetails = response.data.reviewDetails
       } catch (error) {
         console.error(error);
@@ -121,6 +128,7 @@ export default {
         this.articleSection = response.data.section
         this.firstName = response.data.firstName
         this.lastName = response.data.lastName
+        this.conference_id = response.data.conferenceId
       } catch (error) {
         console.error(error);
       }
@@ -188,19 +196,4 @@ export default {
   margin-top: 10px;
 }
 
-v-simple-table {
-  border-radius:    4px;
-}
-
-v-simple-table th {
-  text-align: left;
-  padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 2px solid #ddd;
-}
-
-v-simple-table td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
 </style>

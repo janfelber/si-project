@@ -1,0 +1,1 @@
+ALTER TABLE rock_solid.article ADD COLUMN isReviewed BOOLEAN DEFAULT FALSE;

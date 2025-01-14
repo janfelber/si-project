@@ -53,6 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     article.setStatus("ACCEPTED");
+    article.setReviewed(true);
     reviewRepository.save(review);
 
     Map<Long, Long> columnValues = reviewRequestDto.getColumnValues();
@@ -111,13 +112,11 @@ public class ReviewServiceImpl implements ReviewService {
         .build();
     Reviews review = Reviews.builder().article(articleId).build();
 
-
     article.setStatus("REJECTED");
+    article.setReviewed(true);
     reviewRepository.save(review);
 
     Map<Long, Long> columnValues = reviewRequestDto.getColumnValues();
-
-
 
     for (Map.Entry<Long, Long> entry : columnValues.entrySet()) {
       Long columnId = entry.getKey();
@@ -193,6 +192,28 @@ public class ReviewServiceImpl implements ReviewService {
     return ResponseEntity.ok(reviewResponse);
   }
 
+  @Override
+  public Reviews deleteReview(final Long id) {
+    // Reviews review = reviewRepository.findByArticleId(id);
+    // reviewDetailsRepository.deleteReviewDetailsByReviewId(id);
+    // reviewRepository.deleteById(id);
+
+
+    Reviews review = reviewRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Review not found"));
+
+    List<ReviewDetails> reviewDetailsList = reviewDetailsRepository.findByReview(review);
+    if (reviewDetailsList != null && !reviewDetailsList.isEmpty()) {
+      // Vymazanie všetkých detailov recenzie
+      reviewDetailsRepository.deleteAll(reviewDetailsList);
+    }
+
+    reviewRepository.deleteById(id);
+
+    System.out.println("Review deleted with id: " + id);
+
+    return review;
+  }
 
   // @Override
   // public Reviews getReviwByArticleId(final Long articleId) {

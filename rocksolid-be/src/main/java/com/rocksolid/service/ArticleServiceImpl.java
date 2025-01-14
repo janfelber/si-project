@@ -83,7 +83,8 @@ public class ArticleServiceImpl implements ArticleService {
         article.getSections().getName(),
         article.getFirst_name(),
         article.getLast_name(),
-        article.getStatus()
+        article.getStatus(),
+        article.getConference().getId()
     )).orElseThrow();
   }
 
@@ -114,6 +115,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     return articleRepository.findByReviewerId(reviewerId)
         .stream()
+        .filter(article -> !article.isReviewed())
         .map(article -> new ArticleReviewerResponseDto(
             article.getId(),
             article.getArticle_name(),

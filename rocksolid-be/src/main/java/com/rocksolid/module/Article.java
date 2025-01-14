@@ -54,4 +54,11 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "\"reviewer_id\"")
     private User reviewer;
+
+    private boolean isReviewed;
+
+    public boolean isReviewed() {
+        return isReviewed;
+    }
+
 }

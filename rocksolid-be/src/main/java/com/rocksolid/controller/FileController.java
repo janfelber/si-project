@@ -4,8 +4,10 @@ import java.io.IOException;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,6 +41,27 @@ public class FileController {
     try {
       Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords, sectionId,
           wordFile, pdfFile, conferenceId);
+      return ResponseEntity.ok(savedFile);
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+
+  @PutMapping("/updateArticle")
+  public ResponseEntity<Article> updateFile(
+      @RequestParam("firstName") String firstName,
+      @RequestParam("lastName") String lastName,
+      @RequestParam("fileName") String fileName,
+      @RequestParam("coAuthors") String coAuthors,
+      @RequestParam("articleDescription") String articleDescription,
+      @RequestParam("keyWords") String keyWords,
+      @RequestParam("sectionId") Long sectionId,
+      @RequestParam("wordFile") MultipartFile wordFile,
+      @RequestParam("pdfFile") MultipartFile pdfFile,
+      @RequestParam("conferenceId") Long conferenceId,
+      @RequestParam("articleId") Long articleId) {
+    try {
+      Article savedFile = fileService.updateFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords, sectionId, wordFile, pdfFile ,conferenceId, articleId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

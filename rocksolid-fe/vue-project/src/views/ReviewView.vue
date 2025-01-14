@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import router from '@/router/index.js';
 import axios from 'axios';
 
 export default {
@@ -148,6 +149,7 @@ export default {
         );
         console.log(article_id)
 
+        await router.push({ name: 'reviewConferences' });
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
         console.error('Error submitting review:', error);
@@ -189,6 +191,7 @@ export default {
             }
         );
         console.log(article_id)
+        await router.push({ name: 'reviewConferences' });
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
         console.error('Error submitting review:', error);
