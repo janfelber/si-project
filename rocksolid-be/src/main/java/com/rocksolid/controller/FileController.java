@@ -37,7 +37,7 @@ public class FileController {
       @RequestParam("pdfFile") MultipartFile pdfFile,
       @RequestParam("conferenceId") Long conferenceId) {
     try {
-      Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords,sectionId,
+      Article savedFile = fileService.saveFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords, sectionId,
           wordFile, pdfFile, conferenceId);
       return ResponseEntity.ok(savedFile);
     } catch (IOException e) {
