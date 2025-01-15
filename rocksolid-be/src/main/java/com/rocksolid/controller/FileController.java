@@ -109,13 +109,20 @@ public class FileController {
         int namingCounter = 0;
         for (Long id : Ids) {
           namingCounter++;
-          byte[] fileContent = fileService.getFileByArticleId(id);
-          String fileName = namingCounter + " - " + fileService.getFileName(id);
-
+          byte[] fileContent = fileService.loadFile(id, "word");
+          String fileName = namingCounter + " - " + fileService.getFileName(id, "word");
           ZipEntry zipEntry = new ZipEntry(fileName);
           zipOutputStream.putNextEntry(zipEntry);
           zipOutputStream.write(fileContent);
           zipOutputStream.closeEntry();
+
+          fileContent = fileService.loadFile(id, "pdf");
+          fileName = namingCounter + "- " + fileService.getFileName(id, "pdf");
+          zipEntry = new ZipEntry(fileName);
+          zipOutputStream.putNextEntry(zipEntry);
+          zipOutputStream.write(fileContent);
+          zipOutputStream.closeEntry();
+
         }
       }
 
