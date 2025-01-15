@@ -93,41 +93,62 @@ public class FileServiceImpl implements FileService {
 
   @Override
   public Article updateFile(final String firstName, final String lastName, final String fileName,
-      final String coAuthors,
-      final String articleDescription, final String keyWords, final Long sectionId, final MultipartFile wordFile, final MultipartFile pdfFile,
-      final Long conferenceId, final Long articleId)
+      final String coAuthors, final String articleDescription, final String keyWords, final Long sectionId,
+      final MultipartFile wordFile, final MultipartFile pdfFile, final Long conferenceId, final Long articleId)
       throws IOException {
 
-      Article fileEntity = articleRepository.findById(articleId)
-          .orElseThrow(() -> new RuntimeException("File not found with id " + articleId));
+    Article fileEntity = articleRepository.findById(articleId)
+        .orElseThrow(() -> new RuntimeException("File not found with id " + articleId));
 
-    String storedFileName = UUID.randomUUID() + "_" + wordFile.getOriginalFilename();
-    Path filePath = Paths.get(fileStoragePath, storedFileName);
-    Files.createDirectories(filePath.getParent());
-    Files.write(filePath, wordFile.getBytes());
-
-    String pdfFileName = UUID.randomUUID() + "_" + pdfFile.getOriginalFilename();
-    Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
-    Files.createDirectories(filePath.getParent());
-    Files.write(filePath, wordFile.getBytes());
-    Files.write(pdfFilePath, pdfFile.getBytes());
-
+    if (firstName != null) {
       fileEntity.setFirst_name(firstName);
+    }
+    if (lastName != null) {
       fileEntity.setLast_name(lastName);
+    }
+    if (fileName != null) {
       fileEntity.setArticle_name(fileName);
+    }
+    if (coAuthors != null) {
       fileEntity.setCo_authors(coAuthors);
+    }
+    if (articleDescription != null) {
       fileEntity.setArticle_description(articleDescription);
+    }
+    if (keyWords != null) {
       fileEntity.setKey_words(keyWords);
+    }
+
+    if (sectionId != null) {
       fileEntity.setSections(sectionRepository.findById(sectionId)
           .orElseThrow(() -> new RuntimeException("Section not found")));
+    }
+
+    if (conferenceId != null) {
       fileEntity.setConference(conferenceRepository.findById(conferenceId)
           .orElseThrow(() -> new RuntimeException("Conference not found")));
+    }
+
+    if (wordFile != null && !wordFile.isEmpty()) {
+      String storedFileName = UUID.randomUUID() + "_" + wordFile.getOriginalFilename();
+      Path filePath = Paths.get(fileStoragePath, storedFileName);
+      Files.createDirectories(filePath.getParent());
+      Files.write(filePath, wordFile.getBytes());
       fileEntity.setWord_file_path(filePath.toString());
+    }
+
+    if (pdfFile != null && !pdfFile.isEmpty()) {
+      String pdfFileName = UUID.randomUUID() + "_" + pdfFile.getOriginalFilename();
+      Path pdfFilePath = Paths.get(fileStoragePath, pdfFileName);
+      Files.createDirectories(pdfFilePath.getParent());
+      Files.write(pdfFilePath, pdfFile.getBytes());
       fileEntity.setPdf_file_path(pdfFilePath.toString());
-      fileEntity.setStatus("SENT");
-      fileEntity.setCreated_at(new Date());
-      fileEntity.setReviewed(false);
-      return fileRepository.save(fileEntity);
+    }
+
+    fileEntity.setStatus("SENT");
+    fileEntity.setReviewed(false);
+
+    return articleRepository.save(fileEntity);
   }
 
   @Override

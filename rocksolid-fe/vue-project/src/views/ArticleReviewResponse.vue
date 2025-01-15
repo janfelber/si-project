@@ -1,32 +1,31 @@
 <template>
   <div>
     <div v-if="loading">Loading...</div>
-    <div  style="display: flex; gap: 0.8rem;align-items: flex-start;">
+    <div v-if="error" class="error-message">Niečo sa pokazilo, skúste to znova!</div>
+    <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
       <div style="flex: 1;" class="review-card" v-if="articleAccepted || articleRejected">
-        <table class="custom-table">
-          <thead>
-          <tr>
-            <th>Oblasť</th>
-            <th>Hodnotenie</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="(detail, index) in reviewDetails" :key="index">
-            <td><strong>{{ detail.columnName }}</strong></td>
-            <td class="wrap-text">{{ detail.choiceName }}</td>
-<!--            <td>{{ detail.text_value }}</td>-->
-          </tr>
-          </tbody>
-        </table>
+        <div v-if="reviewDetails.length > 0">
+          <table class="custom-table">
+            <thead>
+            <tr>
+              <th>Oblasť</th>
+              <th>Hodnotenie</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(detail, index) in reviewDetails" :key="index">
+              <td><strong>{{ detail.columnName }}</strong></td>
+              <td class="wrap-text">{{ detail.choiceName }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-
       <div style="flex-direction: column">
-        <div style="flex: 1; " class="article-info-card" v-if="articleAccepted || articleRejected" >
+        <div style="flex: 1;" class="article-info-card" v-if="articleAccepted || articleRejected">
           <div class="card">
-
             <h2>Informácie o práci</h2>
-
             <div class="card-content">
               <p><strong>Názov práce:</strong> {{ articleName }}</p>
               <v-divider></v-divider>
@@ -47,26 +46,17 @@
               <span v-if="articleStatus === 'SENT'" class="status sent">Poslane</span>
             </div>
           </div>
-
-
         </div>
+
         <div v-if="articleRejected" style="margin-top: 1rem;">
-          <btn class="button" @click="sendUserToUpload(this.conference_id)">Znova vložiť prácu</btn>
+          <button class="button" @click="sendUserToUpdate(this.conference_id)">Znova vložiť prácu</button>
         </div>
       </div>
-
-
-
-
-
-
     </div>
 
-
-  </div>
-
-  <div v-if="articleInReview" style="display: flex; justify-content: center; align-items: center; height: 75vh;">
-    <h1>Vaša práca je momentálne v procese hodnotenia.</h1>
+    <div v-if="articleInReview" style="display: flex; justify-content: center; align-items: center; height: 75vh;">
+      <h1>Vaša práca je momentálne v procese hodnotenia.</h1>
+    </div>
   </div>
 </template>
 
@@ -91,14 +81,13 @@ export default {
       articleRejected: null,
       conference_id: null,
       review_id: null,
-      loading: true
-    }
-  },
-  computed: {
+      loading: true,
+      error: false
+    };
   },
   methods: {
-    async sendUserToUpload(conferenceId) {
-      this.$router.push({ name: 'upload', params: { id: conferenceId }});
+    async sendUserToUpdate(conferenceId) {
+      this.$router.push({ name: 'update', params: { id: conferenceId } });
     },
     async getReview() {
       try {
@@ -110,14 +99,13 @@ export default {
               }
             });
 
-        console.log(response.data)
-        this.review_id = response.data.reviewId
-        console.log("review id", this.review_id)
-        this.reviewDetails = response.data.reviewDetails
+        this.review_id = response.data.reviewId;
+        this.reviewDetails = response.data.reviewDetails;
       } catch (error) {
         console.error(error);
+        this.error = true;
       } finally {
-        this.loading = false;  // Set loading to false when data is fetched
+        this.loading = false;
       }
     },
     async getArticle() {
@@ -129,19 +117,18 @@ export default {
                 Authorization: `Bearer ${token}`
               }
             });
-        // this.articles = response.data;
-        console.log("get article",response.data)
-        // this.reviewDetails = response.data.reviewDetails
-        this.articleName = response.data.articleName
-        this.articleStatus = response.data.status
-        this.articleKeyWords = response.data.keyWords
-        this.articleCoAuthors = response.data.coAuthors
-        this.articleSection = response.data.section
-        this.firstName = response.data.firstName
-        this.lastName = response.data.lastName
-        this.conference_id = response.data.conferenceId
+
+        this.articleName = response.data.articleName;
+        this.articleStatus = response.data.status;
+        this.articleKeyWords = response.data.keyWords;
+        this.articleCoAuthors = response.data.coAuthors;
+        this.articleSection = response.data.section;
+        this.firstName = response.data.firstName;
+        this.lastName = response.data.lastName;
+        this.conference_id = response.data.conferenceId;
       } catch (error) {
         console.error(error);
+        this.error = true;
       }
     },
     async checkIfArticleIsInReview() {
@@ -155,7 +142,7 @@ export default {
                 Authorization: `Bearer ${token}`,
               },
             }
-        )
+        );
 
         if (this.articleStatus === "SENT") {
           this.articleInReview = true;
@@ -166,23 +153,35 @@ export default {
         } else {
           this.articleInReview = false;
         }
-
       } catch (error) {
         console.error("Error checking article status:", error);
+        this.error = true;
       }
     },
-
   },
-  mounted() {
-    this.getReview();
-    this.checkIfArticleIsInReview();
-    this.getArticle();
+  mounted: async function() {
+    this.loading = true;
+    try {
+      await this.getReview();
+      await this.getArticle();
+      await this.checkIfArticleIsInReview();
+    } catch (error) {
+      console.error("Error during initialization:", error);
+    } finally {
+      this.loading = false;
+    }
   },
 }
 </script>
 <style scoped>
 
 .button {
+  .error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+
   background-color: #1EB386;
   border-color: #1EB386;
   font-size: 16px;

@@ -4,6 +4,7 @@ import AdminArticleDetailView from '@/views/AdminArticleDetailView.vue';
 import AdminArticlesView from '@/views/AdminArticlesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 import ReviewsArticle from '@/views/ReviewsArticle.vue';
+import UpdateFile from '@/views/UpdateFile.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from "@/views/LoginView.vue";
@@ -101,6 +102,16 @@ const router = createRouter({
       meta: {
         requiresStudent: true,
         title: 'Nahraj prácu'
+      },
+    },
+    {
+      path: '/web/update/:id',
+      name: 'update',
+      component: UpdateFile,
+      props: true,
+      meta: {
+        requiresStudent: true,
+        title: 'Úprava práce'
       },
     },
     {

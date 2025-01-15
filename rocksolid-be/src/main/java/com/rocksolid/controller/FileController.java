@@ -11,6 +11,14 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.rocksolid.module.Article;
@@ -47,24 +55,44 @@ public class FileController {
     }
   }
 
-  @PutMapping("/updateArticle")
-  public ResponseEntity<Article> updateFile(
-      @RequestParam("firstName") String firstName,
-      @RequestParam("lastName") String lastName,
-      @RequestParam("fileName") String fileName,
-      @RequestParam("coAuthors") String coAuthors,
-      @RequestParam("articleDescription") String articleDescription,
-      @RequestParam("keyWords") String keyWords,
-      @RequestParam("sectionId") Long sectionId,
-      @RequestParam("wordFile") MultipartFile wordFile,
-      @RequestParam("pdfFile") MultipartFile pdfFile,
-      @RequestParam("conferenceId") Long conferenceId,
-      @RequestParam("articleId") Long articleId) {
+  @PatchMapping("/updateArticle")
+  public ResponseEntity<?> updateFile(
+      @RequestParam(required = false) String firstName,
+      @RequestParam(required = false) String lastName,
+      @RequestParam(required = false) String fileName,
+      @RequestParam(required = false) String coAuthors,
+      @RequestParam(required = false) String articleDescription,
+      @RequestParam(required = false) String keyWords,
+      @RequestParam(required = false) Long sectionId,
+      @RequestParam(required = false) MultipartFile wordFile,
+      @RequestParam(required = false) MultipartFile pdfFile,
+      @RequestParam(required = false) Long conferenceId,
+      @RequestParam Long articleId) {
     try {
-      Article savedFile = fileService.updateFile(firstName, lastName , fileName, coAuthors, articleDescription, keyWords, sectionId, wordFile, pdfFile ,conferenceId, articleId);
-      return ResponseEntity.ok(savedFile);
+      Article updatedArticle = fileService.updateFile(
+          firstName,
+          lastName,
+          fileName,
+          coAuthors,
+          articleDescription,
+          keyWords,
+          sectionId,
+          wordFile,
+          pdfFile,
+          conferenceId,
+          articleId
+      );
+
+      return ResponseEntity.ok(updatedArticle);
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND)
+          .body("Error: " + e.getMessage());
     } catch (IOException e) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("File processing error: " + e.getMessage());
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("Unexpected error: " + e.getMessage());
     }
   }
 

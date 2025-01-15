@@ -148,7 +148,6 @@
 
 <script>
 import axios from 'axios';
-import { fi, th, tr } from 'vuetify/locale';
 
 export default {
 
@@ -453,7 +452,7 @@ export default {
 
         try {
           const token = localStorage.getItem("token")
-          const response = await axios.put("http://localhost:8080/api/v1/file/updateArticle", formData,
+          const response = await axios.patch("http://localhost:8080/api/v1/file/updateArticle", formData,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
