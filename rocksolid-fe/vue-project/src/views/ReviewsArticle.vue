@@ -39,7 +39,15 @@
             <v-divider></v-divider>
             <v-card-text class="py-3">
               <div class="text-truncate">
-                {{ article.description }}
+                <strong> Popis: </strong>{{ article.description }}
+              </div>
+              <v-divider></v-divider>
+              <div class="text-truncate">
+                <strong>Klúčové slová: </strong> {{ article.keywords}}
+              </div>
+              <v-divider></v-divider>
+              <div class="text-truncate">
+                <strong>Kategória: </strong> {{ article.section }}
               </div>
             </v-card-text>
             <v-card-actions>
@@ -117,6 +125,7 @@ export default {
 
         this.articles = response.data;
         this.filteredArticles = this.articles;
+        console.log(response.data)
       } catch (error) {
         console.error("Failed to verify user role:", error);
         this.articles = [];
