@@ -67,7 +67,7 @@
                       </div>
 
                       <div v-if="article.status === 'SENT'">
-                        <span v-if="article.status === 'SENT'" class="status sent">POSLANÉ</span>
+                        <span v-if="article.status === 'SENT'" class="status sent">ODOSLANÉ</span>
                       </div>
                     </div>
                   </div>
@@ -133,8 +133,9 @@ name: "ArticleHistory",
       searchQuery: '',
       articles: [],
       filteredArticles: [],
+      filterArticlesStatus: [],
       user_id: null,
-      fileName: null
+      fileName: null,
     };
   },
   mounted() {
@@ -172,7 +173,7 @@ name: "ArticleHistory",
         });
         this.articles = response.data;
         this.filteredArticles = this.articles;
-        this.conference_name = this.articles.conferenceName;
+        this.filterArticlesStatus = this.articles;
       } catch (error) {
         console.error("Failed to fetch articles", error);
         this.articles = [];

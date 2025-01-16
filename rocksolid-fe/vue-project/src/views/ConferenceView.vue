@@ -460,6 +460,25 @@ export default {
         if (conference.date_to && conference.date_to.toLowerCase().includes(this.search.toLowerCase())) {
           return true;
         }
+        const statusTranslations = {
+          true: ["aktivna", "aktívna", "ak", "akt","akti","aktí" ,"aktiv","aktivn"],
+          false: ["neaktivna", "neaktívna", "neakt", "ne", "nea" ,"neak", "neakti","neaktiv", "neaktivn"],
+        };
+
+        if (
+            Object.keys(statusTranslations).some((key) => {
+              if (Array.isArray(statusTranslations[key])) {
+                return statusTranslations[key].some(status =>
+                    status.toLowerCase() === this.search.toLowerCase() &&
+                    conference.status.toString() === key
+                );
+              }
+              return statusTranslations[key].toLowerCase() === this.search.toLowerCase() &&
+                  conference.status.toString() === key;
+            })
+        ) {
+          return true;
+        }
         return false;
       });
     },
