@@ -59,11 +59,11 @@
                   <div style="margin-left: -10px">
                     <div class="status">
                       <div v-if="article.status === 'ACCEPTED'">
-                        <span v-if="article.status === 'ACCEPTED'" class="status accepted" >Akcteptované</span>
+                        <span v-if="article.status === 'ACCEPTED'" class="status accepted" >AKCEPTOVANÉ</span>
                       </div>
 
                       <div v-if="article.status === 'REJECTED'">
-                        <span v-if="article.status === 'REJECTED'" class="status rejected">Zamietnuté</span>
+                        <span v-if="article.status === 'REJECTED'" class="status rejected">ZAMIETNUTÉ</span>
                       </div>
 
                       <div v-if="article.status === 'SENT'">

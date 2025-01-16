@@ -39,6 +39,9 @@
               <v-divider></v-divider>
               <p><strong>Kategória:</strong> {{ articleSection }}</p>
               <v-divider></v-divider>
+              <p><strong>Recenzent:</strong> {{ reviewerFirstName }} {{reviewerLastName}}</p>
+              <v-divider></v-divider>
+
             </div>
             <div class="footer">
               <span v-if="articleStatus === 'ACCEPTED'" class="status accepted">AKCEPTOVANÉ</span>
@@ -46,10 +49,6 @@
               <span v-if="articleStatus === 'SENT'" class="status sent">POSLANÉ</span>
             </div>
           </div>
-        </div>
-
-        <div v-if="articleRejected" style="margin-top: 1rem;">
-          <button class="button" @click="sendUserToUpdate(this.conference_id)">Znova vložiť prácu</button>
         </div>
       </div>
     </div>
@@ -64,7 +63,7 @@
 import axios from 'axios';
 
 export default {
-  name: 'ArticleReviewResponse',
+  name: 'ArticleReviewResponseAdmin',
   props: ['id'],
   data() {
     return {
@@ -76,6 +75,8 @@ export default {
       articleSection: "",
       firstName: "",
       lastName: "",
+      reviewerFirstName: "",
+      reviewerLastName: "",
       articleInReview: null,
       articleAccepted: null,
       articleRejected: null,
@@ -86,9 +87,6 @@ export default {
     };
   },
   methods: {
-    async sendUserToUpdate(conferenceId) {
-      this.$router.push({ name: 'update', params: { id: conferenceId } });
-    },
     async getReview() {
       try {
         const token = localStorage.getItem("token");
@@ -98,8 +96,6 @@ export default {
                 Authorization: `Bearer ${token}`
               }
             });
-
-        this.review_id = response.data.reviewId;
         this.reviewDetails = response.data.reviewDetails;
       } catch (error) {
         console.error(error);
@@ -111,7 +107,7 @@ export default {
     async getArticle() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:8080/api/v1/article/student/${this.id}`,
+        const response = await axios.get(`http://localhost:8080/api/v1/article/${this.id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`
@@ -126,6 +122,9 @@ export default {
         this.firstName = response.data.firstName;
         this.lastName = response.data.lastName;
         this.conference_id = response.data.conferenceId;
+        this.reviewerFirstName = response.data.reviewerFirstName;
+        this.reviewerLastName = response.data.reviewerLastName;
+        console.log(response.data);
       } catch (error) {
         console.error(error);
         this.error = true;

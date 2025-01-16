@@ -234,19 +234,17 @@
         </thead>
         <tbody>
         <tr v-for="conference in paginatedconferences" :key="conference.id" class="table-rows">
-          <td class="cell" style="width: 5.452637%;">
-            <router-link :to="{ name: 'ConferenceDetail', params: { id: conference.id } }">
-              {{ conference.id }}
-            </router-link>
-          </td>
-          <td class="cell" style="width: 5.452637%;">{{ conference.name }}</td>
+
+          <td class="cell" style="width: 5.452637%;"><router-link :to="{ name: 'ConferenceDetail', params: { id: conference.id } }" class="conference-link">
+            {{ conference.name }}
+          </router-link></td>
           <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.date_from) }}</td>
           <td class="cell" style="width: 5.452637%;">{{ this.formatDate(conference.date_to) }}</td>
 
           <td class="cell" :style="{ width: conference.status ? '5.452637%' : '10%' }">
             <div class="status">
           <span :class="['status', conference.status ? 'active' : 'not-active']">
-          {{ conference.status ? 'Aktívna' : 'Neaktívna' }}
+          {{ conference.status ? 'AKTÍVNA' : 'NEAKTÍVNA' }}
     </span>
             </div>
           </td>
@@ -271,7 +269,7 @@ export default {
   name: 'ConferenceView',
   data() {
     return {
-      headers: ['ID', 'Názov', 'Od', 'Do', 'Status', ''],
+      headers: ['Názov', 'Od', 'Do', 'Status', 'Akcie'],
       conferences: [],
       currentPage: 1,
       rowsPerPage: 10,
@@ -484,6 +482,12 @@ export default {
 
 
 <style scoped>
+
+.conference-link {
+  background-color: #0000;
+  color: #6895fa;
+  text-decoration: none;
+}
 
 .fade-enter-active,
 .fade-leave-active {

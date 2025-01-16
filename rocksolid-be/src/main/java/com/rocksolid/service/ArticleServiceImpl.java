@@ -50,7 +50,10 @@ public class ArticleServiceImpl implements ArticleService {
             article.getLast_name(),
             article.getUser().getId(),
             article.getStatus(),
-            article.getReviewer() == null ? null : article.getReviewer().getId()
+            article.getReviewer() == null ? null : article.getReviewer().getId(),
+            article.getReviewer() == null ? null : article.getReviewer().getFirst_name(),
+            article.getReviewer() == null ? null : article.getReviewer().getLast_name(),
+            article.isReviewed()
         )).collect(Collectors.toList());
   }
 
@@ -69,7 +72,10 @@ public class ArticleServiceImpl implements ArticleService {
             article.getLast_name(),
             article.getUser().getId(),
             article.getStatus(),
-            article.getReviewer() == null ? null : article.getReviewer().getId()
+            article.getReviewer() == null ? null : article.getReviewer().getId(),
+            article.getReviewer() == null ? null : article.getReviewer().getFirst_name(),
+            article.getReviewer() == null ? null : article.getReviewer().getLast_name(),
+            article.isReviewed()
         )).orElseThrow();
   }
 

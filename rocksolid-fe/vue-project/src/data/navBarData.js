@@ -8,7 +8,7 @@ export const navBarData = [
     {
         routerLink: '/web/active-conferences',
         icon: 'mdi-presentation',
-        label: 'Active Conferences',
+        label: 'Aktívne konferencie',
         role: ["STUDENT", "REVIEWER"]
     },
     {
@@ -20,19 +20,19 @@ export const navBarData = [
     {
         routerLink: '/admin/users',
         icon: 'mdi-account-multiple-outline',
-        label: 'Users',
+        label: 'Zoznam používateľov',
         role: ["ADMIN"]
     },
     {
         routerLink: '/admin/conference',
-        icon: 'mdi-account-multiple-outline',
+        icon: 'mdi mdi-calendar-multiselect',
         label: 'Konferencie',
         role: ["ADMIN"]
     },
     {
         routerLink: '/admin/articles',
-        icon: 'mdi-account-multiple-outline',
-        label: 'Articles',
+        icon: 'mdi mdi-file',
+        label: 'Odovzdané práce',
         role: ["ADMIN"]
     },
     {
@@ -44,7 +44,7 @@ export const navBarData = [
     {
         routerLink: '/web/history-articles',
         icon: 'mdi-file-clock-outline',
-        label: 'Article History',
+        label: 'História prác',
         role: ["STUDENT", "REVIEWER"]
     },
 ];

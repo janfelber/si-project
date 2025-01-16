@@ -18,4 +18,7 @@ public class ArticleAdminResponseDto {
   private Long userId;
   private String status;
   private Long reviewerId;
+  private String reviewerFirstName;
+  private String reviewerLastName;
+  private boolean isReviewed;
 }
