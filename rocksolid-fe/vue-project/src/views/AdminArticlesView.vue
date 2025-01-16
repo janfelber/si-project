@@ -191,6 +191,7 @@ export default {
   },
   computed: {
     filterArticles() {
+
       return this.articles.filter((article) => {
         if (article.first_name && article.first_name.toLowerCase().includes(this.search.toLowerCase())) {
           return true;
@@ -208,6 +209,19 @@ export default {
           return true;
         }
         if (article.section.toLowerCase().includes(this.search.toLowerCase())){
+          return true;
+        }
+        const statusTranslations = {
+          accepted: "akceptované",
+          rejected: "zamietnuté",
+          sent: "odoslané"
+        };
+        if (
+            Object.keys(statusTranslations).some((key) =>
+                statusTranslations[key].toLowerCase().includes(this.search.toLowerCase())
+                && article.status.toLowerCase() === key
+            )
+        ) {
           return true;
         }
         return false;
