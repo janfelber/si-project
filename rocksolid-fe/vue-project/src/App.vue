@@ -16,7 +16,7 @@ import SideNav from '@/components/Sidenav.vue';
 const route = useRoute();
 
 const isAuthPage = computed(() => {
-  return route.path === '/login' || route.path === '/register';
+  return route.path === '/login' || route.path === '/register' || route.path === '/reset-password-request' || route.path === '/password-reset-request-success' || route.path === '/reset-password';
 });
 
 const userIdPage = computed(() => {
