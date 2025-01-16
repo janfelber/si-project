@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.rocksolid.dto.ArticleAdminUpdateRequest;
@@ -36,7 +37,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public List<ArticleAdminResponseDto> getAllArticlesInSystem() {
-    return articleRepository.findAll()
+    return articleRepository.findAll(Sort.by(Sort.Order.asc("id")))
         .stream()
         .map(article -> new ArticleAdminResponseDto(
             article.getId(),

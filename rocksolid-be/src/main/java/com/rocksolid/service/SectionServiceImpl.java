@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class SectionServiceImpl implements SectionService {
   @Override
   public List<SectionResponseDTO> getAllSectionNames() {
 
-    return sectionRepository.findAll().stream()
+    return sectionRepository.findAll(Sort.by(Sort.Order.asc("id"))).stream()
         .map(sections -> new SectionResponseDTO(sections.getId(), sections.getName())).collect(Collectors.toList());
   }
 

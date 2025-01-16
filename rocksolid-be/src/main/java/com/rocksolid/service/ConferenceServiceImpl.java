@@ -5,6 +5,7 @@ import com.rocksolid.dto.ConferenceResponseDto;
 import com.rocksolid.module.Conference;
 import com.rocksolid.repository.ConferenceRepository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ConferenceServiceImpl  implements ConferenceService {
 
     @Override
     public List<ConferenceResponseDto> getAllConferences() {
-        return conferenceRepository.findAll()
+        return conferenceRepository.findAll(Sort.by(Sort.Order.asc("id")))
                 .stream()
                 .map(conference -> new ConferenceResponseDto(
                         conference.getId(),
