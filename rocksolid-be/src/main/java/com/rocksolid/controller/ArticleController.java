@@ -82,7 +82,7 @@ public class ArticleController {
   }
 
   @GetMapping("/student/{id}")
-  @PreAuthorize("hasAuthority('student:read')")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('admin:read')")
   public ArticleStudentResponseDto getArticleByIdStudent(@PathVariable final Long id) {
     return articleService.getArticleByIdStudent(id);
   }

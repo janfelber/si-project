@@ -130,7 +130,7 @@ const router = createRouter({
       props: true,
       meta: {
         requiresReviewer: true,
-        title: 'Úprava práce'
+        title: 'Hodnotenie práce'
       },
       children: [
         {

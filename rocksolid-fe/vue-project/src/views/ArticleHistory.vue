@@ -1,4 +1,4 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
   <v-app>
     <v-main>
       <div class="filter-header">
@@ -39,19 +39,19 @@
               <v-divider></v-divider>
               <v-card-text class="py-3">
                 <div class="text-truncate">
-                  Konferencia: {{ article.conferenceName }}
+                  <strong> Konferencia: </strong>  {{ article.conferenceName }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
-                  Popis: {{ article.description }}
+                  <strong> Popis: </strong> {{ article.description }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
-                  Kategória: {{ article.section }}
+                  <strong> Kategória: </strong>  {{ article.section }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">
-                  Kľúčové slová: {{ article.keywords }}
+                  <strong> Kľúčové slová: </strong>  {{ article.keywords }}
                 </div>
                 <v-divider></v-divider>
                 <div class="text-truncate">

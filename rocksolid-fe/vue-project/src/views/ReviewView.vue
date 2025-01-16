@@ -54,10 +54,24 @@
             </div>
           </div>
         </div>
-        <div class="article-section">
-          <h1>Article</h1>
-          <p>Article content goes here...</p>
+        <div class="article-info-card">
+          <div class="card">
+            <h1>Informácie o práci</h1>
+            <div class="card-content">
+              <p><strong>Názov práce:</strong> {{ article_name }}</p>
+              <v-divider></v-divider>
+              <p><strong>Klúčové slová:</strong> {{ article_keywords }}</p>
+              <v-divider></v-divider>
+              <p><strong>Popis práce:</strong> {{ article_description }}</p>
+              <v-divider></v-divider>
+              <p><strong>Spoluatori:</strong> {{ article_coauthors }}</p>
+              <v-divider></v-divider>
+              <p><strong>Kategória:</strong> {{ article_section }}</p>
+            </div>
+
+          </div>
         </div>
+
       </div>
 
     </div>
@@ -82,12 +96,19 @@ export default {
       alert_show: false,
       alert_text: "",
       alert_icon: "",
-      alert_color: ""
+      alert_color: "",
+      article_name: "",
+      article_keywords: "",
+      article_description: "",
+      article_coauthors: "",
+      article_section: "",
     };
   },
   mounted() {
     this.fetchColumns();
+    this.getArticleById();
     console.log(this.article_id)
+
   },
   computed: {
     groupedColumns() {
@@ -105,7 +126,27 @@ export default {
     }
   },
   methods: {
-    // Axios to fetch columns data
+    async getArticleById(){
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/student/${this.article_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        console.log(response.data);
+        this.article_name = response.data.articleName;
+        this.article_keywords = response.data.keyWords;
+        this.article_description = response.data.articleDescription;
+        this.article_coauthors = response.data.coAuthors;
+        this.article_section = response.data.section;
+      } catch (error) {
+        console.error('Error fetching article:', error);
+      }
+    },
     async fetchColumns() {
       try {
         const token = localStorage.getItem("token");
@@ -237,6 +278,36 @@ export default {
 };
 </script>
 <style scoped>
+
+.article-info-card .card {
+  background-color: white;
+  border: none;
+  margin-top: 10px;
+
+}
+
+.article-info-card .card-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.article-info-card .card-content p {
+  margin: 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.article-info-card {
+  max-height: fit-content;
+  width: fit-content;
+  min-width: 20%;
+  border:     1px solid #d8d8f0;
+  padding: 20px;
+  border-radius: .5rem;
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
 
 .fade-enter-active,
 .fade-leave-active {

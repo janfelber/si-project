@@ -14,7 +14,7 @@ export const navBarData = [
     {
         routerLink: '/web/review-article',
         icon: 'mdi-file-document-multiple-outline',
-        label: 'Review Article',
+        label: 'Pridelené práce',
         role: ["REVIEWER"]
     },
     {
