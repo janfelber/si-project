@@ -17,6 +17,14 @@
         </div>
       </div>
 
+      <div v-if="emptyArticleList">
+        <div style="display: flex; justify-content: center; align-items: center; height: 30vh; flex-direction: row; text-align: center; color: black">
+          <span style="margin-right: 5px; font-size: 30px">Je nám ľúto, momentálne nemáte žiadne pridelené práce!</span>
+        </div>
+      </div>
+
+
+
       <div class="articles" style="padding: 0 1.5rem">
       <v-row class="pa-4" align="stretch" justify="start">
         <v-col
@@ -101,7 +109,8 @@ export default {
       searchQuery: '',
       articles: [],
       filteredArticles: [],
-      fileName: null
+      fileName: null,
+      emptyArticleList: null
     };
   },
   mounted() {
@@ -122,6 +131,12 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        if (response.data.length === 0) {
+          this.emptyArticleList = true;
+        } else {
+          this.emptyArticleList = false;
+        }
 
         this.articles = response.data;
         this.filteredArticles = this.articles;

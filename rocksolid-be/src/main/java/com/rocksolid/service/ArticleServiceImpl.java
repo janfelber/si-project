@@ -83,6 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleStudentResponseDto getArticleByIdStudent(final Long id) {
     return articleRepository.findById(id).map(article -> new ArticleStudentResponseDto(
+        article.getId(),
         article.getArticle_name(),
         article.getCo_authors(),
         article.getArticle_description(),

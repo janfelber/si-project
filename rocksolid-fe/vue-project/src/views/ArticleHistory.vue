@@ -17,6 +17,17 @@
         </div>
       </div>
 
+
+      <div v-if="emptyArticleList">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 30vh; text-align: center; color: black">
+          <span style="font-size: 30px; margin-bottom: 10px;">Momentálne nemáte žiadne odovzdané práce!</span>
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <span style="font-size: 18px; margin-right: 5px;">Skúste sa prihlásiť na konferenciu</span>
+            <span style="font-size: 18px; color: blue; cursor: pointer;" @click="sendUserToActiveConferences()">tu.</span>
+          </div>
+        </div>
+      </div>
+
       <div class="articles" style="padding: 0 1.5rem">
         <v-row class="pa-4" align="stretch" justify="start">
           <v-col
@@ -136,6 +147,7 @@ name: "ArticleHistory",
       filterArticlesStatus: [],
       user_id: null,
       fileName: null,
+      emptyArticleList: null
     };
   },
   mounted() {
@@ -143,6 +155,9 @@ name: "ArticleHistory",
     this.getUser();
   },
   methods: {
+    sendUserToActiveConferences() {
+      this.$router.push({ name: 'activeConferences' });
+    },
     filter() {
       this.filteredArticles = this.articles.filter(article => {
         return article.articleName.toLowerCase().includes(this.searchQuery.toLowerCase());
@@ -171,6 +186,13 @@ name: "ArticleHistory",
             Authorization: `Bearer ${token}`,
           },
         });
+
+        if (response.data.length === 0) {
+          this.emptyArticleList = true;
+        } else {
+          this.emptyArticleList = false;
+        }
+
         this.articles = response.data;
         this.filteredArticles = this.articles;
         this.filterArticlesStatus = this.articles;

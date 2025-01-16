@@ -76,8 +76,8 @@
 
     </div>
     <div class="button-container">
-      <button class="btn-submit" @click="submitReview()">Submit Review</button>
-      <button class="btn-reject" @click="rejectReview()">Reject Article</button>
+      <button class="btn-submit" @click="submitReview()" :disabled="successSend">Akceptovať článok</button>
+      <button class="btn-reject" @click="rejectReview()" :disabled="successSend === true">Zamietnuť článok</button>
     </div>
   </div>
 </template>
@@ -102,12 +102,14 @@ export default {
       article_description: "",
       article_coauthors: "",
       article_section: "",
+      successSend: false,
     };
   },
   mounted() {
     this.fetchColumns();
     this.getArticleById();
     console.log(this.article_id)
+    console.log(this.successSend)
 
   },
   computed: {
@@ -169,6 +171,15 @@ export default {
     },
     async submitReview() {
       try {
+
+        this.successSend = true;
+        console.log("ako som stlacil submit" + this.successSend);
+        const allFieldsFilled = Object.values(this.selectedChoices).every((value) => value !== null && value !== '');
+        if (!allFieldsFilled) {
+          await this.showAlert("error", "Všetky polia musia byť vyplnené")
+          return;
+        }
+
         const token = localStorage.getItem("token");
         const article_id = this.article_id
 
@@ -193,7 +204,6 @@ export default {
 
         console.log(reviewRequest)
         console.log(this.selectedChoices)
-        // Send review data to backend
         const response = await axios.post(
             `http://localhost:8080/api/v1/review/createReview`,
             reviewRequest,
@@ -203,12 +213,17 @@ export default {
               },
             }
         );
-        console.log(article_id)
-        await this.showAlert("success", "Hodnotenie článku bolo uložené")
-        await router.push({ name: 'reviewConferences' });
+
+        if(response.status === 200){
+          await this.showAlert("success", "Článok bol Akceptovaný")
+          console.log("pred nastavenim" + this.successSend);
+          this.successSend = true;
+          console.log("po nastaveni" + this.successSend);
+          await router.push({ name: 'reviewConferences' });
+        }
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
-        await this.showAlert("error", "Hodnotenie sa nepodarilo uložiť")
+        await this.showAlert("error", "Článok sa nepodarilo akceptovať")
         console.error('Error submitting review:', error);
       }
     },
@@ -247,9 +262,15 @@ export default {
               },
             }
         );
-        console.log(article_id)
-        await this.showAlert("success", "Článok bol zamietnutý")
-        await router.push({ name: 'reviewConferences' });
+        if (response.status === 200){
+          this.successSend = true;
+          await this.showAlert("success", "Článok bol zamietnutý")
+          console.log("pred nastavenim" + this.successSend);
+
+          console.log("po nastaveni" + this.successSend);
+          await router.push({ name: 'reviewConferences' });
+        }
+        console.log(response)
         console.log('Review submitted successfully:', response.data);
       } catch (error) {
         await this.showAlert("error", "Článok sa nepodarilo zamietnuť")
@@ -262,15 +283,16 @@ export default {
         this.alert_text = message;
         this.alert_icon = "$success";
         this.alert_color = "success";
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         this.alert_show = false;
+        this.successSend = false;
       }
       else if (status === "error"){
         this.alert_show = true;
         this.alert_text = message;
         this.alert_icon = "$error";
         this.alert_color = "error";
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         this.alert_show = false;
       }
     },

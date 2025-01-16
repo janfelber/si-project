@@ -17,6 +17,13 @@
         </div>
       </div>
 
+
+      <div v-if="emptyConferenceList">
+        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 30vh; text-align: center; color: black">
+          <span style="font-size: 30px; margin-bottom: 10px;">Momentálne neprebieha žiadna konferencia!</span>
+        </div>
+      </div>
+
       <div class="conferences" style="padding: 0 1.5rem">
 
 
@@ -66,7 +73,8 @@ export default {
       activeConferences: [],
       searchQuery: '',
       filteredConferences: [],
-      userConferenceStatuses: {}
+      userConferenceStatuses: {},
+      emptyConferenceList: null,
     };
   },
   methods: {
@@ -89,6 +97,13 @@ export default {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        if (response.data.length === 0) {
+          this.emptyConferenceList = true;
+        } else {
+          this.emptyConferenceList = false;
+        }
+
         this.activeConferences = response.data;
         this.filteredConferences = this.activeConferences;
         console.log(this.activeConferences);

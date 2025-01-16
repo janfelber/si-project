@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 public class ArticleStudentResponseDto {
-
+  private Long id;
   private String articleName;
   private String coAuthors;
   private String articleDescription;
