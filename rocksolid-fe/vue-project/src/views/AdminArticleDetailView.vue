@@ -15,7 +15,7 @@
     <div class="v-col-7">
       <div class="card">
         <v-card-title class="card-title">
-          O praci
+          O práci
           <v-menu offset-y>
             <template #activator="{ props }">
               <button
@@ -38,7 +38,7 @@
         </v-card-title>
         <div class="card-body">
           <div class="form-group">
-            <label>Nazov prace</label>
+            <label>Názov práce</label>
             <div class="form-input">
               <input v-model="articleName" disabled>
             </div>
@@ -51,13 +51,13 @@
           </div>
           <hr>
           <div class="form-group">
-            <label>Klucove slova</label>
+            <label>Kľúčové slová</label>
             <div class="form-input">
               <input v-model="keyWords" disabled>
             </div>
           </div>
           <div class="form-group">
-            <label>Spolu autori</label>
+            <label>Spoluautori</label>
             <div class="form-input">
               <input v-model="coAuthors" disabled>
             </div>
@@ -85,7 +85,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Reviewer</label>
+            <label>Recenzent</label>
             <div class="form-input">
               <select v-model="selectedReviewer">
                 <option v-for="reviewer in reviewers" :key="reviewer.id" :value="reviewer.id" :selected="reviewer.id === selectedReviewer">

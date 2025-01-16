@@ -6,14 +6,14 @@
       </div>
       <div class="filter-container">
         <div class="form-group">
-          <label>Vyhladavacia fraza</label>
+          <label>Vyhľadávacia fráza</label>
           <div class="form-input">
             <input v-model="searchQuery" placeholder="Zadajte vyhľadávací výraz" />
           </div>
         </div>
         <div class="form-group filter-button">
           <button class="btn btn-primary filter" @click="filter" style="color: white">Filter</button>
-          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovat</button>
+          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovať</button>
         </div>
       </div>
 
@@ -38,14 +38,14 @@
             <v-divider></v-divider>
             <v-card-text class="py-3">
               <div class="text-truncate">
-                {{ conference.description || 'No description available' }}
+                {{ conference.description || 'Popis nie je k dispozícií' }}
               </div>
             </v-card-text>
             <v-card-actions>
               <v-row class="w-100" justify="space-between">
                 <v-col class="d-flex justify-start" style="padding-left: 1rem">
-                  <button class="btn btn-primary conference-details" v-if="!userConferenceStatuses[conference.id]" @click="addUserToConference(conference.id)" style="color: white">Prihlasit</button>
-                  <button class="btn btn-primary conference-details" v-if="userConferenceStatuses[conference.id]" @click="uploadArticle(conference.id)" style="color: white">Odovzdat</button>
+                  <button class="btn btn-primary conference-details" v-if="!userConferenceStatuses[conference.id]" @click="addUserToConference(conference.id)" style="color: white">Prihlásiť</button>
+                  <button class="btn btn-primary conference-details" v-if="userConferenceStatuses[conference.id]" @click="uploadArticle(conference.id)" style="color: white">Odovzdať</button>
                 </v-col>
               </v-row>
             </v-card-actions>

@@ -76,8 +76,8 @@
 
     </div>
     <div class="button-container">
-      <button class="btn-submit" @click="submitReview()">Submit Review</button>
-      <button class="btn-reject" @click="rejectReview()">Reject Article</button>
+      <button class="btn-submit" @click="submitReview()">Uložiť hodnotenie</button>
+      <button class="btn-reject" @click="rejectReview()">Zamietnuť</button>
     </div>
   </div>
 </template>

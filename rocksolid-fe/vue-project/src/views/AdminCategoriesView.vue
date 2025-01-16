@@ -4,11 +4,11 @@
       <v-card-title class="table-head">
         <div class="title-with-count">
           <h5>Kategórie</h5>
-          <span class="categories-count" style="font-size: 13px">Showing {{ recordRange }} of {{ filterCategories.length }} record(s)</span>
+          <span class="categories-count" style="font-size: 13px">Zobrazuje sa {{ recordRange }} z {{ filterCategories.length }} záznamov</span>
         </div><div class="pagination-container">
         <div class="page-number" style="margin-right: 1.5rem">
           <label for="page size" style="font-size: 13px">
-            Page {{ currentPage }} / {{ totalPages }}
+            Strana {{ currentPage }} / {{ totalPages }}
           </label>
           <button
               class="pagination-button"
@@ -35,7 +35,7 @@
           </button>
         </div>
         <label for="page-size" style="margin: 0 10px; font-size: 13px;">
-          Page Size
+          Veľkosť strany
         </label>
         <div class="page-size-selection">
           <div class="page-size-container">
@@ -75,7 +75,7 @@
               <v-btn
                   class="text-none font-weight-regular"
                   prepend-icon="mdi-view-list"
-                  text="Pridanie kategorie"
+                  text="Pridanie kategórie"
                   variant="tonal"
                   v-bind="activatorProps"
                   @click="clearVariables(); this.edit = false;"
@@ -84,7 +84,7 @@
 
             <v-card
                 prepend-icon="mdi-view-list"
-                :title="edit ? 'Editovanie kategorie' : 'Pridanie kategorie'"
+                :title="edit ? 'Editovanie kategórie' : 'Pridanie kategórie'"
             >
               <v-card-text class="form-group">
 
@@ -105,7 +105,7 @@
                 <v-spacer></v-spacer>
 
                 <v-btn
-                    text="Close"
+                    text="Zavrieť"
                     variant="plain"
                     @click="dialog = false; clearVariables()"
                 ></v-btn>

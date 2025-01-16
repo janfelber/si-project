@@ -13,7 +13,7 @@
         </div>
         <div class="form-group filter-button">
           <button class="btn btn-primary filter" @click="filter" style="color: white">Filter</button>
-          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovat</button>
+          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovať</button>
         </div>
       </div>
 
@@ -53,7 +53,7 @@
             <v-card-actions>
             <v-row class="w-100" justify="space-between">
               <v-col class="d-flex justify-start " style="padding-left: 1rem">
-                <button class="btn btn-primary review" @click="reviewArticle(article.id)" style="color: white">Recenzovat</button>
+                <button class="btn btn-primary review" @click="reviewArticle(article.id)" style="color: white">Recenzovať</button>
               </v-col>
 
               <v-col class="d-flex justify-end" >
