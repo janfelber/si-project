@@ -185,8 +185,6 @@ public class AuthenticationService {
         final User user = repository.findByResetToken(request.getToken())
             .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
 
-        System.out.println(user.getResetTokenExpiry());
-
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Token has expired");
         }
