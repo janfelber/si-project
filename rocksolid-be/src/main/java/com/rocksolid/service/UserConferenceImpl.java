@@ -1,6 +1,8 @@
 package com.rocksolid.service;
 
 import com.rocksolid.dto.UserResponseDto;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.rocksolid.module.User;
@@ -49,7 +51,7 @@ public class UserConferenceImpl implements UserConferenceService {
   }
 
   public List<UserResponseDto> getUsersForConference(Long conferenceId) {
-    return userConferenceRepository.findAll()
+    return userConferenceRepository.findAll(Sort.by(Sort.Order.asc("id")))
             .stream()
             .filter(userConference -> userConference.getConference().getId().equals(conferenceId))
             .map(userConference -> {
