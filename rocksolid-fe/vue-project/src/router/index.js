@@ -17,7 +17,6 @@ import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
-import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ReviewView from "@/views/ReviewView.vue";
 import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
@@ -109,12 +108,6 @@ const router = createRouter({
       },
     },
     {
-      path: '/web/home',
-      name: 'home',
-      component: HomeView,
-      meta: { requiresStudent: true },
-    },
-    {
       path: '/web/upload/:id',
       name: 'upload',
       component: UploadFile,
@@ -144,7 +137,7 @@ const router = createRouter({
       props:true
     },
     {
-      path: '/reviewArticle/:id',
+      path: '/web/reviewArticle/:id',
       component: ReviewView,
       props: true,
       meta: {
@@ -153,7 +146,7 @@ const router = createRouter({
       },
       children: [
         {
-          path: '/reviewArticle/:id',
+          path: '/web/reviewArticle/:id',
           name: 'reviewArticle',
           component: ReviewView,
         },
@@ -198,7 +191,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/web/article-review-admin/:id',
+      path: '/admin/article-review-admin/:id',
       name: 'ArticleReviewResponseAdmin',
       component: ArticleReviewResponseAdmin,
       props: true,
@@ -221,19 +214,8 @@ const router = createRouter({
       name: 'EditProfileView',
       component: EditProfileView,
       meta: {
-        requiresStudent: true,
-        title: 'Edit Profile'
+        title: 'Profil'
       }
-    },
-    {
-      path: '/web/conference/:id',
-      name: 'conferenceDetail',
-      component: ConferenceDetail,
-      props: true,
-      meta: {
-        requiresStudent: true,
-        // TODO title should be the conference name
-      },
     },
     {
       path: '/:catchAll(.*)',
@@ -275,7 +257,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAdmin && userRole !== 'ADMIN') {
-    return next('/web/home');
+    return next('/web/active-conferences');
   }
 
   if (to.meta.requiresStudent && userRole !== 'STUDENT' && userRole !== 'REVIEWER') {

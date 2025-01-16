@@ -3,7 +3,7 @@
     <h5>Not found.Sorry
       <br>
       Return to
-      <router-link to="/web/home">home page</router-link>
+      <router-link to="/web/active-conferences">home page</router-link>
       .
     </h5>
     <p></p>

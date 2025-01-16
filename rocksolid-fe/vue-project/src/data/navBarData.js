@@ -1,11 +1,5 @@
 export const navBarData = [
     {
-        routerLink: '/web/home',
-        icon: 'mdi-home-outline',
-        label: 'Home',
-        role: ["STUDENT", "REVIEWER"]
-    },
-    {
         routerLink: '/web/active-conferences',
         icon: 'mdi-presentation',
         label: 'Aktívne konferencie',

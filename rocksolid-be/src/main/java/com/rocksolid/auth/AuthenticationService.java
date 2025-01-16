@@ -94,7 +94,7 @@ public class AuthenticationService {
         if (user.getRole() == Role.ADMIN) {
             return "/admin/users";
         } else if (user.getRole() == Role.STUDENT || user.getRole() == Role.REVIEWER) {
-            return "/web/home";
+            return "/web/active-conferences";
         } else {
             return "/login";
         }
