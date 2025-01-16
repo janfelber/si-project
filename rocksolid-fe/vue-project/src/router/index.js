@@ -21,6 +21,7 @@ import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
 import AdminCategoriesView from "@/views/AdminCategoriesView.vue";
 import ArticleHistory from "@/views/ArticleHistory.vue";
 import ArticleReviewResponse from "@/views/ArticleReviewResponse.vue";
+import ArticleReviewResponseAdmin from '@/views/ArticleReviewResponseAdmin.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,7 +42,7 @@ const router = createRouter({
       component: AdminUsersView,
       meta: {
         requiresAdmin: true,
-        title: 'Users'
+        title: 'Zoznam všetkých používateľov'
       },
     },
     {
@@ -66,7 +67,7 @@ const router = createRouter({
       component: AdminArticlesView,
       meta: {
         requiresAdmin: true,
-        title: 'Articles'
+        title: 'Odovzdané práce'
       },
     },
     {
@@ -76,7 +77,7 @@ const router = createRouter({
       props: true,
       meta: {
         requiresAdmin: true,
-        title: 'Article Detail'
+        title: 'Detail práce'
       },
     },
     {
@@ -85,7 +86,7 @@ const router = createRouter({
       component: AdminCategoriesView,
       meta: {
         requiresAdmin: true,
-        title: 'Categories'
+        title: 'Kategórie'
       },
     },
     {
@@ -118,19 +119,24 @@ const router = createRouter({
       path: '/admin/conferenceDetail/:id',
       name: 'ConferenceDetail',
       component: AdminConferenceDetailView,
-      meta: { requiresAdmin: true },
+      meta: { requiresAdmin: true,
+              title: 'Detail konferencie'
+      },
       props:true
     },
     {
       path: '/reviewArticle/:id',
       component: ReviewView,
       props: true,
+      meta: {
+        requiresReviewer: true,
+        title: 'Úprava práce'
+      },
       children: [
         {
           path: '/reviewArticle/:id',
           name: 'reviewArticle',
           component: ReviewView,
-          title: 'Review Article',
         },
       ],
     },
@@ -140,7 +146,7 @@ const router = createRouter({
       component: ActiveConferences,
       meta: {
         requiresStudent: true,
-        title: 'Active Conferences'
+        title: 'Aktívne konferencie'
       },
     },
     {
@@ -158,7 +164,7 @@ const router = createRouter({
       component: ArticleHistory,
       meta: {
         requiresStudent: true,
-        title: 'Article History'
+        title: 'História tvojich prác'
       },
     },
     {
@@ -169,7 +175,18 @@ const router = createRouter({
       meta: {
         name: 'ArticleReviewResponse',
         requiresStudent: true,
-        title: 'Article Review Response'
+        title: 'Reakcia na recenziu práce'
+      },
+    },
+    {
+      path: '/web/article-review-admin/:id',
+      name: 'ArticleReviewResponseAdmin',
+      component: ArticleReviewResponseAdmin,
+      props: true,
+      meta: {
+        name: 'ArticleReviewResponseAdmin',
+        requiresAdmin: true,
+        title: 'Hodnotenie práce'
       },
     },
     {

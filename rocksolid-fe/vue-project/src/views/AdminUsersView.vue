@@ -1,5 +1,4 @@
 <template>
-  <h1>Admin Rozhranie</h1>
 
   <div class="card-class" style="background-color: white">
     <div class="users-table" style="border: 1px solid #d8d8f0; border-radius: .5rem">

@@ -3,7 +3,7 @@
     <div class="articles-table" style="border: 1px solid #d8d8f0; border-radius: .5rem">
       <v-card-title class="table-head">
         <div class="title-with-count">
-          <h5>Clanky</h5>
+          <h5>Odovzdané práce</h5>
           <span class="articles-count" style="font-size: 13px">Showing {{ recordRange }} of {{ filterArticles.length }} record(s)</span>
         </div>
         <div class="pagination-container">
@@ -97,7 +97,15 @@
           </td>
           <td class="cell" style="width: 15.924607%;" >{{ article.conferenceName }}</td>
           <td class="cell" style="width: 15.924607%;" >{{ article.section }}</td>
-          <td class="cell" style="width: 15.924607%;" >{{ article.firstName }} {{ article.lastName }}</td>
+          <td class="cell" style="width: 15.924607%;">
+            <div>
+              <span v-if="article.status === 'ACCEPTED'" class="status accepted">AKCEPTOVANÉ</span>
+              <span v-else-if="article.status === 'REJECTED'" class="status rejected">ZAMIETNUTÉ</span>
+              <span v-else-if="article.status === 'SENT'" class="status sent">ODOSLANÉ</span>
+            </div>
+          </td>
+          <td class="cell" style="width: 15.924607%;" >{{ article.reviewerFirstName }} {{ article.reviewerLastName }}</td>
+            <td class="cell" style="width: 15.924607%;" >{{ article.firstName }} {{ article.lastName }}</td>
         </tr>
         </tbody>
       </table>
@@ -114,7 +122,7 @@ export default {
   data(){
     return {
       id_article: null,
-      headers: ["Nazov clanku", "Konferencia", "Sekcia", "Uzivatel"],
+      headers: ["Nazov práce", "Konferencia", "Kategória", "Status" ,"Recenzent" ,"Uživateľ"],
       articles: [],
       currentPage: 1,
       rowsPerPage: 10,
@@ -226,6 +234,31 @@ export default {
 
 
 <style scoped>
+
+
+.status{
+  font-weight: bold;
+  font-size: 15px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.status.accepted {
+  color: white;
+  background-color: #28a745;
+}
+
+.status.rejected {
+  color: white;
+  background-color: #dc3545;
+}
+
+.status.sent {
+  color: white;
+  background-color: #ffc107;
+}
+
+
 
 .article-link {
   background-color: #0000;

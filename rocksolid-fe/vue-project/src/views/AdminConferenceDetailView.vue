@@ -1,5 +1,4 @@
 <template>
-  <h1>Konferencia {{id}}</h1>
 
   <transition name="fade">
     <v-alert
@@ -17,7 +16,7 @@
     <div class="conferences-table" style="border: 1px solid #d8d8f0; border-radius: .5rem">
       <v-card-title class="table-head">
         <div class="title-with-count">
-          <h5>Prihlásení používatelia</h5>
+          <h5>Prihlásení používatelia do konferencie {{conference_name}}</h5>
           <span class="conferences-count" style="font-size: 13px">Showing {{ recordRange }} of {{ filterusers.length }} record(s)</span>
         </div>
         <div class="pagination-container">
@@ -130,7 +129,8 @@ export default {
       alert_show: false,
       alert_text: "",
       alert_icon: "",
-      alert_color: ""
+      alert_color: "",
+      conference_name: "",
     }
   },
   methods:{
@@ -151,6 +151,22 @@ export default {
             });
         this.users = response.data;
         console.log(this.users)
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async getConference() {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:8080/api/v1/conference/" + this.id,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+        this.conference = response.data;
+        console.log(this.conference);
+        this.conference_name = response.data.name;
       } catch (error) {
         console.error(error);
       }
@@ -192,6 +208,7 @@ export default {
     },
   },
   mounted() {
+    this.getConference();
     this.getUsersInConference();
   },
   computed:{

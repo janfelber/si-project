@@ -81,7 +81,7 @@
           <div class="form-group">
             <label>Status</label>
             <div class="form-input">
-              <input v-model="articleStatus" disabled>
+              <input :value="getStatusLabel(article.status)" disabled>
             </div>
           </div>
           <div class="form-group">
@@ -98,6 +98,9 @@
       </div>
       <div class="button-section">
         <button type="button" class="btn btn-primary" @click="updateArticle()" style="color: white">Uložiť</button>
+        <div v-if="articleStatusIsSent === true">
+        <button type="button" class="btn btn-primary" @click="seeReview()" style="color: white; margin-left: 2px">Pozrieť recenziu</button>
+        </div>
       </div>
     </div>
     <div class="v-col-7">
@@ -164,10 +167,25 @@ export default {
       alert_show: false,
       alert_text: "",
       alert_icon: "",
-      alert_color: ""
+      alert_color: "",
+      reviewDetails: [],
+      articleStatusIsSent: null,
     };
   },
   methods: {
+    async seeReview() {
+      this.$router.push({ name: 'ArticleReviewResponseAdmin', params: { id: this.id } });
+    },
+    getStatusLabel(status) {
+      switch (status) {
+        case 'SENT':
+          return 'ODOSLANÉ';
+        case 'ACCEPTED':
+          return 'AKCEPTOVANÉ';
+        case 'REJECTED':
+          return 'ZAMIETNUTÉ';
+      }
+    },
     async fetchSections() {
       try {
         const token = localStorage.getItem("token");
@@ -213,6 +231,11 @@ export default {
         const matchedSection = this.sections.find(section => section.sectionName === this.article.section);
         if (matchedSection) {
           this.selectedSection = matchedSection.id;
+        }
+        if (this.articleStatus === 'SENT') {
+          this.articleStatusIsSent = false;
+        } else {
+          this.articleStatusIsSent = true;
         }
       } catch (error) {
         console.error('Failed to fetch user:', error);
