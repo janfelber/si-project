@@ -3,6 +3,9 @@ import NoPermissions from '@/views/NoPermissions.vue';
 import AdminArticleDetailView from '@/views/AdminArticleDetailView.vue';
 import AdminArticlesView from '@/views/AdminArticlesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
+import PasswordRequestConfirmationView from '@/views/PasswordRequestConfirmationView.vue';
+import PasswordResetRequestView from '@/views/PasswordResetRequestView.vue';
+import PasswordResetView from '@/views/PasswordResetView.vue';
 import ReviewsArticle from '@/views/ReviewsArticle.vue';
 import UpdateFile from '@/views/UpdateFile.vue';
 import { createRouter, createWebHistory } from 'vue-router'
@@ -35,6 +38,22 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/reset-password-request',
+      name: 'resetPasswordRequest',
+      component: PasswordResetRequestView
+    },
+    {
+      path: '/password-reset-request-success',
+      name: 'confirmationPasswordRequest',
+      component: PasswordRequestConfirmationView
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: PasswordResetView,
+      props: (route) => ({ token: route.query.token })
     },
     {
       path: '/admin/users',
@@ -237,12 +256,17 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userRole = await getUserRole();
+  const token = localStorage.getItem('token');
+
+  if (!token && to.path !== '/login' && to.path !== '/register' && to.path !== '/reset-password-request' && to.path !== '/password-reset-request-success' && to.path !== '/reset-password') {
+    return next('/login');
+  }
 
   if ((to.meta.requiresAdmin || to.meta.requiresStudent || to.meta.requiresReviewer) && !userRole) {
     return next('/login');
   }
 
-  if (!userRole && to.path !== '/login' && to.path !== '/register') {
+  if (!userRole && to.path !== '/login' && to.path !== '/register' && to.path !== '/reset-password-request' && to.path !== '/password-reset-request-success' && to.path !== '/reset-password') {
     return next('/login');
   }
 

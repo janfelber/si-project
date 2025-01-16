@@ -18,7 +18,7 @@
               <input
                   type="text"
                   v-model="email"
-                  placeholder="Email"
+                  placeholder="E-mail"
                   required
               />
             </div>
@@ -30,6 +30,7 @@
                   required
               />
             </div>
+            <p><router-link class="reset-password" to="/reset-password-request">Forgot your password?</router-link></p>
             <button type="submit" class="login-button">
               <span style="font-size: 0.875rem" class="text-center">Log in</span>
             </button>
@@ -74,6 +75,19 @@ export default {
 </script>
 
 <style scoped>
+
+.reset-password {
+  margin-top: 0;
+  font-size: 0.875rem;
+  text-decoration: none;
+  color: darkgreen;
+  transition: color 0.3s, text-decoration 0.3s;
+}
+
+.reset-password:hover {
+  color: #3c8d40;
+  text-decoration: underline;
+}
 
 .error-message-container {
   display: flex;
