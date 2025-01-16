@@ -26,7 +26,7 @@ export const navBarData = [
     {
         routerLink: '/admin/conference',
         icon: 'mdi-account-multiple-outline',
-        label: 'Conferences',
+        label: 'Konferencie',
         role: ["ADMIN"]
     },
     {

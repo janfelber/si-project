@@ -42,6 +42,7 @@ public class ConferenceServiceImpl  implements ConferenceService {
         conference.setDateuntil(request.getDate_to());
         conference.setYear(request.getYear());
         conference.setName(request.getName());
+        conference.setDescription(request.getDescription());
         conference.setStatus(true);
         conferenceRepository.save(conference);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -74,6 +75,7 @@ public class ConferenceServiceImpl  implements ConferenceService {
             existingConference.setStatus(conference.getStatus());
             existingConference.setDateuntil(conference.getDateuntil());
             existingConference.setDatefrom(conference.getDatefrom());
+            existingConference.setDescription(conference.getDescription());
             return conferenceRepository.save(existingConference);
         }
         return null;

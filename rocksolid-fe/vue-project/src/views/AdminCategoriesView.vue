@@ -145,7 +145,7 @@
           <tr v-for="category in categories" :key="category.id" class="table-rows">
             <td class="cell" style="width: 5.452637%;">{{ category.sectionName }}</td>
             <td class="cell" style="width: 5.452637%;">
-              <v-btn @click="updateDialog(category.id,category.sectionName)" class="mr-2" prepend-icon="mdi-pen">Editovat</v-btn>
+              <v-btn @click="updateDialog(category.id,category.sectionName)" class="mr-2" prepend-icon="mdi-pen">Editovať</v-btn>
             </td>
           </tr>
           </tbody>

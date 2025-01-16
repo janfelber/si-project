@@ -57,7 +57,7 @@ const router = createRouter({
       component: ConferenceView,
       meta: {
         requiresAdmin: true,
-        title: 'Conferences'
+        title: 'Konferencie'
       },
     },
     {
