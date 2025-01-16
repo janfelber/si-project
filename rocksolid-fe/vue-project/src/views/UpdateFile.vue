@@ -54,7 +54,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label class="input-label">Spolu autori</label>
+                <label class="input-label">Spoluautori</label>
                 <div class="form-input">
                   <input v-model="coAuthors" @input="removeTrailingComma">
                 </div>

@@ -17,12 +17,12 @@
       <v-card-title class="table-head">
         <div class="title-with-count">
           <h5>Prihlásení používatelia do konferencie {{conference_name}}</h5>
-          <span class="conferences-count" style="font-size: 13px">Showing {{ recordRange }} of {{ filterusers.length }} record(s)</span>
+          <span class="conferences-count" style="font-size: 13px">Zobazuje sa {{ recordRange }} z {{ filterusers.length }} záznamov</span>
         </div>
         <div class="pagination-container">
           <div class="page-number" style="margin-right: 1.5rem">
             <label for="page size" style="font-size: 13px">
-              Page {{ currentPage }} / {{ totalPages }}
+              Strana {{ currentPage }} / {{ totalPages }}
             </label>
             <button
                 class="pagination-button"
@@ -49,7 +49,7 @@
             </button>
           </div>
           <label for="page-size" style="margin: 0 10px; font-size: 13px;">
-            Page Size
+            Veľkosť strany
           </label>
           <div class="page-size-selection">
             <div class="page-size-container">

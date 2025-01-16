@@ -3,7 +3,7 @@
   <form class="login-form">
       <div>
         <div>
-          <h3 class="text-center">Log in</h3>
+          <h3 class="text-center">Prihlásenie</h3>
           <div v-if="error" class="error-message-container">
             <span class="mdi mdi-close-circle-outline alert-icon"></span>
               <span>
@@ -32,7 +32,7 @@
             </div>
             <p><router-link class="reset-password" to="/reset-password-request">Forgot your password?</router-link></p>
             <button type="submit" class="login-button">
-              <span style="font-size: 0.875rem" class="text-center">Log in</span>
+              <span style="font-size: 0.875rem" class="text-center">Prihlásiť</span>
             </button>
           </form>
           <span class="register-prompt">

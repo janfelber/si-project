@@ -1,11 +1,11 @@
 <template>
   <div class="no-permission-container">
-    <h5>Sorry</h5>
-    <span>You are lacking the permission <b>Review articles</b>
-      to access this object, please let us know on support@rocksolid.com if you think this is incorrect.
+    <h5>Na toto nemáte oprávnenie</h5>
+    <span>K tejto stránke má prístup iba <b>Recenzent</b>
+      , ak si myslíte, že niekde nastala chyba, kontaktujte nás na rocksolid.supp@gmail.com.
     <br>
     </span>
-    <router-link to="/web/home" class="link">Home</router-link>
+    <router-link to="/web/active-conferences" class="link">Späť</router-link>
   </div>
 </template>
 

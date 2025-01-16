@@ -4,13 +4,13 @@
     <div class="users-table" style="border: 1px solid #d8d8f0; border-radius: .5rem">
       <v-card-title class="table-head">
         <div class="title-with-count">
-          <h5>Users</h5>
-          <span class="users-count" style="font-size: 13px">Showing {{ recordRange }} of {{ filterUsers.length }} record(s)</span>
+          <h5>Používatelia</h5>
+          <span class="users-count" style="font-size: 13px">Zobrazuje sa {{ recordRange }} z {{ filterUsers.length }} záznamov</span>
         </div>
         <div class="pagination-container">
           <div class="page-number" style="margin-right: 1.5rem">
           <label for="page size" style="font-size: 13px">
-            Page {{ currentPage }} / {{ totalPages }}
+            Strana {{ currentPage }} / {{ totalPages }}
           </label>
           <button
               class="pagination-button"
@@ -37,7 +37,7 @@
           </button>
           </div>
           <label for="page-size" style="margin: 0 10px; font-size: 13px;">
-            Page Size
+            Veľkosť strany
           </label>
           <div class="page-size-selection">
             <div class="page-size-container">
