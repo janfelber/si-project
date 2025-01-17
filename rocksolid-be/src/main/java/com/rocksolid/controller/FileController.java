@@ -35,6 +35,7 @@ public class FileController {
   private final FileService fileService;
 
   @PostMapping("/upload")
+  @PreAuthorize("hasAuthority('student:create')")
   public ResponseEntity<Article> uploadFile(
       @RequestParam("firstName") String firstName,
       @RequestParam("lastName") String lastName,
@@ -56,6 +57,7 @@ public class FileController {
   }
 
   @PatchMapping("/updateArticle")
+  @PreAuthorize("hasAuthority('student:update')")
   public ResponseEntity<?> updateFile(
       @RequestParam(required = false) String firstName,
       @RequestParam(required = false) String lastName,
@@ -97,6 +99,7 @@ public class FileController {
   }
 
   @GetMapping("/download/{id}/{fileType}")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public ResponseEntity<byte[]> downloadPdfFile (
       @PathVariable final Long id,
       @PathVariable final String fileType) {
@@ -113,6 +116,7 @@ public class FileController {
   }
 
   @GetMapping("/fileName/{articleId}/{fileType}")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public ResponseEntity<String> getFileName(
       @PathVariable final Long articleId,
       @PathVariable final String fileType) {
@@ -128,8 +132,8 @@ public class FileController {
     }
   }
 
-  @PreAuthorize("hasAuthority('admin:read')")
   @PostMapping("/zip")
+  @PreAuthorize("hasAuthority('admin:read')")
   public ResponseEntity<ByteArrayResource> downloadZip(@RequestBody List<Long> Ids) {
     try {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

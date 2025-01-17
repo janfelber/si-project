@@ -2,6 +2,7 @@ package com.rocksolid.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,12 +27,14 @@ public class NotificationController {
   private final CurrentUserService currentUserService;
 
   @GetMapping("/get/unread")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public List<NotificationResponseDto> getUnreadNotifications() {
     final Long userId = currentUserService.getCurrentUserId();
     return notificationService.getNotificationsForUser(userId);
   }
 
   @PutMapping("/mark/read/{notificationId}")
+  @PreAuthorize("hasAuthority('student:update') or hasAuthority('reviewer:update') or hasAuthority('admin:update')")
   public void markNotificationAsRead(@PathVariable final Long notificationId) {
     notificationService.markNotificationAsRead(notificationId);
   }

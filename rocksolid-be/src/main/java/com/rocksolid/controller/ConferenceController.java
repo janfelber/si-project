@@ -54,17 +54,20 @@ public class ConferenceController {
     }
 
     @GetMapping("/active")
+    @PreAuthorize("hasAuthority('student:read')")
     public List<Conference> getActiveConferences() {
         return conferenceService.getActiveConferences();
     }
 
     @PostMapping("/addUserToConference")
+    @PreAuthorize("hasAuthority('student:create')")
     public ResponseEntity<String> addUserToConference(@RequestParam Long conferenceId) {
         userConferenceService.addUserToConference(currentUserService.getCurrentUserId(), conferenceId);
         return ResponseEntity.ok("User added to conference successfully");
     }
 
     @GetMapping("/isUserInConference")
+    @PreAuthorize("hasAuthority('student:read')")
     public ResponseEntity<String> isUserInConference(@RequestParam Long conferenceId) {
         boolean isInConference = userConferenceService.isUserInConference(currentUserService.getCurrentUserId(), conferenceId);
         if (isInConference) {

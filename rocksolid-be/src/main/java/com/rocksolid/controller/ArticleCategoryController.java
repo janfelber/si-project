@@ -2,6 +2,7 @@ package com.rocksolid.controller;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,18 +29,20 @@ public class ArticleCategoryController {
   private SectionService sectionService;
 
   @GetMapping("/categories")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public List<SectionResponseDTO> getAllSections() {
     return sectionService.getAllSectionNames();
   }
 
 
   @PostMapping("/create")
+  @PreAuthorize("hasAuthority('admin:create')")
   public void createCategory(@RequestBody final SectionResponseDTO request) {
-    System.out.println(request);
     sectionService.createCategory(request);
   }
 
   @PutMapping("/update/{id}")
+  @PreAuthorize("hasAuthority('admin:update')")
   public Sections updateCategory(@PathVariable Long id, @RequestBody Sections request) {
     return sectionService.updateCategory(id, request);
   }

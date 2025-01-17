@@ -3,6 +3,7 @@ package com.rocksolid.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public class ColumnController {
   private ColumnService columnService;
 
   @GetMapping("/getcolumns")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public List<ColumnDTO> getAllColumns() {
     return columnService.getAllColumns().stream()
         .map(column -> new ColumnDTO(

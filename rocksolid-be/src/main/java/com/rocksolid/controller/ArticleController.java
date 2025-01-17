@@ -41,11 +41,13 @@ public class ArticleController {
   private ArticleRepository articleRepository;
 
   @GetMapping("/sections")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public List<SectionResponseDTO> getAllSections() {
     return sectionService.getAllSectionNames();
   }
 
   @GetMapping("/status/{conferenceId}")
+  @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
   public String getArticleStatus(@PathVariable Long conferenceId) {
     final Long currentUserId = currentUserService.getCurrentUserId();
     Optional<Article> article = articleService.getArticleStatus(conferenceId, currentUserId);
@@ -94,6 +96,7 @@ public class ArticleController {
   }
 
   @GetMapping("/reviewer/assigned")
+  @PreAuthorize("hasAuthority('reviewer:read')")
   public List<ArticleReviewerResponseDto> getArticlesForReviewer(final Long reviewerId) {
     return articleService.getArticlesAssignedToReviewer(currentUserService.getCurrentUserId());
   }

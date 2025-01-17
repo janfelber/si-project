@@ -42,6 +42,7 @@ public class UserController {
     public Optional<UserResponseDto> getUser(@PathVariable Long id) { return userService.getUserById(id); }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('admin:update')")
     public User updateUser(@PathVariable Long id, @RequestBody User userData) {
        return userService.updateUser(id, userData);
     }
@@ -52,6 +53,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("hasAuthority('student:read') or hasAuthority('reviewer:read') or hasAuthority('admin:read')")
     public UserResponseDto getCurrentUser() {
         return userService.getUserById(currentUserService.getCurrentUserId()).orElseThrow();
     }
