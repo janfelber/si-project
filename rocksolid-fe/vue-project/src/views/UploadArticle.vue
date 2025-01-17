@@ -21,12 +21,23 @@
 
         </div>
 
-        <div v-if="articleReviewed === true">
+        <div v-if="articleReviewed === true && articleApproved === true" >
 
           <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: row; text-align: center; color: black">
             <span style="margin-right: 5px; font-size: 30px">Gratulujeme, vaša práca bola schválená!</span>
-            <btn style="text-decoration: underline green; cursor: pointer; font-size: 30px" @click="sendUserToReview(this.review_id)">
-              pozrieť recenziu
+            <btn style="color: green; cursor: pointer; font-size: 30px" @click="sendUserToReview(this.review_id)">
+              Pozrieť recenziu.
+            </btn>
+          </div>
+
+        </div>
+
+        <div v-if="articleReviewed === true && articleApproved === false">
+
+          <div style="display: flex; justify-content: center; align-items: center; height: 70vh; flex-direction: row; text-align: center; color: black">
+            <span style="margin-right: 5px; font-size: 30px">Je nám ľúto, vaša práca bola zamietnutá!</span>
+            <btn style="color: red; cursor: pointer; font-size: 30px" @click="sendUserToReview(this.review_id)">
+              Pozrieť recenziu.
             </btn>
           </div>
 
@@ -181,6 +192,7 @@ export default {
       exists: false,
       review_id: null,
       articleReviewed: null,
+      articleApproved: null,
     };
   },
   methods: {
@@ -347,14 +359,18 @@ export default {
           this.articleReviewed = false;
           console.log("Article is in review");
         } else if (status === "REJECTED") {
-          this.articleInReview = false;
-          this.articleReviewed = false;
+          // this.articleInReview = false;
+          this.articleReviewed = true;
+          this.articleApproved = false;
           console.log("Article is in review");
         } else if (status === "ACCEPTED") {
           this.articleReviewed = true;
+          this.articleApproved = true;
           console.log("Article is accepted");
         } else {
           this.articleInReview = false;
+          this.articleReviewed = false;
+          this.articleApproved = false;
         }
 
       } catch (error) {

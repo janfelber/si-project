@@ -82,7 +82,7 @@ public class ArticleController {
   }
 
   @GetMapping("/student/{id}")
-  @PreAuthorize("hasAuthority('student:read') or hasAuthority('admin:read')")
+  @PreAuthorize("hasAuthority('student:read')")
   public ArticleStudentResponseDto getArticleByIdStudent(@PathVariable final Long id) {
     return articleService.getArticleByIdStudent(id);
   }
@@ -109,6 +109,12 @@ public class ArticleController {
   public ResponseEntity<Boolean> checkIfArticleInConference(@PathVariable Long articleId, @PathVariable Long conferenceId) {
     boolean exists = articleRepository.existsByIdAndConferenceId(articleId, conferenceId);
     return ResponseEntity.ok(exists);
+  }
+
+  @GetMapping("/check-assignment")
+  @PreAuthorize("hasAuthority('reviewer:read')")
+  public boolean checkArticleAssignment( @RequestParam Long articleId, @RequestParam Long reviewerId) {
+    return articleService.isArticleAssignedToReviewer(articleId, currentUserService.getCurrentUserId());
   }
 
 }

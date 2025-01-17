@@ -49,7 +49,7 @@
         </div>
 
         <div v-if="articleRejected" style="margin-top: 1rem;">
-          <button class="button" @click="sendUserToUpdate(this.conference_id)">Znova vložiť prácu</button>
+          <button class="button" @click="sendUserToUpdate(this.article_id)">Znova vložiť prácu</button>
         </div>
       </div>
     </div>
@@ -82,7 +82,8 @@ export default {
       conference_id: null,
       review_id: null,
       loading: true,
-      error: false
+      error: false,
+      article_id: null
     };
   },
   methods: {
@@ -126,6 +127,8 @@ export default {
         this.firstName = response.data.firstName;
         this.lastName = response.data.lastName;
         this.conference_id = response.data.conferenceId;
+        this.article_id = response.data.id;
+        console.log(response.data);
       } catch (error) {
         console.error(error);
         this.error = true;

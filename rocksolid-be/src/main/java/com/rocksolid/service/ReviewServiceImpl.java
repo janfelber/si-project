@@ -24,6 +24,7 @@ import com.rocksolid.repository.ColumnRepository;
 import com.rocksolid.repository.NotificationRepository;
 import com.rocksolid.repository.ReviewDeatailsRepository;
 import com.rocksolid.repository.ReviewsRepository;
+import com.rocksolid.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -40,6 +41,8 @@ public class ReviewServiceImpl implements ReviewService {
 
   private final ArticleRepository articleRepository;
   private final NotificationRepository notificationRepository;
+
+  private final UserRepository userRepository;
 
   @Override
   public Reviews createReview(final ReviewRequestDTO reviewRequestDto) {
@@ -214,30 +217,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     return review;
   }
-
-  // @Override
-  // public Reviews getReviwByArticleId(final Long articleId) {
-  //   return reviewRepository.findByArticleId(articleId);
-  // }
-
-  // public Map<String, String> getReviewColumns(Long reviewId) {
-  //   // Načítanie recenzie podľa ID
-  //   Reviews review = reviewRepository.findById(reviewId)
-  //       .orElseThrow(() -> new RuntimeException("Review not found"));
-  //
-  //   // Získanie všetkých detailov recenzie (column_id a hodnoty)
-  //   List<ReviewDetails> reviewDetailsList = reviewDetailsRepository.findByreview_id(review);
-  //
-  //   // Vytvorenie mapy stĺpcov a ich hodnôt
-  //   Map<String, String> columnValues = new HashMap<>();
-  //   for (ReviewDetails reviewDetails : reviewDetailsList) {
-  //     Columns column = reviewDetails.getColumn_id(); // Získanie stĺpca
-  //     String value = reviewDetails.getValue();       // Hodnota recenzie pre tento stĺpec
-  //     columnValues.put(column.getColumn_name(), value);     // Pridanie do mapy
-  //   }
-  //
-  //   return columnValues;
-  // }
 
   private void createNotification(User user, String message) {
     Notification notification = Notification.builder()

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 public class ArticleStudentResponseDto {
-
+  private Long id;
   private String articleName;
   private String coAuthors;
   private String articleDescription;
@@ -17,5 +17,6 @@ public class ArticleStudentResponseDto {
   private String lastName;
   private String status;
   private Long conferenceId;
+  private Long reviewerId;
 
 }

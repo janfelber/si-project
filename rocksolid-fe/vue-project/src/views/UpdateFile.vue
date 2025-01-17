@@ -1,5 +1,3 @@
-
-
 <template >
   <v-app>
 
@@ -14,7 +12,8 @@
       ></v-alert>
     </transition>
 
-    <div>
+
+    <div v-if="articleStatus === 'REJECTED'">
 
       <div class="card-container">
         <div class="v-col-7">
@@ -72,7 +71,7 @@
             </div>
           </div>
           <div class="button-section">
-            <button type="button" class="btn btn-primary save-button" @click="updateFile()">Uložiť</button>
+            <button type="button" class="btn btn-primary save-button" @click="updateFile()" :disabled="successSend">Uložiť</button>
           </div>
         </div>
         <div class="v-col-7">
@@ -162,11 +161,13 @@ export default {
       exists: false,
       review_id: null,
       articleReviewed: null,
+      successSend: false,
+      articleStatus: "",
     };
   },
   methods: {
-    async sendUserToReview(reviewId) {
-      this.$router.push({ name: 'ArticleReviewResponse', params: { review_id: reviewId }});
+    sendUserToConferences() {
+      this.$router.push({ name: 'ArticleHistory'});
     },
     async fetchSections() {
       try {
@@ -302,10 +303,16 @@ export default {
         this.coAuthors = response.data.coAuthors;
         this.articleDescription = response.data.articleDescription;
         this.keyWords = response.data.keyWords;
+        this.articleStatus = response.data.status;
         const matchedSection = this.sections.find(section => section.sectionName === this.article.section);
         if (matchedSection) {
           this.selectedOption = matchedSection.id;
         }
+
+        if (this.articleStatus === 'SENT' || this.articleStatus === 'ACCEPTED') {
+          this.$router.push({ name: 'activeConferences' });
+        }
+
       } catch (error) {
         console.error("Error deleting review:", error);
       }
@@ -336,8 +343,7 @@ export default {
       formData.append('sectionId', this.selectedOption);
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
-      formData.append('conferenceId', this.conferenceId);
-      formData.append('articleId', this.id); // Assume this.id contains the existing article ID
+      formData.append('articleId', this.id);
 
       try {
         const token = localStorage.getItem("token");
@@ -350,7 +356,9 @@ export default {
 
         if (response.status === 200) {
           await this.showAlert("success");
-          // Reset form fields after successful submission
+
+          await this.deleteReview();
+          this.sendUserToConferences();
           this.firstName = '';
           this.lastName = '';
           this.file = null;
@@ -362,11 +370,12 @@ export default {
           this.articleInReview = true;
         }
 
-        await this.deleteReview(); // Assuming this function is needed after update
+
+
 
       } catch (error) {
         console.error("Chyba pri nahrávaní súboru", error);
-        this.showAlert("error");
+        await this.showAlert("error");
       }
     },
     async getReview() {
@@ -406,31 +415,33 @@ export default {
     },
     async showAlert(status){
       if(status === "success"){
+        this.successSend = true;
         this.alert_show = true;
         this.alert_text = "Práca bola úspešne nahraná";
         this.alert_icon = "$success";
         this.alert_color = "success";
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         this.alert_show = false;
+        this.successSend = false;
       }
       else if (status === "error"){
         this.alert_show = true;
         this.alert_text = "Prácu sa nepodarilo nahrať";
         this.alert_icon = "$error";
         this.alert_color = "error";
-        await new Promise(resolve => setTimeout(resolve, 4000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         this.alert_show = false;
       }
     },
   },
   mounted() {
-    // console.log(this.articleInReview)
-    const conferenceName = this.$route.query.conferenceName;
+
     this.getUser();
     this.getReview()
     this.fetchSections();
     this.getDate();
     this.getArticleInfo();
+
   }
 }
 </script>
@@ -446,6 +457,13 @@ export default {
   color: white;
   background-color: #3c8d40;
   border-color: #3c8d40;
+}
+
+.save-button:disabled {
+  background-color: #d8d8f0;
+  border-color: #d8d8f0;
+  color: #6c757d;
+  cursor: not-allowed
 }
 
 .form-group {

@@ -83,6 +83,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleStudentResponseDto getArticleByIdStudent(final Long id) {
     return articleRepository.findById(id).map(article -> new ArticleStudentResponseDto(
+        article.getId(),
         article.getArticle_name(),
         article.getCo_authors(),
         article.getArticle_description(),
@@ -91,8 +92,14 @@ public class ArticleServiceImpl implements ArticleService {
         article.getFirst_name(),
         article.getLast_name(),
         article.getStatus(),
-        article.getConference().getId()
+        article.getConference().getId(),
+        article.getReviewer().getId()
     )).orElseThrow();
+  }
+
+  @Override
+  public boolean isArticleAssignedToReviewer(final Long articleId, final Long reviewerId) {
+    return articleRepository.existsByIdAndReviewer_Id(articleId, reviewerId);
   }
 
   @Override

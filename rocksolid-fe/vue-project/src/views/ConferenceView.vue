@@ -362,14 +362,14 @@ export default {
           this.alert_text = 'Conference created';
           this.alert_icon = '$success';
           this.alert_color = 'success';
-          await new Promise(resolve => setTimeout(resolve, 4000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           this.alert_show = false;
         } else if (object === 'edit') {
           this.alert_show = true;
           this.alert_text = 'Conference edited';
           this.alert_icon = '$success';
           this.alert_color = 'success';
-          await new Promise(resolve => setTimeout(resolve, 4000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           this.alert_show = false;
         }
       } else if (status === 'error') {
@@ -436,8 +436,8 @@ export default {
                 }
               });
           this.clearVariables();
-          await this.showAlert('success', 'edit');
           await this.getConferences();
+          await this.showAlert('success', 'edit');
         } catch (error) {
           await this.showAlert('error', 'edit');
           console.error('Failed to update conference:', error);
