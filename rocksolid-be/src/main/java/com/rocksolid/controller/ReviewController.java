@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.rocksolid.auth.CurrentUserService;
 import com.rocksolid.dto.ReviewRequestDTO;
 import com.rocksolid.dto.ReviewResponseDTO;
 import com.rocksolid.module.Reviews;
 import com.rocksolid.service.ReviewService;
+import com.rocksolid.service.UserConferenceService;
 
 import lombok.AllArgsConstructor;
 
@@ -24,6 +27,7 @@ import lombok.AllArgsConstructor;
 public class ReviewController {
 
   ReviewService reviewService;
+  private final CurrentUserService currentUserService;
 
   @PostMapping("/createReview")
   public Reviews createReview(@RequestBody ReviewRequestDTO reviewRequestDto) {

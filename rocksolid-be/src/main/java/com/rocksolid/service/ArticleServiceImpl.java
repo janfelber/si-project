@@ -92,8 +92,14 @@ public class ArticleServiceImpl implements ArticleService {
         article.getFirst_name(),
         article.getLast_name(),
         article.getStatus(),
-        article.getConference().getId()
+        article.getConference().getId(),
+        article.getReviewer().getId()
     )).orElseThrow();
+  }
+
+  @Override
+  public boolean isArticleAssignedToReviewer(final Long articleId, final Long reviewerId) {
+    return articleRepository.existsByIdAndReviewer_Id(articleId, reviewerId);
   }
 
   @Override

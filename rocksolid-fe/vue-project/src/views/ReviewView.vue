@@ -10,7 +10,12 @@
     ></v-alert>
   </transition>
 
-  <div>
+
+  <div v-if="articleStatus === 'REJECTED' || articleStatus === 'ACCEPTED'">
+
+  </div>
+
+  <div v-if="articleStatus === 'SENT'">
     <div v-if="loading">Loading...</div>
 
     <div class="tables-container">
@@ -76,8 +81,8 @@
 
     </div>
     <div class="button-container">
-      <button class="btn-submit" @click="submitReview()" :disabled="successSend">Akceptovať článok</button>
-      <button class="btn-reject" @click="rejectReview()" :disabled="successSend === true">Zamietnuť článok</button>
+      <button class="btn-submit" @click="submitReview()" :disabled="successSendReview">Akceptovať článok</button>
+      <button class="btn-reject" @click="rejectReview()" :disabled="successSendReview">Zamietnuť článok</button>
     </div>
   </div>
 </template>
@@ -89,6 +94,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      reviewerId: null,
       columns: [],
       selectedChoices: {},
       loading: true,
@@ -102,14 +108,20 @@ export default {
       article_description: "",
       article_coauthors: "",
       article_section: "",
-      successSend: false,
+      successSendReview: false,
+      isAssigned: false,
+      articleStatus: "",
     };
   },
   mounted() {
-    this.fetchColumns();
-    this.getArticleById();
-    console.log(this.article_id)
-    console.log(this.successSend)
+    this.getArticleById()
+        .then(() => {
+          this.fetchColumns();
+        })
+        .then(() => {
+          this.checkIfArticleIsAssignedToThisUser();
+
+        });
 
   },
   computed: {
@@ -128,6 +140,34 @@ export default {
     }
   },
   methods: {
+    async checkIfArticleIsAssignedToThisUser() {
+      try {
+        const token = localStorage.getItem("token");
+
+
+        const response = await axios.get(
+            `http://localhost:8080/api/v1/article/check-assignment?articleId=${this.article_id}&reviewerId=${this.reviewerId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+
+        console.log(response.data);
+
+        if (response.data === true) {
+          this.isAssigned = true;
+          console.log(this.isAssigned);
+        } else {
+          this.isAssigned = false;
+          console.log(this.isAssigned);
+          this.$router.push({ name: 'reviewConferences'});
+        }
+      } catch (error) {
+        console.error("Error checking user in conference:", error);
+      }
+    },
     async getArticleById(){
       try {
         const token = localStorage.getItem("token");
@@ -145,6 +185,10 @@ export default {
         this.article_description = response.data.articleDescription;
         this.article_coauthors = response.data.coAuthors;
         this.article_section = response.data.section;
+        this.reviewerId = response.data.reviewerId;
+        this.articleStatus = response.data.status;
+
+
       } catch (error) {
         console.error('Error fetching article:', error);
       }
@@ -160,132 +204,144 @@ export default {
               },
             }
         );
-        console.log(response.data);  // Debugging line to see the actual structure of the response
+        console.log(response.data);
         this.columns = response.data;
 
       } catch (error) {
         console.error('Error fetching columns:', error);
       } finally {
-        this.loading = false;  // Set loading to false when data is fetched
+        this.loading = false;
       }
     },
     async submitReview() {
-      try {
+      const allFieldsFilled = this.columns.every((column) => {
+        const value = this.selectedChoices[column.id];
+        return value !== null && value !== undefined && value !== '';
+      });
 
-        this.successSend = true;
-        console.log("ako som stlacil submit" + this.successSend);
-        const allFieldsFilled = Object.values(this.selectedChoices).every((value) => value !== null && value !== '');
-        if (!allFieldsFilled) {
-          await this.showAlert("error", "Všetky polia musia byť vyplnené")
-          return;
-        }
+      if (!allFieldsFilled) {
+        await this.showAlert("error", "Všetky polia musia byť vyplnené");
+        return;
+      } else {
 
-        const token = localStorage.getItem("token");
-        const article_id = this.article_id
+        try {
 
-        const columnValues = {};
-        const textValues = {};
+          const token = localStorage.getItem("token");
+          const article_id = this.article_id
 
-        for (let columnId in this.selectedChoices) {
-          const value = this.selectedChoices[columnId];
+          const columnValues = {};
+          const textValues = {};
 
-          if (typeof value === 'string') {
-            textValues[columnId] = value;
-          } else {
-            columnValues[columnId] = value;
-          }
-        }
+          for (let columnId in this.selectedChoices) {
+            const value = this.selectedChoices[columnId];
 
-        const reviewRequest = {
-          article_id,
-          columnValues,
-          textValues,
-        };
-
-        console.log(reviewRequest)
-        console.log(this.selectedChoices)
-        const response = await axios.post(
-            `http://localhost:8080/api/v1/review/createReview`,
-            reviewRequest,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+            if (typeof value === 'string') {
+              textValues[columnId] = value;
+            } else {
+              columnValues[columnId] = value;
             }
-        );
+          }
 
-        if(response.status === 200){
-          await this.showAlert("success", "Článok bol Akceptovaný")
-          console.log("pred nastavenim" + this.successSend);
-          this.successSend = true;
-          console.log("po nastaveni" + this.successSend);
-          await router.push({ name: 'reviewConferences' });
+          const reviewRequest = {
+            article_id,
+            columnValues,
+            textValues,
+          };
+
+          console.log(reviewRequest)
+          console.log(this.selectedChoices)
+          const response = await axios.post(
+              `http://localhost:8080/api/v1/review/createReview`,
+              reviewRequest,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+          );
+
+          if(response.status === 200){
+            await this.showAlert("success", "Článok bol Akceptovaný")
+            await router.push({ name: 'reviewConferences' });
+          }
+          console.log('Review submitted successfully:', response.data);
+        } catch (error) {
+          await this.showAlert("error", "Článok sa nepodarilo akceptovať")
+          console.error('Error submitting review:', error);
         }
-        console.log('Review submitted successfully:', response.data);
-      } catch (error) {
-        await this.showAlert("error", "Článok sa nepodarilo akceptovať")
-        console.error('Error submitting review:', error);
       }
     },
     async rejectReview() {
-      try {
-        const token = localStorage.getItem("token");
-        const article_id = this.article_id
 
-        const columnValues = {};
-        const textValues = {};
+      const allFieldsFilled = this.columns.every((column) => {
+        const value = this.selectedChoices[column.id];
+        return value !== null && value !== undefined && value !== '';
+      });
 
-        // through all columns
-        for (let columnId in this.selectedChoices) {
-          const value = this.selectedChoices[columnId];
+      if (!allFieldsFilled) {
+        await this.showAlert("error", "Všetky polia musia byť vyplnené");
+        return;
+      } else {
+        try {
 
-          // Check if the value is a number or text and assign it correctly
-          if (typeof value === 'string') {
-            textValues[columnId] = value;
-          } else {
-            columnValues[columnId] = value;
-          }
-        }
+          const token = localStorage.getItem("token");
+          const article_id = this.article_id
 
-        const reviewRequest = {
-          article_id,
-          columnValues,
-          textValues
-        };
+          const columnValues = {};
+          const textValues = {};
 
-        const response = await axios.post(
-            `http://localhost:8080/api/v1/review/rejectReview`,
-            reviewRequest,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+          // through all columns
+          for (let columnId in this.selectedChoices) {
+            const value = this.selectedChoices[columnId];
+
+            // Check if the value is a number or text and assign it correctly
+            if (typeof value === 'string') {
+              textValues[columnId] = value;
+            } else {
+              columnValues[columnId] = value;
             }
-        );
-        if (response.status === 200){
-          this.successSend = true;
-          await this.showAlert("success", "Článok bol zamietnutý")
-          console.log("pred nastavenim" + this.successSend);
+          }
 
-          console.log("po nastaveni" + this.successSend);
-          await router.push({ name: 'reviewConferences' });
+          const reviewRequest = {
+            article_id,
+            columnValues,
+            textValues
+          };
+
+          const response = await axios.post(
+              `http://localhost:8080/api/v1/review/rejectReview`,
+              reviewRequest,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+          );
+          if (response.status === 200){
+
+            await this.showAlert("success", "Článok bol zamietnutý")
+            await router.push({ name: 'reviewConferences' });
+          }
+          console.log(response)
+          console.log('Review submitted successfully:', response.data);
+        } catch (error) {
+          await this.showAlert("error", "Článok sa nepodarilo zamietnuť")
+          console.error('Error submitting review:', error);
         }
-        console.log(response)
-        console.log('Review submitted successfully:', response.data);
-      } catch (error) {
-        await this.showAlert("error", "Článok sa nepodarilo zamietnuť")
-        console.error('Error submitting review:', error);
+
       }
+
     },
     async showAlert(status, message){
       if(status === "success"){
+        this.successSendReview = true;
         this.alert_show = true;
         this.alert_text = message;
         this.alert_icon = "$success";
         this.alert_color = "success";
         await new Promise(resolve => setTimeout(resolve, 2000));
         this.alert_show = false;
-        this.successSend = false;
+        this.successSendReview = false;
       }
       else if (status === "error"){
         this.alert_show = true;
@@ -462,6 +518,18 @@ export default {
 .btn-submit:hover,
 .btn-reject:hover {
   opacity: 0.9;
+}
+
+.btn-submit:disabled{
+  background-color: #d8d8f0;
+  border-color: #d8d8f0;
+  color: #6c757d;
+}
+
+.btn-reject:disabled{
+  background-color: #d8d8f0;
+  border-color: #d8d8f0;
+  color: #6c757d;
 }
 
 .button-container {

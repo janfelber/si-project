@@ -1,5 +1,3 @@
-
-
 <template >
   <v-app>
 
@@ -14,7 +12,8 @@
       ></v-alert>
     </transition>
 
-    <div>
+
+    <div v-if="articleStatus === 'REJECTED'">
 
       <div class="card-container">
         <div class="v-col-7">
@@ -163,6 +162,7 @@ export default {
       review_id: null,
       articleReviewed: null,
       successSend: false,
+      articleStatus: "",
     };
   },
   methods: {
@@ -303,10 +303,16 @@ export default {
         this.coAuthors = response.data.coAuthors;
         this.articleDescription = response.data.articleDescription;
         this.keyWords = response.data.keyWords;
+        this.articleStatus = response.data.status;
         const matchedSection = this.sections.find(section => section.sectionName === this.article.section);
         if (matchedSection) {
           this.selectedOption = matchedSection.id;
         }
+
+        if (this.articleStatus === 'SENT' || this.articleStatus === 'ACCEPTED') {
+          this.$router.push({ name: 'activeConferences' });
+        }
+
       } catch (error) {
         console.error("Error deleting review:", error);
       }
@@ -337,7 +343,6 @@ export default {
       formData.append('sectionId', this.selectedOption);
       formData.append('firstName', this.firstName);
       formData.append('lastName', this.lastName);
-      formData.append('conferenceId', this.conferenceId);
       formData.append('articleId', this.id);
 
       try {
@@ -430,11 +435,13 @@ export default {
     },
   },
   mounted() {
+
     this.getUser();
     this.getReview()
     this.fetchSections();
     this.getDate();
     this.getArticleInfo();
+
   }
 }
 </script>
@@ -450,6 +457,13 @@ export default {
   color: white;
   background-color: #3c8d40;
   border-color: #3c8d40;
+}
+
+.save-button:disabled {
+  background-color: #d8d8f0;
+  border-color: #d8d8f0;
+  color: #6c757d;
+  cursor: not-allowed
 }
 
 .form-group {

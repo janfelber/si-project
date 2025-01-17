@@ -17,5 +17,6 @@ public class ArticleStudentResponseDto {
   private String lastName;
   private String status;
   private Long conferenceId;
+  private Long reviewerId;
 
 }

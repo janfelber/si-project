@@ -18,6 +18,8 @@ public interface ArticleService {
 
   ArticleStudentResponseDto getArticleByIdStudent(Long id);
 
+  boolean isArticleAssignedToReviewer(Long articleId, Long reviewerId);
+
   Article adminUpdateArticle(Long articleId, ArticleAdminUpdateRequest updateArticleRequest);
 
   List<ArticleReviewerResponseDto> getArticlesAssignedToReviewer(Long reviewerId);

@@ -18,4 +18,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
   List <Article> findByUserId(Long userId);
 
   boolean existsByIdAndConferenceId(Long articleId, Long conferenceId);
+
+  boolean existsByIdAndReviewer_Id(Long articleId, Long userId);
 }

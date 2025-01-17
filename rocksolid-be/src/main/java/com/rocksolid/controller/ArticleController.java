@@ -111,4 +111,10 @@ public class ArticleController {
     return ResponseEntity.ok(exists);
   }
 
+  @GetMapping("/check-assignment")
+  @PreAuthorize("hasAuthority('reviewer:read')")
+  public boolean checkArticleAssignment( @RequestParam Long articleId, @RequestParam Long reviewerId) {
+    return articleService.isArticleAssignedToReviewer(articleId, currentUserService.getCurrentUserId());
+  }
+
 }
