@@ -6,14 +6,14 @@
       </div>
       <div class="filter-container">
         <div class="form-group">
-          <label>Vyhladavacia fraza</label>
+          <label>Vyhľadávacia fráza</label>
           <div class="form-input">
             <input v-model="searchQuery" placeholder="Zadajte vyhľadávací výraz">
           </div>
         </div>
         <div class="form-group filter-button">
           <button class="btn btn-primary filter" @click="filter" style="color: white">Filter</button>
-          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovat</button>
+          <button class="btn btn-primary reset" @click="reset" style="color: #1EB386">Resetovať</button>
         </div>
       </div>
 

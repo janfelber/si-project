@@ -3,6 +3,9 @@ import NoPermissions from '@/views/NoPermissions.vue';
 import AdminArticleDetailView from '@/views/AdminArticleDetailView.vue';
 import AdminArticlesView from '@/views/AdminArticlesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
+import PasswordRequestConfirmationView from '@/views/PasswordRequestConfirmationView.vue';
+import PasswordResetRequestView from '@/views/PasswordResetRequestView.vue';
+import PasswordResetView from '@/views/PasswordResetView.vue';
 import ReviewsArticle from '@/views/ReviewsArticle.vue';
 import UpdateFile from '@/views/UpdateFile.vue';
 import { createRouter, createWebHistory } from 'vue-router'
@@ -14,7 +17,6 @@ import AdminUsersView from "@/views/AdminUsersView.vue";
 import UserDetailView from "@/views/UserDetailView.vue";
 import ConferenceView from "@/views/ConferenceView.vue";
 import ActiveConferences from "@/views/ActiveConferences.vue";
-import ConferenceDetail from "@/views/ConferenceDetail.vue";
 import EditProfileView from "@/views/EditProfileView.vue";
 import ReviewView from "@/views/ReviewView.vue";
 import AdminConferenceDetailView from "@/views/AdminConferenceDetailView.vue";
@@ -35,6 +37,22 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+    },
+    {
+      path: '/reset-password-request',
+      name: 'resetPasswordRequest',
+      component: PasswordResetRequestView
+    },
+    {
+      path: '/password-reset-request-success',
+      name: 'confirmationPasswordRequest',
+      component: PasswordRequestConfirmationView
+    },
+    {
+      path: '/reset-password',
+      name: 'ResetPassword',
+      component: PasswordResetView,
+      props: (route) => ({ token: route.query.token })
     },
     {
       path: '/admin/users',
@@ -90,12 +108,6 @@ const router = createRouter({
       },
     },
     {
-      path: '/web/home',
-      name: 'home',
-      component: HomeView,
-      meta: { requiresStudent: true },
-    },
-    {
       path: '/web/upload/:id',
       name: 'upload',
       component: UploadFile,
@@ -125,7 +137,7 @@ const router = createRouter({
       props:true
     },
     {
-      path: '/reviewArticle/:id',
+      path: '/web/reviewArticle/:id',
       component: ReviewView,
       props: true,
       meta: {
@@ -134,7 +146,7 @@ const router = createRouter({
       },
       children: [
         {
-          path: '/reviewArticle/:id',
+          path: '/web/reviewArticle/:id',
           name: 'reviewArticle',
           component: ReviewView,
         },
@@ -179,7 +191,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/web/article-review-admin/:id',
+      path: '/admin/article-review-admin/:id',
       name: 'ArticleReviewResponseAdmin',
       component: ArticleReviewResponseAdmin,
       props: true,
@@ -202,19 +214,8 @@ const router = createRouter({
       name: 'EditProfileView',
       component: EditProfileView,
       meta: {
-        requiresStudent: true,
-        title: 'Edit Profile'
+        title: 'Profil'
       }
-    },
-    {
-      path: '/web/conference/:id',
-      name: 'conferenceDetail',
-      component: ConferenceDetail,
-      props: true,
-      meta: {
-        requiresStudent: true,
-        // TODO title should be the conference name
-      },
     },
     {
       path: '/:catchAll(.*)',
@@ -237,12 +238,21 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const userRole = await getUserRole();
+  const token = localStorage.getItem('token');
 
   if ((to.meta.requiresAdmin || to.meta.requiresStudent || to.meta.requiresReviewer) && !userRole) {
     return next('/login');
   }
 
-  if (!userRole && to.path !== '/login' && to.path !== '/register') {
+  if (!token && to.path !== '/login' && to.path !== '/register' && to.path !== '/reset-password-request' && to.path !== '/password-reset-request-success' && to.path !== '/reset-password') {
+    return next('/login');
+  }
+
+  if ((to.meta.requiresAdmin || to.meta.requiresStudent || to.meta.requiresReviewer) && !userRole) {
+    return next('/login');
+  }
+
+  if (!userRole && to.path !== '/login' && to.path !== '/register' && to.path !== '/reset-password-request' && to.path !== '/password-reset-request-success' && to.path !== '/reset-password') {
     return next('/login');
   }
 
@@ -251,15 +261,23 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAdmin && userRole !== 'ADMIN') {
-    return next('/web/home');
+    return next('/web/active-conferences');
   }
 
   if (to.meta.requiresStudent && userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
     return next('/admin/users');
   }
 
-  if (to.meta.requiresReviewer && userRole !== 'REVIEWER') {
-    return next('/web/no-permission');
+  if (to.meta.requiresStudent) {
+    if (userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
+      return next('/admin/users');
+    }
+  }
+
+  if (to.meta.requiresReviewer) {
+    if (userRole !== 'REVIEWER') {
+      return next('/web/no-permission');
+    }
   }
 
   next();

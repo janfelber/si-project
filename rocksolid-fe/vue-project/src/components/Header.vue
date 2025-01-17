@@ -47,7 +47,7 @@
         </button>
         <div class="dropdown-content" v-if="isDropdownOpen">
           <div class="wrapper">
-            <router-link to="/user" class="user-detail" active-class="active" exact>
+            <router-link to="/web/user" class="user-detail" active-class="active" exact>
               <span style="font-size: 12px">Profil</span>
               <v-icon size="small">mdi-account</v-icon>
             </router-link>

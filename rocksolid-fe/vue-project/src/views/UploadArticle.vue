@@ -83,7 +83,7 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <label class="input-label">Spolu autori</label>
+                    <label class="input-label">Spoluautori</label>
                     <div class="form-input">
                       <input v-model="coAuthors" @input="removeTrailingComma">
                     </div>
@@ -139,7 +139,7 @@
                   </div>
                   <div class="upload-container"
                        @dragover.prevent="onDragOver"
-                       @drop.prevent="onFileDropped">
+                       @drop.prevent="onPdfFileDropped">
                     <span class="icon-text">
                       <i class="upload-icon fas fa-upload"></i> Presuňte PDF súbor alebo,
                     </span>
@@ -316,6 +316,17 @@ export default {
           this.word_file = file;
         } else {
           alert("Nahratý súbor musi byť vo formáte .doc alebo .docx");
+        }
+      }
+    },
+    onPdfFileDropped(event) {
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        if (this.isValidPdfFile(file)) {
+          this.pdf_file = file.name;
+          this.pdf_file = file;
+        } else {
+          alert("Nahratý súbor musi byť vo .pdf");
         }
       }
     },

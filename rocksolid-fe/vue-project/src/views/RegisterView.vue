@@ -4,7 +4,7 @@
     <div>
       <div>
           <h3 class="text-center">Registrácia</h3>
-          <div v-if="error" class="error-message-container">
+          <div v-if="error && !success_register" class="error-message-container">
             <span class="mdi mdi-close-circle-outline alert-icon"></span>
             <span>
                 {{ error }}
@@ -96,10 +96,11 @@ export default {
     };
   },
   methods: {
+    isPasswordValid(password) {
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      return passwordRegex.test(password);
+    },
     registerUser() {
-      console.log(this.university);
-      console.log(this.name);
-      console.log(this.surname);
       const registerRequest = {
         firstName: this.name,
         lastName: this.surname,
@@ -107,6 +108,11 @@ export default {
         password: this.password,
         university: this.university
       };
+
+      if (!this.isPasswordValid(this.password)) {
+        this.error = 'Heslo musí mať aspoň 8 znakov, obsahovať veľké písmeno, malé písmeno, číslo a špeciálny znak.';
+        return;
+      }
 
       authentication.register(registerRequest)
           .then(() => {

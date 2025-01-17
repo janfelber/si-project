@@ -57,7 +57,7 @@ name: "EditProfileView",
     async getUserData() {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:8080/api/v1/user/" + this.user_id,
+        const response = await axios.get("http://localhost:8080/api/v1/user/me",
             {
               headers: {
                 Authorization: `Bearer ${token}`

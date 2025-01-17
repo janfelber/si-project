@@ -81,6 +81,7 @@
 
     </div>
     <div class="button-container">
+
       <button class="btn-submit" @click="submitReview()" :disabled="successSendReview">Akceptovať článok</button>
       <button class="btn-reject" @click="rejectReview()" :disabled="successSendReview">Zamietnuť článok</button>
     </div>
