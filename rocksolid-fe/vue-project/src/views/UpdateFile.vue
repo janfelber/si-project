@@ -271,7 +271,7 @@ export default {
           this.pdf_file = file.name;
           this.pdf_file = file;
         } else {
-          alert("Nahratý súbor musi byť vo formáte .doc alebo .docx");
+          alert("Nahratý súbor musi byť vo .pdf");
         }
       }
     },

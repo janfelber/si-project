@@ -240,6 +240,10 @@ router.beforeEach(async (to, from, next) => {
   const userRole = await getUserRole();
   const token = localStorage.getItem('token');
 
+  if ((to.meta.requiresAdmin || to.meta.requiresStudent || to.meta.requiresReviewer) && !userRole) {
+    return next('/login');
+  }
+
   if (!token && to.path !== '/login' && to.path !== '/register' && to.path !== '/reset-password-request' && to.path !== '/password-reset-request-success' && to.path !== '/reset-password') {
     return next('/login');
   }
@@ -264,8 +268,16 @@ router.beforeEach(async (to, from, next) => {
     return next('/admin/users');
   }
 
-  if (to.meta.requiresReviewer && userRole !== 'REVIEWER') {
-    return next('/web/no-permission');
+  if (to.meta.requiresStudent) {
+    if (userRole !== 'STUDENT' && userRole !== 'REVIEWER') {
+      return next('/admin/users');
+    }
+  }
+
+  if (to.meta.requiresReviewer) {
+    if (userRole !== 'REVIEWER') {
+      return next('/web/no-permission');
+    }
   }
 
   next();
